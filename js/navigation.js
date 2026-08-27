@@ -30,7 +30,8 @@ export function initNavigation() {
     });
 
     // Close mobile menu on link click
-    navLinks.forEach(link => {
+    const menuLinks = navMenu.querySelectorAll('a');
+    menuLinks.forEach(link => {
       link.addEventListener('click', () => {
         navMenu.classList.remove('is-open');
         toggleBtn.setAttribute('aria-expanded', 'false');
