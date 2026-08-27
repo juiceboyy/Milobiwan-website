@@ -1,0 +1,129 @@
+/* Layout Containers & Section Rules */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.section {
+  padding-block: var(--spacing-3xl);
+  position: relative;
+}
+
+.section-alt {
+  background-color: var(--color-bg-secondary);
+}
+
+.section-dark {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
+}
+
+.section-dark h2,
+.section-dark h3,
+.section-dark h4 {
+  color: var(--color-text-light);
+}
+
+.section-dark .section-subtitle {
+  color: var(--color-gold);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.section-subtitle {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-terracotta);
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+}
+
+.section-lead {
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+  max-width: 650px;
+  margin-inline: auto;
+}
+
+.section-dark .section-lead {
+  color: rgba(253, 250, 246, 0.75);
+}
+
+/* Bio Layout Grid */
+.bio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.bio-quote-highlight {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  line-height: 1.5;
+  color: var(--color-terracotta-dark);
+  border-left: 3px solid var(--color-ochre);
+  padding-left: 1.5rem;
+  margin-block: 1.5rem;
+  font-style: italic;
+}
+
+.roots-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.roots-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.roots-card-flag {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.roots-card h4 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.roots-card p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 850px) {
+  .bio-grid {
+    grid-template-columns: 1fr;
+  }
+  .roots-cards {
+    grid-template-columns: 1fr;
+  }
+}

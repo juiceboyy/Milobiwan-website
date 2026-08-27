@@ -1,0 +1,110 @@
+/* Buttons, Pills & Badges */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--color-terracotta);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(194, 89, 39, 0.25);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-terracotta-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(194, 89, 39, 0.35);
+}
+
+.btn-secondary {
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-terracotta);
+  transform: translateY(-2px);
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.badge-sranan {
+  background-color: #fcf1d8;
+  color: #92580c;
+  border: 1px solid rgba(214, 137, 40, 0.3);
+}
+
+.badge-dutch {
+  background-color: #feece8;
+  color: #af3823;
+  border: 1px solid rgba(216, 92, 75, 0.3);
+}
+
+.badge-english {
+  background-color: #e5f0f9;
+  color: #1c5b8f;
+  border: 1px solid rgba(28, 91, 143, 0.25);
+}
+
+.badge-fusion {
+  background-color: var(--color-jade-light);
+  color: var(--color-jade);
+  border: 1px solid rgba(43, 94, 72, 0.25);
+}
+
+/* Filter Controls */
+.filter-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.filter-btn {
+  padding: 0.55rem 1.15rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+  color: var(--color-text-main);
+  border-color: var(--color-terracotta);
+}
+
+.filter-btn.active {
+  background-color: var(--color-terracotta);
+  color: #ffffff;
+  border-color: var(--color-terracotta);
+  box-shadow: 0 3px 10px rgba(194, 89, 39, 0.2);
+}

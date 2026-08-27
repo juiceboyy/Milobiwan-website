@@ -1,0 +1,128 @@
+:root {
+  /* Color Palette - Warm Earth, Terracotta, Ochre, Jade & Gold */
+  --color-bg-primary: #fdfaf6;
+  --color-bg-secondary: #f4ede2;
+  --color-bg-surface: #ffffff;
+  --color-bg-card: rgba(255, 255, 255, 0.85);
+  --color-bg-dark: #1e1713;
+  --color-bg-dark-surface: #2b221c;
+
+  --color-text-main: #2b231d;
+  --color-text-muted: #6b5c52;
+  --color-text-light: #fdfaf6;
+  --color-text-accent: #c25927;
+
+  --color-terracotta: #c25927;
+  --color-terracotta-dark: #9e431a;
+  --color-terracotta-light: #f5ded3;
+  --color-ochre: #d68928;
+  --color-gold: #c8963e;
+  --color-jade: #2b5e48;
+  --color-jade-light: #e3efe9;
+  --color-coral: #d85c4b;
+
+  --color-border: #e6dbce;
+  --color-border-subtle: rgba(230, 219, 206, 0.6);
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-accent: 'Cormorant Garamond', Georgia, serif;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2.5rem;
+  --spacing-2xl: 4rem;
+  --spacing-3xl: 6rem;
+
+  /* Shadows & Elevation */
+  --shadow-sm: 0 2px 8px rgba(30, 23, 19, 0.05);
+  --shadow-md: 0 8px 24px rgba(30, 23, 19, 0.08);
+  --shadow-lg: 0 16px 36px rgba(30, 23, 19, 0.12);
+  --shadow-glow: 0 0 30px rgba(194, 89, 39, 0.2);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Max Widths */
+  --container-max: 1200px;
+  --container-narrow: 840px;
+}
+
+/* Global Reset & Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text-main);
+  background-color: var(--color-bg-primary);
+  line-height: 1.65;
+  font-size: 1rem;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(214, 137, 40, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(194, 89, 39, 0.04) 0%, transparent 40%);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text-main);
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+::selection {
+  background-color: var(--color-terracotta-light);
+  color: var(--color-terracotta-dark);
+}

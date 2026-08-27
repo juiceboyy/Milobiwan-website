@@ -1,0 +1,146 @@
+/* Audio Player Widget & Booking Components */
+
+.audio-player-banner {
+  background: linear-gradient(135deg, #261f1a, #1b1511);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  margin-top: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  color: var(--color-text-light);
+  border: 1px solid rgba(214, 137, 40, 0.2);
+  box-shadow: var(--shadow-lg);
+  flex-wrap: wrap;
+}
+
+.audio-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.audio-icon-box {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--color-terracotta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.audio-titles h4 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  margin-bottom: 0.2rem;
+}
+
+.audio-titles p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+}
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.visualizer-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 28px;
+}
+
+.visualizer-bar {
+  width: 4px;
+  background: var(--color-gold);
+  border-radius: 2px;
+  height: 6px;
+  transition: height 0.15s ease;
+}
+
+.visualizer-bar.playing {
+  animation: soundBars 1s infinite alternate ease-in-out;
+}
+
+.visualizer-bar:nth-child(2) { animation-delay: 0.2s; }
+.visualizer-bar:nth-child(3) { animation-delay: 0.4s; }
+.visualizer-bar:nth-child(4) { animation-delay: 0.1s; }
+.visualizer-bar:nth-child(5) { animation-delay: 0.3s; }
+
+/* Booking & Services Layout */
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.booking-service-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.service-icon {
+  font-size: 1.5rem;
+  color: var(--color-terracotta);
+  background: var(--color-terracotta-light);
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--color-text-main);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-main);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-terracotta);
+  box-shadow: 0 0 0 3px var(--color-terracotta-light);
+}
+
+@media (max-width: 850px) {
+  .booking-grid {
+    grid-template-columns: 1fr;
+  }
+}
