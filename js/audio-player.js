@@ -1,6 +1,5 @@
 /**
- * Audio Player & Spoken Word Ambient Sound Engine
- * Provides audio playback visualizer and Web Audio rhythm generator
+ * Milobiwan – Spoken Word Ambient Audio Engine & Player
  */
 
 let audioCtx = null;
@@ -8,29 +7,39 @@ let isPlaying = false;
 let ambientOscillator = null;
 let gainNode = null;
 let rhythmInterval = null;
-let currentTrackTitle = 'Kandra Faya — Spoken Word Live Recital';
+let currentTrackTitle = 'Kandra Faya (Kaarslicht) — Live Spoken Word';
 
 export function initAudioPlayer() {
   const playBtn = document.getElementById('audioPlayBtn');
-  if (!playBtn) return;
+  const heroAudioBtn = document.getElementById('heroAudioBtn');
 
-  playBtn.addEventListener('click', () => {
-    toggleAudioPlayback();
-  });
+  if (playBtn) {
+    playBtn.addEventListener('click', toggleAudioPlayback);
+  }
+
+  if (heroAudioBtn) {
+    heroAudioBtn.addEventListener('click', () => {
+      if (!isPlaying) {
+        startAudioEngine();
+      } else {
+        stopAudioEngine();
+      }
+    });
+  }
 }
 
 export function playPoemTrack(poem) {
   currentTrackTitle = poem.audioTitle || `${poem.title} — Voordracht`;
-  updateTrackUI(currentTrackTitle, `${poem.languageLabel} • ${poem.theme}`);
+  updateTrackUI(currentTrackTitle, `${poem.languageLabel} • ${poem.theme} (${poem.audioDuration})`);
 
   if (!isPlaying) {
     startAudioEngine();
   }
 
-  // Scroll smoothly to audio player widget if not visible
-  const playerBanner = document.querySelector('.audio-player-banner');
-  if (playerBanner) {
-    playerBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Scroll smoothly to Luisterkamer
+  const audioSection = document.getElementById('luisterkamer');
+  if (audioSection) {
+    audioSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
 
@@ -62,26 +71,25 @@ function startAudioEngine() {
       audioCtx.resume();
     }
 
-    // Create warm ambient root chord (low gentle resonance)
+    // Warm ambient root chord (gentle deep harmonic)
     gainNode = audioCtx.createGain();
-    gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(0.035, audioCtx.currentTime);
     gainNode.connect(audioCtx.destination);
 
-    // Warm subtle drone
     ambientOscillator = audioCtx.createOscillator();
     ambientOscillator.type = 'sine';
     ambientOscillator.frequency.setValueAtTime(146.83, audioCtx.currentTime); // D3 warm tone
     ambientOscillator.connect(gainNode);
     ambientOscillator.start();
 
-    // Rhythmic spoken-word heartbeat pulse
+    // Spoken word rhythmic heartbeat pulse (Djembe/Kaseko heartbeat simulation)
     startHeartbeatRhythm(audioCtx);
 
     isPlaying = true;
     updatePlayButtonState(true);
     setVisualizerActive(true);
   } catch (err) {
-    console.warn('Audio playback initialized in silent mode:', err);
+    console.warn('Audio playback running in visual mode:', err);
     isPlaying = true;
     updatePlayButtonState(true);
     setVisualizerActive(true);
@@ -110,7 +118,6 @@ function stopAudioEngine() {
 function startHeartbeatRhythm(ctx) {
   if (rhythmInterval) clearInterval(rhythmInterval);
 
-  // Soft low warm pulse every 1.5s mimicking a spoken word heartbeat rhythm
   rhythmInterval = setInterval(() => {
     if (!isPlaying || !ctx) return;
     try {
@@ -118,38 +125,42 @@ function startHeartbeatRhythm(ctx) {
       const pulseGain = ctx.createGain();
       
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(73.42, ctx.currentTime); // D2 low pulse
+      osc.frequency.setValueAtTime(73.42, ctx.currentTime); // D2 low heartbeat pulse
       
-      pulseGain.gain.setValueAtTime(0.06, ctx.currentTime);
-      pulseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      pulseGain.gain.setValueAtTime(0.05, ctx.currentTime);
+      pulseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
       
       osc.connect(pulseGain);
       pulseGain.connect(ctx.destination);
       
       osc.start();
-      osc.stop(ctx.currentTime + 0.5);
+      osc.stop(ctx.currentTime + 0.45);
     } catch (e) { /* ignore */ }
-  }, 1500);
+  }, 1400);
 }
 
 function updatePlayButtonState(playing) {
   const playBtn = document.getElementById('audioPlayBtn');
-  if (!playBtn) return;
+  const heroAudioBtn = document.getElementById('heroAudioBtn');
 
-  if (playing) {
-    playBtn.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-      <span>Pauzeer</span>
-    `;
-    playBtn.classList.remove('btn-primary');
-    playBtn.classList.add('btn-secondary');
-  } else {
-    playBtn.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-      <span>Afspelen</span>
-    `;
-    playBtn.classList.remove('btn-secondary');
-    playBtn.classList.add('btn-primary');
+  if (playBtn) {
+    if (playing) {
+      playBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        <span>Pauzeer Soundscape</span>
+      `;
+      playBtn.className = 'btn btn-secondary-light';
+    } else {
+      playBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span>Start Spoken Word Soundscape</span>
+      `;
+      playBtn.className = 'btn btn-gold';
+    }
+  }
+
+  if (heroAudioBtn) {
+    heroAudioBtn.innerHTML = playing ? '❚❚' : '▶';
   }
 }
 

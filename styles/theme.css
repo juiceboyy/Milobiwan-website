@@ -1,66 +1,86 @@
+/* ==========================================================================
+   Milobiwan (Mieke) – Design System & Theme Tokens
+   Aesthetic: Deep Sranan Rainforest Jade, Raw Parchment, Kandra Faya Gold,
+              Maroon Coral & Charcoal Typography
+   ========================================================================== */
+
 :root {
-  /* Color Palette - Warm Earth, Terracotta, Ochre, Jade & Gold */
-  --color-bg-primary: #fdfaf6;
-  --color-bg-secondary: #f4ede2;
-  --color-bg-surface: #ffffff;
-  --color-bg-card: rgba(255, 255, 255, 0.85);
-  --color-bg-dark: #1e1713;
-  --color-bg-dark-surface: #2b221c;
+  /* Core Color Palette */
+  --color-canvas-raw: #fbf9f4;
+  --color-canvas-parchment: #f3ede2;
+  --color-canvas-card: #ffffff;
+  --color-canvas-muted: #eae3d5;
+  
+  /* Deep Botanical Rainforest Jade (Symbolizing deep roots & nature) */
+  --color-jade-deep: #0e241b;
+  --color-jade-forest: #173b2c;
+  --color-jade-accent: #244e3d;
+  --color-jade-tint: #eaf1ed;
+  --color-jade-light: #dbe7e1;
 
-  --color-text-main: #2b231d;
-  --color-text-muted: #6b5c52;
-  --color-text-light: #fdfaf6;
-  --color-text-accent: #c25927;
+  /* Kandra Faya Sunburst & Amber Gold (Candlelight, warm speech) */
+  --color-gold-warm: #d99b26;
+  --color-gold-bright: #f0b849;
+  --color-gold-tint: #fbf3e4;
+  --color-gold-glow: rgba(217, 155, 38, 0.25);
 
-  --color-terracotta: #c25927;
-  --color-terracotta-dark: #9e431a;
-  --color-terracotta-light: #f5ded3;
-  --color-ochre: #d68928;
-  --color-gold: #c8963e;
-  --color-jade: #2b5e48;
-  --color-jade-light: #e3efe9;
-  --color-coral: #d85c4b;
+  /* Maroon Coral & Hibiscus (Passionate spoken word energy) */
+  --color-maroon: #b84a39;
+  --color-maroon-dark: #8f3325;
+  --color-maroon-tint: #faeeec;
 
-  --color-border: #e6dbce;
-  --color-border-subtle: rgba(230, 219, 206, 0.6);
+  /* Ink & Typography */
+  --color-ink-deep: #121614;
+  --color-ink-muted: #57615b;
+  --color-ink-subtle: #828c86;
+  --color-ink-light: #fbf9f4;
 
-  /* Typography */
-  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-accent: 'Cormorant Garamond', Georgia, serif;
+  /* Borders & Dividers */
+  --color-border-parchment: #e2d9ca;
+  --color-border-subtle: rgba(23, 59, 44, 0.12);
+  --color-border-glow: rgba(217, 155, 38, 0.35);
+
+  /* Typography Families */
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
   /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2.5rem;
-  --spacing-2xl: 4rem;
-  --spacing-3xl: 6rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1.25rem;
+  --space-lg: 2rem;
+  --space-xl: 3.5rem;
+  --space-2xl: 5.5rem;
+  --space-3xl: 8rem;
 
-  /* Shadows & Elevation */
-  --shadow-sm: 0 2px 8px rgba(30, 23, 19, 0.05);
-  --shadow-md: 0 8px 24px rgba(30, 23, 19, 0.08);
-  --shadow-lg: 0 16px 36px rgba(30, 23, 19, 0.12);
-  --shadow-glow: 0 0 30px rgba(194, 89, 39, 0.2);
+  /* Elevation & Shadows */
+  --shadow-editorial: 0 4px 20px rgba(18, 22, 20, 0.05);
+  --shadow-card: 0 12px 32px rgba(18, 22, 20, 0.07);
+  --shadow-stage: 0 24px 50px -10px rgba(14, 36, 27, 0.18);
+  --shadow-gold: 0 8px 30px rgba(217, 155, 38, 0.2);
 
-  /* Radii */
+  /* Border Radii (Refined, architectural shapes) */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 14px;
-  --radius-lg: 24px;
+  --radius-lg: 22px;
   --radius-full: 9999px;
 
   /* Transitions */
-  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-natural: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --trans-fast: 0.2s var(--ease-natural);
+  --trans-base: 0.35s var(--ease-natural);
+  --trans-slow: 0.6s var(--ease-natural);
 
   /* Max Widths */
-  --container-max: 1200px;
-  --container-narrow: 840px;
+  --max-width-site: 1240px;
+  --max-width-narrow: 820px;
+  --max-width-reader: 680px;
 }
 
-/* Global Reset & Base Styles */
+/* Base Styles */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -69,7 +89,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5.5rem;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -77,14 +97,14 @@ html {
 
 body {
   font-family: var(--font-sans);
-  color: var(--color-text-main);
-  background-color: var(--color-bg-primary);
+  color: var(--color-ink-deep);
+  background-color: var(--color-canvas-raw);
   line-height: 1.65;
-  font-size: 1rem;
+  font-size: 1.05rem;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(214, 137, 40, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(194, 89, 39, 0.04) 0%, transparent 40%);
+    radial-gradient(circle at 15% 10%, rgba(23, 59, 44, 0.03) 0%, transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(217, 155, 38, 0.04) 0%, transparent 45%);
 }
 
 img {
@@ -96,7 +116,7 @@ img {
 a {
   color: inherit;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: color var(--trans-fast);
 }
 
 button {
@@ -110,12 +130,14 @@ button {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   font-weight: 600;
-  line-height: 1.2;
-  color: var(--color-text-main);
+  line-height: 1.15;
+  color: var(--color-ink-deep);
+  text-wrap: balance;
 }
 
 p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  text-wrap: pretty;
 }
 
 p:last-child {
@@ -123,6 +145,6 @@ p:last-child {
 }
 
 ::selection {
-  background-color: var(--color-terracotta-light);
-  color: var(--color-terracotta-dark);
+  background-color: var(--color-jade-light);
+  color: var(--color-jade-deep);
 }

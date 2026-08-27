@@ -1,129 +1,221 @@
-/* Layout Containers & Section Rules */
+/* ==========================================================================
+   Milobiwan (Mieke) – Layout & Structural Containers
+   ========================================================================== */
+
+/* Top Cultural Ticker Ribbon */
+.culture-ticker-wrapper {
+  background-color: var(--color-jade-deep);
+  color: var(--color-gold-bright);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(240, 184, 73, 0.2);
+  user-select: none;
+}
+
+.culture-ticker {
+  display: flex;
+  white-space: nowrap;
+  width: max-content;
+  animation: tickerScroll 40s linear infinite;
+  padding-block: 0.45rem;
+}
+
+.culture-ticker-wrapper:hover .culture-ticker {
+  animation-play-state: paused;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-inline: 1.5rem;
+}
+
+.ticker-dot {
+  color: var(--color-gold-warm);
+  font-size: 0.7rem;
+}
+
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Structural Containers */
 .container {
   width: 100%;
-  max-width: var(--container-max);
+  max-width: var(--max-width-site);
   margin-inline: auto;
-  padding-inline: 1.5rem;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
 }
 
 .container-narrow {
-  width: 100%;
-  max-width: var(--container-narrow);
-  margin-inline: auto;
-  padding-inline: 1.5rem;
+  max-width: var(--max-width-narrow);
 }
 
+.container-reader {
+  max-width: var(--max-width-reader);
+}
+
+/* Sections */
 .section {
-  padding-block: var(--spacing-3xl);
+  padding-block: clamp(4rem, 8vw, 6.5rem);
   position: relative;
 }
 
-.section-alt {
-  background-color: var(--color-bg-secondary);
+.section-parchment {
+  background-color: var(--color-canvas-parchment);
+  border-block: 1px solid var(--color-border-parchment);
 }
 
-.section-dark {
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-light);
+.section-jade {
+  background-color: var(--color-jade-deep);
+  color: var(--color-canvas-raw);
+  border-block: 1px solid rgba(240, 184, 73, 0.15);
 }
 
-.section-dark h2,
-.section-dark h3,
-.section-dark h4 {
-  color: var(--color-text-light);
+.section-jade h2,
+.section-jade h3,
+.section-jade h4 {
+  color: var(--color-canvas-raw);
 }
 
-.section-dark .section-subtitle {
-  color: var(--color-gold);
+.section-jade .section-intro {
+  color: rgba(251, 249, 244, 0.78);
 }
 
+/* Editorial Section Headers */
 .section-header {
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.section-header.text-center {
   text-align: center;
-  margin-bottom: var(--spacing-2xl);
-}
-
-.section-subtitle {
-  font-family: var(--font-sans);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-terracotta);
-  display: inline-block;
-  margin-bottom: 0.75rem;
-}
-
-.section-title {
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  letter-spacing: -0.01em;
-  margin-bottom: 1rem;
-}
-
-.section-lead {
-  font-size: 1.15rem;
-  color: var(--color-text-muted);
-  max-width: 650px;
+  max-width: 680px;
   margin-inline: auto;
 }
 
-.section-dark .section-lead {
-  color: rgba(253, 250, 246, 0.75);
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-maroon);
+  margin-bottom: 0.75rem;
 }
 
-/* Bio Layout Grid */
-.bio-grid {
+.section-jade .section-eyebrow {
+  color: var(--color-gold-bright);
+}
+
+.section-heading {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.section-heading em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-jade-forest);
+}
+
+.section-jade .section-heading em {
+  color: var(--color-gold-bright);
+}
+
+.section-intro {
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  color: var(--color-ink-muted);
+  line-height: 1.6;
+}
+
+/* Responsive Grid helpers */
+.split-stage {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: clamp(2rem, 5vw, 4.5rem);
   align-items: center;
 }
 
-.bio-quote-highlight {
-  font-family: var(--font-serif);
-  font-size: 1.45rem;
-  line-height: 1.5;
-  color: var(--color-terracotta-dark);
-  border-left: 3px solid var(--color-ochre);
-  padding-left: 1.5rem;
-  margin-block: 1.5rem;
-  font-style: italic;
+/* Linguistic Explorer (De Drie Talen) */
+.lang-explorer-box {
+  background-color: var(--color-canvas-card);
+  border: 1px solid var(--color-border-parchment);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.75rem, 4vw, 3rem);
+  box-shadow: var(--shadow-card);
 }
 
-.roots-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 2rem;
+.lang-tabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--color-border-parchment);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
-.roots-card {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  padding: 1.25rem;
+.lang-tab-btn {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.6rem 1.25rem;
   border-radius: var(--radius-sm);
-  text-align: center;
+  background-color: var(--color-canvas-raw);
+  color: var(--color-ink-muted);
+  border: 1px solid var(--color-border-parchment);
+  transition: all var(--trans-fast);
 }
 
-.roots-card-flag {
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem;
+.lang-tab-btn:hover {
+  border-color: var(--color-jade-forest);
+  color: var(--color-jade-deep);
 }
 
-.roots-card h4 {
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
+.lang-tab-btn.active {
+  background-color: var(--color-jade-forest);
+  color: var(--color-gold-bright);
+  border-color: var(--color-jade-forest);
 }
 
-.roots-card p {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+.lang-tab-panel {
+  display: none;
 }
 
-@media (max-width: 850px) {
-  .bio-grid {
-    grid-template-columns: 1fr;
-  }
-  .roots-cards {
+.lang-tab-panel.active {
+  display: block;
+  animation: fadeIn 0.3s var(--ease-natural) forwards;
+}
+
+.panel-verse-box {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--color-jade-deep);
+  padding: 1.5rem 1.75rem;
+  background-color: var(--color-canvas-parchment);
+  border-left: 3px solid var(--color-gold-warm);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 1.5rem;
+}
+
+.panel-explanation {
+  font-size: 0.98rem;
+  color: var(--color-ink-muted);
+  line-height: 1.7;
+}
+
+@media (max-width: 960px) {
+  .split-stage {
     grid-template-columns: 1fr;
   }
 }

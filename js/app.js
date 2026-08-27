@@ -1,5 +1,5 @@
 /**
- * Main Application Entry Point for Milobiwan's Website
+ * Milobiwan (Mieke) – Main Application Bootstrap
  */
 
 import { initNavigation } from './navigation.js';
@@ -10,22 +10,50 @@ function init() {
   initNavigation();
   initPoetryViewer();
   initAudioPlayer();
-
-  // Async icon guard if external library is present
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-  } else {
-    const interval = setInterval(() => {
-      if (typeof lucide !== 'undefined') {
-        clearInterval(interval);
-        lucide.createIcons();
-      }
-    }, 100);
-    setTimeout(() => clearInterval(interval), 10000);
-  }
+  initLinguisticExplorer();
+  initBookingForm();
 }
 
-// DOMContentLoaded Guard
+function initLinguisticExplorer() {
+  const tabs = document.querySelectorAll('.lang-tab-btn');
+  const panels = document.querySelectorAll('.lang-tab-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+
+      tab.classList.add('active');
+      const targetPanel = document.getElementById(`panel-${tab.dataset.lang}`);
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+      }
+    });
+  });
+}
+
+function initBookingForm() {
+  const form = document.getElementById('bookingForm');
+  const toast = document.getElementById('bookingToast');
+
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Show confirmation toast
+    if (toast) {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 5000);
+    }
+
+    form.reset();
+  });
+}
+
+// DOMContentLoaded Safe Guard
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {

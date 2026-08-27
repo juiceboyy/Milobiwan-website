@@ -1,110 +1,171 @@
-/* Buttons, Pills & Badges */
+/* ==========================================================================
+   Milobiwan (Mieke) – Buttons, Badges & Interactive Controls
+   ========================================================================== */
+
+/* Button Base */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.85rem 1.6rem;
-  border-radius: var(--radius-full);
-  font-weight: 600;
+  font-family: var(--font-sans);
   font-size: 0.95rem;
-  transition: all var(--transition-fast);
+  font-weight: 600;
+  padding: 0.85rem 1.65rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--trans-fast);
   text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
 }
 
+.btn:focus-visible {
+  outline: 2px solid var(--color-gold-warm);
+  outline-offset: 3px;
+}
+
+/* Primary Button (Forest Jade & Gold Accent) */
 .btn-primary {
-  background-color: var(--color-terracotta);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(194, 89, 39, 0.25);
+  background-color: var(--color-jade-forest);
+  color: var(--color-canvas-raw);
+  border: 1px solid rgba(240, 184, 73, 0.3);
+  box-shadow: 0 4px 14px rgba(23, 59, 44, 0.2);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-terracotta-dark);
+  background-color: var(--color-jade-deep);
+  color: var(--color-gold-bright);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(194, 89, 39, 0.35);
+  box-shadow: 0 6px 20px rgba(14, 36, 27, 0.3);
 }
 
+/* Gold Button (Warm Action) */
+.btn-gold {
+  background-color: var(--color-gold-warm);
+  color: var(--color-jade-deep);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-gold);
+}
+
+.btn-gold:hover {
+  background-color: var(--color-gold-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217, 155, 38, 0.4);
+}
+
+/* Secondary Button (Parchment & Charcoal border) */
 .btn-secondary {
-  background-color: var(--color-bg-surface);
-  color: var(--color-text-main);
-  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-ink-deep);
+  border: 1px solid var(--color-border-parchment);
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-bg-secondary);
-  border-color: var(--color-terracotta);
+  background-color: var(--color-canvas-parchment);
+  border-color: var(--color-jade-forest);
+  color: var(--color-jade-deep);
   transform: translateY(-2px);
 }
 
+.btn-secondary-light {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-canvas-raw);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary-light:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+  color: var(--color-gold-bright);
+  border-color: var(--color-gold-warm);
+}
+
+/* Small Button Variant */
 .btn-sm {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.15rem;
   font-size: 0.85rem;
 }
 
-.badge {
+/* Text Link with Literary Dash */
+.link-literary {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-maroon);
+  transition: all var(--trans-fast);
 }
 
-.badge-sranan {
-  background-color: #fcf1d8;
-  color: #92580c;
-  border: 1px solid rgba(214, 137, 40, 0.3);
+.link-literary:hover {
+  color: var(--color-maroon-dark);
+  gap: 0.65rem;
 }
 
-.badge-dutch {
-  background-color: #feece8;
-  color: #af3823;
-  border: 1px solid rgba(216, 92, 75, 0.3);
-}
-
-.badge-english {
-  background-color: #e5f0f9;
-  color: #1c5b8f;
-  border: 1px solid rgba(28, 91, 143, 0.25);
-}
-
-.badge-fusion {
-  background-color: var(--color-jade-light);
-  color: var(--color-jade);
-  border: 1px solid rgba(43, 94, 72, 0.25);
-}
-
-/* Filter Controls */
-.filter-wrapper {
+/* Filter Tab Pills */
+.filter-bar {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
   flex-wrap: wrap;
+  gap: 0.6rem;
   margin-bottom: 2.5rem;
 }
 
 .filter-btn {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
   padding: 0.55rem 1.15rem;
   border-radius: var(--radius-full);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  background-color: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  transition: all var(--transition-fast);
+  background-color: var(--color-canvas-card);
+  color: var(--color-ink-muted);
+  border: 1px solid var(--color-border-parchment);
+  transition: all var(--trans-fast);
 }
 
 .filter-btn:hover {
-  color: var(--color-text-main);
-  border-color: var(--color-terracotta);
+  border-color: var(--color-jade-forest);
+  color: var(--color-jade-deep);
 }
 
 .filter-btn.active {
-  background-color: var(--color-terracotta);
-  color: #ffffff;
-  border-color: var(--color-terracotta);
-  box-shadow: 0 3px 10px rgba(194, 89, 39, 0.2);
+  background-color: var(--color-jade-forest);
+  color: var(--color-gold-bright);
+  border-color: var(--color-jade-forest);
+  box-shadow: 0 4px 12px rgba(23, 59, 44, 0.18);
+}
+
+/* Cultural Language Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-sranan {
+  background-color: #eaf1ed;
+  color: #173b2c;
+  border: 1px solid #cce0d6;
+}
+
+.badge-dutch {
+  background-color: #fbf3e4;
+  color: #8c5a0b;
+  border: 1px solid #f0ddba;
+}
+
+.badge-english {
+  background-color: #f4ecf8;
+  color: #5c3570;
+  border: 1px solid #e2d2ea;
+}
+
+.badge-fusion {
+  background-color: #faeeec;
+  color: #b84a39;
+  border: 1px solid #f2d1cb;
 }
