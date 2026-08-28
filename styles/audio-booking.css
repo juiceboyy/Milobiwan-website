@@ -1,94 +1,63 @@
 /* ==========================================================================
-   Milobiwan (Mieke) – Luisterkamer, Podia Agenda & Boekingsstudio
+   Milobiwan (Mieke) – Soundscape Chamber, Performance Ledger & Studio
    ========================================================================== */
 
-/* Luisterkamer (Spoken Word Lounge) */
-.luisterkamer-card {
-  background: linear-gradient(145deg, #0e241b 0%, #173b2c 60%, #1c4533 100%);
+/* Soundscape Chamber (Luisterkamer Suite) */
+.soundscape-suite {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
   border-radius: var(--radius-lg);
   padding: clamp(2rem, 5vw, 3.5rem);
-  color: var(--color-canvas-raw);
-  border: 1px solid rgba(240, 184, 73, 0.25);
-  box-shadow: var(--shadow-stage);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: center;
 }
 
-.luisterkamer-info h3 {
-  color: var(--color-canvas-raw);
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  margin-bottom: 0.75rem;
-}
-
-.luisterkamer-info p {
-  color: rgba(251, 249, 244, 0.8);
-  font-size: 1.05rem;
-}
-
-.current-track-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-gold-bright);
-  background-color: rgba(217, 155, 38, 0.15);
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-full);
-  margin-bottom: 1.25rem;
-}
-
-/* Audio Player Controls Box */
-.luisterkamer-player {
-  background-color: rgba(14, 36, 27, 0.75);
-  border: 1px solid rgba(240, 184, 73, 0.2);
+.suite-player-box {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
   border-radius: var(--radius-md);
-  padding: 2rem;
-  backdrop-filter: blur(10px);
+  padding: var(--space-6);
 }
 
-.player-track-meta {
+.suite-track-info {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-4);
 }
 
-.player-track-meta h4 {
-  color: var(--color-canvas-raw);
-  font-size: 1.25rem;
-  margin-bottom: 0.25rem;
+.suite-track-info h4 {
+  font-size: 1.3rem;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
 }
 
-.player-track-meta p {
-  color: rgba(251, 249, 244, 0.65);
-  font-size: 0.85rem;
+.suite-track-info p {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
   margin: 0;
 }
 
+/* 8-Bar Subpixel Visualizer */
 .visualizer-stage {
   display: flex;
   align-items: flex-end;
-  gap: 5px;
+  gap: 6px;
   height: 36px;
-  margin-block: 1.5rem;
-  padding-inline: 0.5rem;
+  margin-block: var(--space-6);
+  padding-inline: var(--space-2);
 }
 
 .visualizer-bar {
   flex: 1;
-  background: var(--color-gold-warm);
-  border-radius: 2px;
+  background-color: var(--accent);
+  border-radius: 1px;
   height: 4px;
   transition: height 0.15s ease;
 }
 
 .visualizer-bar.playing {
-  animation: visualizerPulse 1s infinite alternate ease-in-out;
+  animation: visualizerPulse 1.1s infinite alternate ease-in-out;
 }
 
 .visualizer-bar:nth-child(2) { animation-delay: 0.15s; }
@@ -99,163 +68,138 @@
 .visualizer-bar:nth-child(7) { animation-delay: 0.3s; }
 .visualizer-bar:nth-child(8) { animation-delay: 0.5s; }
 
-/* Timeline Agenda */
-.timeline-list {
+/* Performance Ledger (Podia) */
+.ledger-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-3);
 }
 
-.timeline-card {
+.ledger-row {
   display: grid;
-  grid-template-columns: 100px 1fr auto;
+  grid-template-columns: 140px 1fr auto;
   align-items: center;
-  gap: 2rem;
-  background-color: var(--color-canvas-card);
-  border: 1px solid var(--color-border-parchment);
-  border-radius: var(--radius-md);
-  padding: 1.5rem 2rem;
-  box-shadow: var(--shadow-editorial);
-  transition: transform var(--trans-fast), box-shadow var(--trans-fast);
-}
-
-.timeline-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-card);
-  border-color: var(--color-jade-forest);
-}
-
-.timeline-date {
-  background-color: var(--color-jade-forest);
-  color: var(--color-canvas-raw);
+  gap: var(--space-6);
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
   border-radius: var(--radius-sm);
-  padding: 0.75rem 0.5rem;
-  text-align: center;
-  border: 1px solid rgba(240, 184, 73, 0.3);
+  padding: var(--space-4) var(--space-6);
+  transition: box-shadow var(--trans-fast), background-color var(--trans-fast);
 }
 
-.date-day {
-  font-family: var(--font-serif);
-  font-size: 1.8rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--color-gold-bright);
+.ledger-row:hover {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel-hover);
 }
 
-.date-month {
-  font-size: 0.75rem;
+.ledger-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: var(--tracking-wide);
+  color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 600;
-  margin-top: 0.2rem;
 }
 
-.timeline-info h4 {
-  font-size: 1.35rem;
-  margin-bottom: 0.35rem;
+.ledger-info h4 {
+  font-size: 1.2rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
 }
 
-.timeline-location {
-  font-size: 0.9rem;
-  color: var(--color-ink-muted);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+.ledger-venue {
+  font-size: 0.88rem;
+  color: var(--text-muted);
   margin: 0;
 }
 
-/* Boekingsstudio & Formulier */
-.booking-studio {
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
-  align-items: start;
+/* Commissioning Studio (Boekingen) */
+.program-item {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-6);
+  margin-bottom: var(--space-3);
+  transition: box-shadow var(--trans-fast);
 }
 
-.service-offering {
-  background-color: var(--color-canvas-parchment);
-  border-left: 3px solid var(--color-jade-forest);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.25rem;
-  transition: all var(--trans-fast);
+.program-item:hover {
+  box-shadow: var(--border-subpixel-hover);
 }
 
-.service-offering:hover {
-  background-color: var(--color-canvas-card);
-  box-shadow: var(--shadow-editorial);
-  border-left-color: var(--color-gold-warm);
+.program-item h4 {
+  font-size: 1.1rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
 }
 
-.service-offering h4 {
-  font-size: 1.15rem;
-  margin-bottom: 0.3rem;
-}
-
-.service-offering p {
-  font-size: 0.9rem;
-  color: var(--color-ink-muted);
+.program-item p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
   margin: 0;
 }
 
-.booking-form-box {
-  background-color: var(--color-canvas-card);
-  border: 1px solid var(--color-border-parchment);
-  border-radius: var(--radius-lg);
-  padding: clamp(1.75rem, 4vw, 2.75rem);
-  box-shadow: var(--shadow-card);
+/* Surgical Form Inputs */
+.form-box {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-md);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
 }
 
 .form-group {
-  margin-bottom: 1.35rem;
+  margin-bottom: var(--space-4);
 }
 
 .form-label {
   display: block;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--color-ink-deep);
-  margin-bottom: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
 }
 
 .form-input,
 .form-select,
 .form-textarea {
   width: 100%;
-  padding: 0.85rem 1.1rem;
-  border: 1px solid var(--color-border-parchment);
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  border: none;
   border-radius: var(--radius-sm);
-  background-color: var(--color-canvas-raw);
   font-family: var(--font-sans);
-  font-size: 0.95rem;
-  color: var(--color-ink-deep);
-  transition: border-color var(--trans-fast), box-shadow var(--trans-fast);
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  transition: box-shadow var(--trans-fast);
 }
 
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--color-jade-forest);
-  box-shadow: 0 0 0 3px var(--color-jade-tint);
-  background-color: #fff;
+  box-shadow: var(--focus-ring);
 }
 
-/* Toast Message */
+/* Toast Notice */
 .toast-notice {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  background-color: var(--color-jade-deep);
-  color: var(--color-canvas-raw);
-  border: 1px solid var(--color-gold-warm);
-  padding: 1.25rem 1.5rem;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-stage);
+  bottom: var(--space-6);
+  right: var(--space-6);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel-active), 0 16px 36px rgba(0,0,0,0.6);
+  color: var(--text-primary);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-sm);
   z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-3);
   transform: translateY(150%);
   opacity: 0;
   transition: all var(--trans-base);
@@ -266,14 +210,9 @@
   opacity: 1;
 }
 
-@media (max-width: 900px) {
-  .luisterkamer-card,
-  .booking-studio {
+@media (max-width: 768px) {
+  .ledger-row {
     grid-template-columns: 1fr;
-  }
-  .timeline-card {
-    grid-template-columns: 1fr;
-    text-align: center;
-    justify-items: center;
+    gap: var(--space-3);
   }
 }

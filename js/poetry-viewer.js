@@ -21,30 +21,30 @@ export function initPoetryViewer() {
       filterButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
       currentFilter = button.dataset.filter || 'all';
-      
-      const matchingPoems = currentFilter === 'all' 
-        ? poemsData 
+
+      const matching = currentFilter === 'all'
+        ? poemsData
         : poemsData.filter(p => p.language === currentFilter);
-      
-      if (matchingPoems.length > 0) {
-        activePoemId = matchingPoems[0].id;
+
+      if (matching.length > 0) {
+        activePoemId = matching[0].id;
       }
       renderAnthology(indexContainer, stageContainer, currentFilter);
     });
   });
 
-  // Modal Close Handlers
+  // Modal Dialog Close Handlers
   if (closeBtn && dialog) {
     closeBtn.addEventListener('click', () => dialog.close());
-    dialog.addEventListener('click', (event) => {
+    dialog.addEventListener('click', (e) => {
       const rect = dialog.getBoundingClientRect();
-      const isInDialog = (
-        rect.top <= event.clientY &&
-        event.clientY <= rect.top + rect.height &&
-        rect.left <= event.clientX &&
-        event.clientX <= rect.left + rect.width
+      const inDialog = (
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width
       );
-      if (!isInDialog) dialog.close();
+      if (!inDialog) dialog.close();
     });
   }
 }
@@ -55,24 +55,23 @@ function renderAnthology(indexEl, stageEl, filter) {
     : poemsData.filter(p => p.language === filter);
 
   if (filtered.length === 0) {
-    indexEl.innerHTML = `<p style="padding: 1rem; color: var(--color-ink-muted);">Geen gedichten in deze selectie.</p>`;
-    stageEl.innerHTML = `<p style="padding: 2rem; color: var(--color-ink-muted);">Selecteer een andere taal of categorie.</p>`;
+    indexEl.innerHTML = `<p style="padding: 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">GEEN WERKEN IN SELECTIE</p>`;
+    stageEl.innerHTML = `<p style="padding: 2rem; color: var(--text-muted);">Selecteer een andere categorie.</p>`;
     return;
   }
 
-  // Ensure active poem exists in current filter
   if (!filtered.some(p => p.id === activePoemId)) {
     activePoemId = filtered[0].id;
   }
 
-  // Render Index Items
+  // Render Left Index
   indexEl.innerHTML = `
-    <div class="index-header">Inhoudsopgave (${filtered.length})</div>
-    ${filtered.map(poem => `
+    <div class="archive-index-header">ARCHIEF INDEX // 0${filtered.length}</div>
+    ${filtered.map((poem, idx) => `
       <button class="anthology-item ${poem.id === activePoemId ? 'active' : ''}" data-id="${poem.id}">
-        <div class="item-meta">
+        <div class="item-top-row">
+          <span class="item-index-num">#0${idx + 1}</span>
           <span class="badge ${poem.badgeClass}">${poem.flag} ${poem.languageLabel}</span>
-          <span class="item-theme">${poem.theme}</span>
         </div>
         <div class="item-title">${poem.title}</div>
       </button>
@@ -89,7 +88,7 @@ function renderAnthology(indexEl, stageEl, filter) {
     });
   });
 
-  // Render the current active poem on the stage
+  // Render Right Stage
   renderReadingStage(stageEl, activePoemId);
 }
 
@@ -97,36 +96,51 @@ function renderReadingStage(stageEl, poemId) {
   const poem = poemsData.find(p => p.id === poemId) || poemsData[0];
   if (!poem) return;
 
+  // Split lines and format with line numbers
+  const lines = poem.fullText.split('\n');
+  const formattedLines = lines.map((line, idx) => {
+    const lineNum = String(idx + 1).padStart(2, '0');
+    return `
+      <div class="poem-line-row">
+        <span class="poem-line-num">${lineNum}</span>
+        <span class="poem-line-text">${line || '&nbsp;'}</span>
+      </div>
+    `;
+  }).join('');
+
   stageEl.innerHTML = `
-    <div class="reader-header">
-      <div class="reader-title-box">
-        <span class="badge ${poem.badgeClass}" style="margin-bottom: 0.6rem;">${poem.flag} ${poem.languageLabel} • ${poem.theme}</span>
+    <div class="stage-header">
+      <div class="stage-title-wrap">
+        <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel} // ${poem.theme}</span>
         <h3>${poem.title}</h3>
       </div>
       <button class="btn btn-secondary btn-sm" id="stageListenBtn">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        <span>Beluister (${poem.audioDuration})</span>
+        <span>Beluister Audio (${poem.audioDuration})</span>
       </button>
     </div>
 
-    <div class="reader-poem-body animate-fade-in">${poem.fullText}</div>
+    <div class="stage-poem-content animate-fade-in">
+      ${formattedLines}
+    </div>
 
     ${poem.translationNote ? `
-      <div class="reader-glossary">
-        <h5>Culturele Duiding & Vertaling</h5>
-        <p>${poem.translationNote}</p>
+      <div class="stage-glossary-box">
+        <div class="glossary-label">CULTURELE CONTEXT & VERTALING</div>
+        <p class="glossary-text">${poem.translationNote}</p>
       </div>
     ` : ''}
 
-    <div class="reader-actions">
-      <button class="link-literary" id="openFullModalBtn">
-        <span>Lees in volledig scherm &rarr;</span>
+    <div class="stage-footer-actions">
+      <button class="link-editorial" id="openFullModalBtn">
+        <span>Lees in Volledig Scherm &rarr;</span>
       </button>
-      <span style="font-size: 0.85rem; color: var(--color-ink-muted);">Milobiwan (Mieke) • Voordrachtsrepertoire</span>
+      <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
+        VOCAL ARCHIVE // ${poem.id.toUpperCase()}
+      </span>
     </div>
   `;
 
-  // Attach actions
+  // Attach Listeners
   const listenBtn = stageEl.querySelector('#stageListenBtn');
   if (listenBtn) {
     listenBtn.addEventListener('click', () => playPoemTrack(poem));
@@ -156,14 +170,23 @@ export function openPoemModal(poemId) {
     modalBadge.textContent = `${poem.flag} ${poem.languageLabel}`;
   }
   if (modalTheme) modalTheme.textContent = poem.theme;
-  if (modalBody) modalBody.textContent = poem.fullText;
+
+  if (modalBody) {
+    const lines = poem.fullText.split('\n');
+    modalBody.innerHTML = lines.map((line, idx) => `
+      <div class="poem-line-row">
+        <span class="poem-line-num">${String(idx + 1).padStart(2, '0')}</span>
+        <span class="poem-line-text">${line || '&nbsp;'}</span>
+      </div>
+    `).join('');
+  }
 
   if (modalGlossary) {
     if (poem.translationNote) {
       modalGlossary.style.display = 'block';
       modalGlossary.innerHTML = `
-        <h5>Culturele Duiding & Woordverklaring</h5>
-        <p style="white-space: pre-line; margin-bottom: 0;">${poem.translationNote}</p>
+        <div class="glossary-label">CULTURELE CONTEXT & VERTALING</div>
+        <p class="glossary-text">${poem.translationNote}</p>
       `;
     } else {
       modalGlossary.style.display = 'none';

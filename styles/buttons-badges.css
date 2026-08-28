@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Milobiwan (Mieke) – Buttons, Badges & Interactive Controls
+   Milobiwan (Mieke) – Monospace Buttons, Badges & Focus Ring Controls
    ========================================================================== */
 
 /* Button Base */
@@ -7,11 +7,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 0.85rem 1.65rem;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
   border-radius: var(--radius-sm);
   transition: all var(--trans-fast);
   text-decoration: none;
@@ -20,152 +22,121 @@
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--color-gold-warm);
-  outline-offset: 3px;
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
-/* Primary Button (Forest Jade & Gold Accent) */
+/* Primary Button (Achromatic High Contrast) */
 .btn-primary {
-  background-color: var(--color-jade-forest);
-  color: var(--color-canvas-raw);
-  border: 1px solid rgba(240, 184, 73, 0.3);
-  box-shadow: 0 4px 14px rgba(23, 59, 44, 0.2);
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  box-shadow: none;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-jade-deep);
-  color: var(--color-gold-bright);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(14, 36, 27, 0.3);
+  background-color: #ffffff;
+  transform: translateY(-1px);
 }
 
-/* Gold Button (Warm Action) */
-.btn-gold {
-  background-color: var(--color-gold-warm);
-  color: var(--color-jade-deep);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-gold);
+/* Accent Button (Sunburst Ochre Interactive Trigger) */
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--text-inverse);
 }
 
-.btn-gold:hover {
-  background-color: var(--color-gold-bright);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(217, 155, 38, 0.4);
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
-/* Secondary Button (Parchment & Charcoal border) */
+/* Secondary / Inset Button (Shadow-as-Border) */
 .btn-secondary {
-  background-color: transparent;
-  color: var(--color-ink-deep);
-  border: 1px solid var(--color-border-parchment);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  box-shadow: var(--border-subpixel);
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-canvas-parchment);
-  border-color: var(--color-jade-forest);
-  color: var(--color-jade-deep);
-  transform: translateY(-2px);
-}
-
-.btn-secondary-light {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: var(--color-canvas-raw);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-secondary-light:hover {
-  background-color: rgba(255, 255, 255, 0.16);
-  color: var(--color-gold-bright);
-  border-color: var(--color-gold-warm);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel-hover);
+  transform: translateY(-1px);
 }
 
 /* Small Button Variant */
 .btn-sm {
-  padding: 0.6rem 1.15rem;
-  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.72rem;
 }
 
-/* Text Link with Literary Dash */
-.link-literary {
+/* Architectural Literary Text Link */
+.link-editorial {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--color-maroon);
-  transition: all var(--trans-fast);
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: gap var(--trans-fast);
 }
 
-.link-literary:hover {
-  color: var(--color-maroon-dark);
-  gap: 0.65rem;
+.link-editorial:hover {
+  color: var(--accent-hover);
+  gap: var(--space-3);
 }
 
-/* Filter Tab Pills */
+/* Filter Bar & Monospace Tabs */
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-bottom: 2.5rem;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
 }
 
 .filter-btn {
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 600;
-  padding: 0.55rem 1.15rem;
-  border-radius: var(--radius-full);
-  background-color: var(--color-canvas-card);
-  color: var(--color-ink-muted);
-  border: 1px solid var(--color-border-parchment);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface);
+  color: var(--text-muted);
+  box-shadow: var(--border-subpixel);
   transition: all var(--trans-fast);
 }
 
 .filter-btn:hover {
-  border-color: var(--color-jade-forest);
-  color: var(--color-jade-deep);
+  color: var(--text-primary);
+  box-shadow: var(--border-subpixel-hover);
 }
 
 .filter-btn.active {
-  background-color: var(--color-jade-forest);
-  color: var(--color-gold-bright);
-  border-color: var(--color-jade-forest);
-  box-shadow: 0 4px 12px rgba(23, 59, 44, 0.18);
+  background-color: var(--bg-surface-elevated);
+  color: var(--accent);
+  box-shadow: var(--border-subpixel-active);
 }
 
-/* Cultural Language Badges */
+/* Minimalist Language Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: var(--radius-full);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  color: var(--text-secondary);
 }
 
-.badge-sranan {
-  background-color: #eaf1ed;
-  color: #173b2c;
-  border: 1px solid #cce0d6;
-}
-
-.badge-dutch {
-  background-color: #fbf3e4;
-  color: #8c5a0b;
-  border: 1px solid #f0ddba;
-}
-
-.badge-english {
-  background-color: #f4ecf8;
-  color: #5c3570;
-  border: 1px solid #e2d2ea;
-}
-
-.badge-fusion {
-  background-color: #faeeec;
-  color: #b84a39;
-  border: 1px solid #f2d1cb;
-}
+.badge-sranan { color: var(--accent); }
+.badge-dutch { color: #8ec5fc; }
+.badge-english { color: #d4a5ec; }
+.badge-fusion { color: #e0b06a; }

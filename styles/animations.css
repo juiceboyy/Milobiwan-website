@@ -1,40 +1,40 @@
 /* ==========================================================================
-   Milobiwan (Mieke) – Micro-Interactions & Ambient Animations
+   Milobiwan (Mieke) – Micro-Animations & Reduced Motion
    ========================================================================== */
 
-/* Visualizer Pulse for Spoken Word Engine */
+/* Visualizer Pulse */
 @keyframes visualizerPulse {
-  0% { height: 4px; }
-  35% { height: 26px; }
-  70% { height: 12px; }
-  100% { height: 32px; }
+  0%   { height: 4px; }
+  35%  { height: 28px; }
+  70%  { height: 10px; }
+  100% { height: 34px; }
 }
 
-/* Subtle Fade In */
+/* Status Indicator Pulse */
+@keyframes statusPulse {
+  0%   { opacity: 0.4; transform: scale(0.9); }
+  50%  { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.4; transform: scale(0.9); }
+}
+
+.status-dot {
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+/* Fade In Transition */
 .animate-fade-in {
-  animation: fadeIn 0.4s var(--ease-natural) forwards;
+  animation: fadeIn 0.25s var(--ease-sharp) forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Glow Pulse for Kandra Faya (Candlelight) */
-@keyframes kandraGlow {
-  0% { box-shadow: 0 0 10px rgba(217, 155, 38, 0.2); }
-  50% { box-shadow: 0 0 25px rgba(217, 155, 38, 0.45); }
-  100% { box-shadow: 0 0 10px rgba(217, 155, 38, 0.2); }
-}
-
-.kandra-pulse {
-  animation: kandraGlow 3s ease-in-out infinite;
 }
 
 /* Accessible Reduced Motion Settings */
@@ -48,16 +48,12 @@
     scroll-behavior: auto !important;
   }
 
-  .culture-ticker {
-    animation: none !important;
-  }
-  
-  .culture-ticker-wrapper {
-    overflow-x: auto;
-  }
-
   .visualizer-bar.playing {
     animation: none !important;
     height: 16px !important;
+  }
+
+  .status-dot {
+    animation: none !important;
   }
 }

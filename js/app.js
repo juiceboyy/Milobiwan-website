@@ -10,11 +10,11 @@ function init() {
   initNavigation();
   initPoetryViewer();
   initAudioPlayer();
-  initLinguisticExplorer();
+  initLinguisticArchive();
   initBookingForm();
 }
 
-function initLinguisticExplorer() {
+function initLinguisticArchive() {
   const tabs = document.querySelectorAll('.lang-tab-btn');
   const panels = document.querySelectorAll('.lang-tab-panel');
 
@@ -24,9 +24,9 @@ function initLinguisticExplorer() {
       panels.forEach(p => p.classList.remove('active'));
 
       tab.classList.add('active');
-      const targetPanel = document.getElementById(`panel-${tab.dataset.lang}`);
-      if (targetPanel) {
-        targetPanel.classList.add('active');
+      const target = document.getElementById(`panel-${tab.dataset.lang}`);
+      if (target) {
+        target.classList.add('active');
       }
     });
   });
@@ -40,8 +40,7 @@ function initBookingForm() {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    
-    // Show confirmation toast
+
     if (toast) {
       toast.classList.add('show');
       setTimeout(() => {

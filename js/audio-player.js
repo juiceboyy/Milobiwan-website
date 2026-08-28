@@ -30,14 +30,13 @@ export function initAudioPlayer() {
 
 export function playPoemTrack(poem) {
   currentTrackTitle = poem.audioTitle || `${poem.title} — Voordracht`;
-  updateTrackUI(currentTrackTitle, `${poem.languageLabel} • ${poem.theme} (${poem.audioDuration})`);
+  updateTrackUI(currentTrackTitle, `${poem.languageLabel} // ${poem.theme} (${poem.audioDuration})`);
 
   if (!isPlaying) {
     startAudioEngine();
   }
 
-  // Scroll smoothly to Luisterkamer
-  const audioSection = document.getElementById('luisterkamer');
+  const audioSection = document.getElementById('soundscape');
   if (audioSection) {
     audioSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -71,7 +70,6 @@ function startAudioEngine() {
       audioCtx.resume();
     }
 
-    // Warm ambient root chord (gentle deep harmonic)
     gainNode = audioCtx.createGain();
     gainNode.gain.setValueAtTime(0.035, audioCtx.currentTime);
     gainNode.connect(audioCtx.destination);
@@ -82,7 +80,6 @@ function startAudioEngine() {
     ambientOscillator.connect(gainNode);
     ambientOscillator.start();
 
-    // Spoken word rhythmic heartbeat pulse (Djembe/Kaseko heartbeat simulation)
     startHeartbeatRhythm(audioCtx);
 
     isPlaying = true;
@@ -125,7 +122,7 @@ function startHeartbeatRhythm(ctx) {
       const pulseGain = ctx.createGain();
       
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(73.42, ctx.currentTime); // D2 low heartbeat pulse
+      osc.frequency.setValueAtTime(73.42, ctx.currentTime); // D2 low pulse
       
       pulseGain.gain.setValueAtTime(0.05, ctx.currentTime);
       pulseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
@@ -146,16 +143,16 @@ function updatePlayButtonState(playing) {
   if (playBtn) {
     if (playing) {
       playBtn.innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
         <span>Pauzeer Soundscape</span>
       `;
-      playBtn.className = 'btn btn-secondary-light';
+      playBtn.className = 'btn btn-secondary';
     } else {
       playBtn.innerHTML = `
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        <span>Start Spoken Word Soundscape</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span>Start Soundscape</span>
       `;
-      playBtn.className = 'btn btn-gold';
+      playBtn.className = 'btn btn-accent';
     }
   }
 

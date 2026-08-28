@@ -1,86 +1,81 @@
 /* ==========================================================================
-   Milobiwan (Mieke) – Design System & Theme Tokens
-   Aesthetic: Deep Sranan Rainforest Jade, Raw Parchment, Kandra Faya Gold,
-              Maroon Coral & Charcoal Typography
+   Milobiwan (Mieke) – Modern Web Design System & Tokens
+   Doctrine: Achromatic Foundations, Surgical Accent, Shadow-as-Border,
+             Max Weight 600, Negative Tracking, 4px Spacing Baseline
    ========================================================================== */
 
 :root {
-  /* Core Color Palette */
-  --color-canvas-raw: #fbf9f4;
-  --color-canvas-parchment: #f3ede2;
-  --color-canvas-card: #ffffff;
-  --color-canvas-muted: #eae3d5;
+  /* Achromatic Foundations */
+  --bg-canvas: #0c0c0c;
+  --bg-surface: #141414;
+  --bg-surface-elevated: #1a1a1a;
+  --bg-surface-subtle: #1f1f1f;
   
-  /* Deep Botanical Rainforest Jade (Symbolizing deep roots & nature) */
-  --color-jade-deep: #0e241b;
-  --color-jade-forest: #173b2c;
-  --color-jade-accent: #244e3d;
-  --color-jade-tint: #eaf1ed;
-  --color-jade-light: #dbe7e1;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  --text-inverse: #0c0c0c;
 
-  /* Kandra Faya Sunburst & Amber Gold (Candlelight, warm speech) */
-  --color-gold-warm: #d99b26;
-  --color-gold-bright: #f0b849;
-  --color-gold-tint: #fbf3e4;
-  --color-gold-glow: rgba(217, 155, 38, 0.25);
+  /* Single Interactive High-Voltage Accent: Sunburst Ochre */
+  --accent: #d9822b;
+  --accent-hover: #eb943c;
+  --accent-subtle: rgba(217, 130, 43, 0.12);
+  --accent-glow: rgba(217, 130, 43, 0.25);
 
-  /* Maroon Coral & Hibiscus (Passionate spoken word energy) */
-  --color-maroon: #b84a39;
-  --color-maroon-dark: #8f3325;
-  --color-maroon-tint: #faeeec;
+  /* Sub-Pixel Shadow-as-Border (Zero-blur) */
+  --border-subpixel: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --border-subpixel-active: 0 0 0 1px rgba(217, 130, 43, 0.6);
+  --border-subpixel-hover: 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --border-divider: 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  --border-divider-top: 0 -1px 0 0 rgba(255, 255, 255, 0.08);
 
-  /* Ink & Typography */
-  --color-ink-deep: #121614;
-  --color-ink-muted: #57615b;
-  --color-ink-subtle: #828c86;
-  --color-ink-light: #fbf9f4;
-
-  /* Borders & Dividers */
-  --color-border-parchment: #e2d9ca;
-  --color-border-subtle: rgba(23, 59, 44, 0.12);
-  --color-border-glow: rgba(217, 155, 38, 0.35);
+  /* Double-Ring Focus State */
+  --focus-ring: 0 0 0 2px #0c0c0c, 0 0 0 4px #d9822b;
 
   /* Typography Families */
-  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
-  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', 'SFMono-Regular', Consolas, monospace;
 
-  /* Spacing */
-  --space-2xs: 0.25rem;
-  --space-xs: 0.5rem;
-  --space-sm: 0.75rem;
-  --space-md: 1.25rem;
-  --space-lg: 2rem;
-  --space-xl: 3.5rem;
-  --space-2xl: 5.5rem;
-  --space-3xl: 8rem;
+  /* Strict Font Weights (No bold > 600) */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
 
-  /* Elevation & Shadows */
-  --shadow-editorial: 0 4px 20px rgba(18, 22, 20, 0.05);
-  --shadow-card: 0 12px 32px rgba(18, 22, 20, 0.07);
-  --shadow-stage: 0 24px 50px -10px rgba(14, 36, 27, 0.18);
-  --shadow-gold: 0 8px 30px rgba(217, 155, 38, 0.2);
+  /* Letter Spacing Rules */
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.1em;
+  --tracking-widest: 0.2em;
 
-  /* Border Radii (Refined, architectural shapes) */
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 22px;
+  /* Mathematical 4px Spacing Scale */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-24: 6rem;     /* 96px */
+
+  /* Architectural Radii (Clean, subtle) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 9999px;
 
-  /* Transitions */
-  --ease-natural: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --trans-fast: 0.2s var(--ease-natural);
-  --trans-base: 0.35s var(--ease-natural);
-  --trans-slow: 0.6s var(--ease-natural);
+  /* Timing */
+  --ease-sharp: cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-fast: 0.15s var(--ease-sharp);
+  --trans-base: 0.25s var(--ease-sharp);
 
   /* Max Widths */
-  --max-width-site: 1240px;
-  --max-width-narrow: 820px;
-  --max-width-reader: 680px;
+  --max-width-site: 1280px;
 }
 
-/* Base Styles */
+/* Global Reset */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -89,22 +84,23 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: 5rem;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-weight: var(--font-normal);
+  font-size: 1rem;
+  line-height: 1.6;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: var(--font-sans);
-  color: var(--color-ink-deep);
-  background-color: var(--color-canvas-raw);
-  line-height: 1.65;
-  font-size: 1.05rem;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 15% 10%, rgba(23, 59, 44, 0.03) 0%, transparent 45%),
-    radial-gradient(circle at 85% 90%, rgba(217, 155, 38, 0.04) 0%, transparent 45%);
+  min-height: 100vh;
 }
 
 img {
@@ -129,14 +125,18 @@ button {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
-  font-weight: 600;
-  line-height: 1.15;
-  color: var(--color-ink-deep);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-tighter);
+  line-height: 1.05;
+  color: var(--text-primary);
   text-wrap: balance;
 }
 
 p {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
+  font-weight: var(--font-normal);
+  line-height: 1.7;
   text-wrap: pretty;
 }
 
@@ -145,6 +145,11 @@ p:last-child {
 }
 
 ::selection {
-  background-color: var(--color-jade-light);
-  color: var(--color-jade-deep);
+  background-color: var(--accent);
+  color: var(--text-inverse);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
