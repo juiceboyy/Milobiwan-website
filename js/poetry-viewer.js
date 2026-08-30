@@ -166,7 +166,7 @@ function renderReadingStage(stageEl, poemId) {
           <img src="${poem.imageUrl}" alt="${poem.title} visueel werk" class="stage-artwork-img">
         </div>
         <div class="artwork-switch-prompt">
-          <span>Originele typografie / beeldopname.</span>
+          <span>Originele typografie.</span>
           <button class="link-editorial" id="quickSwitchTextBtn"><span>Lees versregels &rarr;</span></button>
         </div>
       </div>
