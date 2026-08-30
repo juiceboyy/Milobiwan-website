@@ -65,7 +65,7 @@ function renderImageWithCopyright(canvas, poem) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      const bannerHeight = Math.max(64, Math.round(img.height * 0.08));
+      const bannerHeight = Math.max(72, Math.round(img.height * 0.09));
       canvas.width = img.width;
       canvas.height = img.height + bannerHeight;
       const ctx = canvas.getContext('2d');
@@ -74,29 +74,19 @@ function renderImageWithCopyright(canvas, poem) {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
 
-      // Banner background
+      // Clean footer banner
       ctx.fillStyle = '#141414';
       ctx.fillRect(0, img.height, canvas.width, bannerHeight);
 
-      // Subpixel divider
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(0, img.height);
-      ctx.lineTo(canvas.width, img.height);
-      ctx.stroke();
-
-      // Copyright & Brand Text
-      const fontSize = Math.max(14, Math.round(bannerHeight * 0.28));
-      ctx.font = `500 ${fontSize}px "Space Mono", monospace`;
+      // Copyright Text (prominent on the right)
+      const fontSize = Math.max(18, Math.round(bannerHeight * 0.38));
+      ctx.font = `500 ${fontSize}px "Fraunces", Georgia, serif`;
       ctx.fillStyle = '#d9822b';
       ctx.textBaseline = 'middle';
-      ctx.fillText(`© MILOBIWAN // ${poem.title?.toUpperCase() || 'POËZIE'}`, 24, img.height + (bannerHeight / 2));
 
-      ctx.fillStyle = '#a3a3a3';
-      const rightText = 'MILOBIWAN.NL';
+      const rightText = '© MILOBIWAN';
       const rightMetrics = ctx.measureText(rightText);
-      ctx.fillText(rightText, canvas.width - rightMetrics.width - 24, img.height + (bannerHeight / 2));
+      ctx.fillText(rightText, canvas.width - rightMetrics.width - 32, img.height + (bannerHeight / 2));
       resolve();
     };
     img.onerror = () => {
@@ -114,88 +104,90 @@ function renderTextQuoteCard(canvas, poem) {
   canvas.height = height;
   const ctx = canvas.getContext('2d');
 
-  // Background gradient
-  const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-  bgGrad.addColorStop(0, '#1c1410');
-  bgGrad.addColorStop(1, '#0c0c0c');
+  // Rich dark background gradient
+  const bgGrad = ctx.createRadialGradient(width / 2, height / 2, 80, width / 2, height / 2, 900);
+  bgGrad.addColorStop(0, '#1c130d');
+  bgGrad.addColorStop(1, '#090909');
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, width, height);
 
-  // Frames
-  ctx.strokeStyle = 'rgba(217, 130, 43, 0.35)';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(40, 40, width - 80, height - 80);
+  const paddingX = 96;
+  const maxContentWidth = width - (paddingX * 2);
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-  ctx.lineWidth = 1;
-  ctx.strokeRect(48, 48, width - 96, height - 96);
+  // Split lines & measure layout
+  const rawLines = (poem.fullText || '').split('\n').map(l => l.trim()).filter(Boolean);
+  const isShortPoem = rawLines.length <= 8;
+  const poemFontSize = isShortPoem ? 36 : (rawLines.length <= 12 ? 32 : 28);
+  const poemLineHeight = isShortPoem ? 58 : (rawLines.length <= 12 ? 50 : 44);
 
-  // Category Tag
-  ctx.font = '500 18px "Space Mono", monospace';
-  ctx.fillStyle = '#d9822b';
-  ctx.textBaseline = 'top';
-  ctx.fillText(`[ VOCAL ARCHIVE // ${poem.languageLabel?.toUpperCase() || 'SPOKEN WORD'} ]`, 70, 75);
+  // Measure title
+  ctx.font = '600 62px "Fraunces", Georgia, serif';
+  const titleLines = wrapText(ctx, poem.title || 'Zonder titel', maxContentWidth);
+  const titleBlockHeight = (titleLines.length * 72) + 36;
 
-  // Title
-  ctx.font = '600 48px "Fraunces", Georgia, serif';
+  // Measure body
+  ctx.font = `400 ${poemFontSize}px "Fraunces", Georgia, serif`;
+  const wrappedPoemLines = [];
+  rawLines.forEach(line => {
+    const wrapped = wrapText(ctx, line, maxContentWidth);
+    wrappedPoemLines.push(...wrapped);
+  });
+
+  const bodyBlockHeight = wrappedPoemLines.length * poemLineHeight;
+  const totalContentHeight = titleBlockHeight + bodyBlockHeight + 120; // 120 footer buffer
+
+  // Calculate dynamic start Y (vertically centered or balanced)
+  let startY = Math.max(120, Math.round((height - totalContentHeight) / 2));
+
+  // Render Title
+  ctx.font = '600 62px "Fraunces", Georgia, serif';
   ctx.fillStyle = '#f5f5f5';
-  let currentY = 130;
-  wrapText(ctx, poem.title || 'Zonder titel', width - 140).forEach(line => {
-    ctx.fillText(line, 70, currentY);
-    currentY += 56;
+  ctx.textBaseline = 'top';
+  titleLines.forEach(line => {
+    ctx.fillText(line, paddingX, startY);
+    startY += 72;
   });
 
-  // Gold accent separator
-  currentY += 15;
+  // Subtle terracotta accent bar
+  startY += 12;
   ctx.strokeStyle = '#d9822b';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(70, currentY);
-  ctx.lineTo(150, currentY);
+  ctx.moveTo(paddingX, startY);
+  ctx.lineTo(paddingX + 90, startY);
   ctx.stroke();
-  currentY += 45;
+  startY += 48;
 
-  // Poem body text
-  const lines = (poem.fullText || '').split('\n').filter(Boolean);
-  const maxLines = 14;
-  lines.slice(0, maxLines).forEach((line, idx) => {
-    wrapText(ctx, line, width - 180).forEach(wLine => {
-      if (currentY < height - 160) {
-        ctx.font = '400 16px "Space Mono", monospace';
-        ctx.fillStyle = '#737373';
-        ctx.fillText(String(idx + 1).padStart(2, '0'), 70, currentY + 6);
+  // Render Poem Lines (no line numbers, clear & spacious)
+  ctx.font = `400 ${poemFontSize}px "Fraunces", Georgia, serif`;
+  ctx.fillStyle = '#ede6de';
 
-        ctx.font = '400 28px "Fraunces", Georgia, serif';
-        ctx.fillStyle = '#e8e2dc';
-        ctx.fillText(wLine, 110, currentY);
-        currentY += 42;
-      }
-    });
+  const maxVisibleLines = Math.floor((height - startY - 140) / poemLineHeight);
+  const linesToRender = wrappedPoemLines.slice(0, maxVisibleLines);
+
+  linesToRender.forEach(line => {
+    ctx.fillText(line, paddingX, startY);
+    startY += poemLineHeight;
   });
 
-  if (lines.length > maxLines) {
-    ctx.font = 'italic 20px "Fraunces", serif';
+  if (wrappedPoemLines.length > maxVisibleLines) {
+    ctx.font = 'italic 24px "Fraunces", Georgia, serif';
     ctx.fillStyle = '#a3a3a3';
-    ctx.fillText('... lees de volledige voordracht op de website', 110, currentY + 10);
+    ctx.fillText('... (lees verder op milobiwan.nl)', paddingX, startY + 8);
   }
 
-  // Footer Copyright & Colophon
-  const footerY = height - 100;
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(70, footerY);
-  ctx.lineTo(width - 70, footerY);
-  ctx.stroke();
-
-  ctx.font = '500 16px "Space Mono", monospace';
+  // Footer Attribution (Bottom-Right, same size as text, prominent)
+  const footerFontSize = poemFontSize;
+  ctx.font = `600 ${footerFontSize}px "Fraunces", Georgia, serif`;
   ctx.fillStyle = '#d9822b';
-  ctx.fillText('© MILOBIWAN', 70, footerY + 24);
+  ctx.textBaseline = 'bottom';
 
-  ctx.fillStyle = '#737373';
-  const slogan = 'MILOBIWAN.NL // SPOKEN WORD';
-  const sloganMetrics = ctx.measureText(slogan);
-  ctx.fillText(slogan, width - 70 - sloganMetrics.width, footerY + 24);
+  const copyrightText = '© MILOBIWAN';
+  const copyrightMetrics = ctx.measureText(copyrightText);
+  const footerX = width - paddingX - copyrightMetrics.width;
+  const footerY = height - 90;
+
+  ctx.fillText(copyrightText, footerX, footerY);
 }
 
 function wrapText(ctx, text, maxWidth) {
@@ -217,7 +209,7 @@ function wrapText(ctx, text, maxWidth) {
 
 function fallbackShare(file, shareText) {
   triggerFileDownload(file);
-  if (navigator.clipboard && navigator.clipboard.writeText) {
+  if (navigator.clipboard?.writeText) {
     navigator.clipboard.writeText(shareText).catch(() => {});
   }
   showShareToast('Afbeelding Opgeslagen', 'De afbeelding is gedownload en de link is gekopieerd naar het klembord.');
