@@ -60,19 +60,26 @@ exports.handler = async (event) => {
     // Google Gemini 2.5 Flash API Initialisatie
     const ai = new GoogleGenAI({ apiKey });
 
-    const langName = language === 'sranan' ? 'Sranantongo' : (language === 'english' ? 'English' : (language === 'fusion' ? 'Sranantongo/Dutch/English Fusion' : 'Nederlands'));
-    const prompt = `Je bent een poëtische assistent voor Milobiwan (Mieke), een Surinaams-Nederlandse dichteres en spoken word artiest.
-Analyseer onderstaande gedichttekst geschreven in ${langName} met als thema "${theme || 'Algemeen'}".
-
-Gedicht:
+    const langName = language === 'sranan' ? 'Sranantongo' : (language === 'english' ? 'English' : (language === 'fusion' ? 'Sranantongo/Nederlands/Engels' : 'Nederlands'));
+    const prompt = `Je bent de redactionele assistent van dichteres en spoken word artiest Milobiwan (Mieke).
+Lees deze tekst (${langName}):
 """
 ${text.slice(0, 1500)}
 """
 
-Verzin 4 krachtige, poëtische en stijlvolle titels voor dit werk in de taal ${langName}.
-Geef uitsluitend een geldige JSON-array terug van 4 strings, zonder markdown codeblocks of extra tekst.
-Voorbeeld formaat:
-["Titel 1", "Titel 2", "Titel 3", "Titel 4"]`;
+Bedenk 4 natuurlijke, krachtige en nuchtere titels.
+Belangrijke regels:
+- Houd titels KORT (meestal 1 tot 3 woorden, maximaal 4).
+- GEEN overdreven literaire clichés of pompeuze komma-titels (zoals "Goudgele korrels, verborgen tijd" of "Het paradijs van...").
+- Kies echte, herkenbare kernwoorden of een treffende zinsflard direct uit de tekst (bijv. specifieke herinneringen, voorwerpen, odo's of begrippen zoals "Het Erf", "Twee Knotjes", "Kwikwiba", "Droog Zand").
+- Zorg voor 4 verschillende invalshoeken:
+  1. Een direct sleutelbegrip (1 of 2 woorden).
+  2. Een opvallend beeld of voorwerp uit de tekst.
+  3. Een treffende korte zinsflard of gevoel uit de tekst.
+  4. Een culturele of sferische titel.
+
+Geef UITSLUITEND een JSON-array van 4 strings terug, bijv:
+["Titel Een", "Titel Twee", "Titel Drie", "Titel Vier"]`;
 
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
@@ -80,7 +87,7 @@ Voorbeeld formaat:
       model: modelName,
       contents: prompt,
       config: {
-        temperature: 0.2,
+        temperature: 0.3,
         responseMimeType: 'application/json'
       }
     });
