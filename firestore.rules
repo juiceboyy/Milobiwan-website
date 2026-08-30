@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Gedichten & Spoken Word Repertoire
+    match /poems/{poemId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // 2. Live Voordrachten, Optredens & Agenda
+    match /performances/{perfId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+  }
+}
