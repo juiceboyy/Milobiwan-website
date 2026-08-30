@@ -17,7 +17,6 @@ function init() {
     });
   });
   setupEditor();
-  setupExport();
 }
 
 function setupEditor() {
@@ -255,33 +254,6 @@ async function deletePoem(id) {
       alert(`Fout bij verwijderen: ${result.error}`);
     }
   }
-}
-
-function setupExport() {
-  const exportBtn = document.getElementById('exportCodeBtn');
-  const exportModal = document.getElementById('exportModal');
-  const closeExportBtn = document.getElementById('closeExportBtn');
-  const codeBox = document.getElementById('exportCodeContent');
-  const copyBtn = document.getElementById('copyCodeDirectBtn');
-
-  exportBtn?.addEventListener('click', () => {
-    const poems = getStoredPoems();
-    const generated = `export const initialPoems = ${JSON.stringify(poems, null, 2)};`;
-    if (codeBox) codeBox.textContent = generated;
-    if (exportModal) exportModal.style.display = 'block';
-  });
-
-  closeExportBtn?.addEventListener('click', () => {
-    if (exportModal) exportModal.style.display = 'none';
-  });
-
-  copyBtn?.addEventListener('click', () => {
-    if (codeBox) {
-      navigator.clipboard.writeText(codeBox.textContent).then(() => {
-        alert('Code gekopieerd naar klembord!');
-      });
-    }
-  });
 }
 
 // DOMContentLoaded Safe Guard

@@ -54,7 +54,6 @@
         </div>
         <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
           <a href="#editorSection" class="btn btn-primary btn-sm" id="newPoemBtn">+ Nieuw Werk Toevoegen</a>
-          <button class="btn btn-secondary btn-sm" id="exportCodeBtn">📋 Kopieer Code voor GitHub</button>
         </div>
       </div>
 
@@ -149,20 +148,9 @@
       <div class="manager-card" style="margin-top: var(--space-8);">
         <div class="card-header-bar">
           <h3 style="font-size: 1.25rem;">Actuele Werken in Archief (<span id="poemCount">0</span>)</h3>
-          <span class="mono-tag">LOKAAL &amp; LIVE GESYNCHRONISEERD</span>
+          <span class="mono-tag">FIREBASE FIRESTORE CLOUD DATABASE</span>
         </div>
         <div id="poemsListContainer"></div>
-      </div>
-
-      <!-- Export Modal/Box -->
-      <div id="exportModal" style="display: none; margin-top: var(--space-8);" class="manager-card">
-        <div class="card-header-bar">
-          <h3 style="font-size: 1.25rem;">Gegenereerde Code voor <code>js/poems-data.js</code></h3>
-          <button id="closeExportBtn" class="link-editorial">Sluiten &times;</button>
-        </div>
-        <p style="font-size: 0.85rem; color: var(--text-secondary);">Kopieer onderstaande code als je de gedichten direct in de broncode van de website wilt opslaan:</p>
-        <pre class="export-code-box" id="exportCodeContent"></pre>
-        <button id="copyCodeDirectBtn" class="btn btn-accent btn-sm">Kopieer Code naar Klembord</button>
       </div>
     </section>
   </main>
