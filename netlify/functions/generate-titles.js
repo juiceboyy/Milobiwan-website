@@ -82,8 +82,10 @@ Geef uitsluitend een geldige JSON-array terug van 4 strings, zonder markdown cod
 Voorbeeld formaat:
 ["Titel 1", "Titel 2", "Titel 3", "Titel 4"]`;
 
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: modelName,
       contents: prompt,
       config: {
         temperature: 0.2,
