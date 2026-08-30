@@ -6,20 +6,10 @@
   <meta name="description" content="Milobiwan (Mieke) — Dichteres en spoken word artiest. Poëzie en voordrachten met diepe wortels in Sranantongo, Nederlands en Engels.">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/theme.css"><link rel="stylesheet" href="styles/layout.css">
-  <link rel="stylesheet" href="styles/header.css"><link rel="stylesheet" href="styles/hero.css">
-  <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css">
-  <link rel="stylesheet" href="styles/audio-booking.css"><link rel="stylesheet" href="styles/animations.css"><link rel="stylesheet" href="styles/footer.css">
+  <link rel="stylesheet" href="styles/theme.css"><link rel="stylesheet" href="styles/layout.css"><link rel="stylesheet" href="styles/header.css"><link rel="stylesheet" href="styles/hero.css">
+  <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css"><link rel="stylesheet" href="styles/audio-booking.css"><link rel="stylesheet" href="styles/animations.css"><link rel="stylesheet" href="styles/footer.css">
 </head>
 <body>
-  <!-- System Status Bar -->
-  <aside class="system-status-bar" aria-label="Systeemstatus">
-    <div class="container system-status-inner">
-      <div class="status-live"><span class="status-dot"></span><span>VOCAL ARCHIVE // 01</span></div>
-      <div>PARAMARIBO // AMSTERDAM • TRI-LINGUAL</div>
-    </div>
-  </aside>
-
   <!-- Architectural Masthead Header -->
   <header class="site-header">
     <div class="container header-inner">
@@ -43,31 +33,46 @@
   </header>
 
   <main>
-    <!-- Section 00: Asymmetric Hero Spread (7 + 5) -->
-    <section class="section section-hero" id="hero">
-      <div class="container grid-12 hero-spread">
-        <div class="col-span-7 hero-content">
-          <div class="hero-meta-badge">[SPOKEN WORD // TRI-LINGUAL ARCHIVE]</div>
-          <h1 class="hero-heading">Woorden met wortels, <em>cadans die blijft.</em></h1>
-          <p class="hero-lead">Milobiwan weeft verhalen over herkomst, ziel en menselijke verbinding. Poëzie en spoken word die resoneren tussen Sranantongo, Nederlands en Engels.</p>
-          <div class="hero-stanza-card">
-            <div class="stanza-header"><span>INSET STROFE // #01</span><span>SRANANTONGO</span></div>
-            <p class="stanza-quote">"Mi grandfather ben taki: Te yu lasi a pasi, drai luku pe yu futu kmopo..."</p>
-          </div>
-          <div class="hero-actions">
-            <a href="#archief" class="btn btn-primary">Open het Archief &rarr;</a>
-            <a href="#soundscape" class="btn btn-secondary">Acoustic Suite</a>
-          </div>
+    <!-- Section 00: Full-Bleed Panoramic Editorial Hero (Section 7) -->
+    <section class="hero-panoramic" id="hero">
+      <div class="hero-photo-canvas">
+        <img src="assets/images/milobiwan.jpg" alt="Portret van Milobiwan (Mieke)" class="hero-photo-img" width="768" height="1024">
+        <div class="hero-feather-left"></div>
+        <div class="hero-feather-bottom"></div>
+        <div class="hero-feather-mobile"></div>
+      </div>
+
+      <!-- 1. Top Micro-Bar -->
+      <div class="hero-micro-bar">
+        <div class="hero-status-tag"><span class="status-dot"></span><span>VOCAL ARCHIVE // PARAMARIBO • AMSTERDAM</span></div>
+        <button class="hero-audio-pill" id="heroAudioBtn" aria-label="Beluister live fragment">
+          <span>▶</span><span>Kandra Faya (Live Recital)</span>
+        </button>
+      </div>
+
+      <!-- 2. Centerpiece Narrative -->
+      <div class="hero-narrative">
+        <span class="hero-tag-mono">[SPOKEN WORD // TRI-LINGUAL ARCHIVE]</span>
+        <h1 class="hero-display-title">Woorden met wortels, <em>cadans die blijft.</em></h1>
+        <p class="hero-summary">
+          Milobiwan (Mieke) weeft verhalen over herkomst, ziel en menselijke verbinding. Poëzie en spoken word die resoneren tussen Sranantongo, Nederlands en Engels.
+        </p>
+        <div class="hero-actions-row">
+          <a href="#archief" class="btn btn-accent">Open het Archief &rarr;</a>
+          <a href="#soundscape" class="btn hero-btn-secondary">Acoustic Suite</a>
         </div>
-        <div class="col-span-5 hero-media-wrapper">
-          <div class="portrait-container">
-            <div class="portrait-stamp">● SLAM ARCHIVE</div>
-            <img src="assets/images/milobiwan.jpg" alt="Portret van Milobiwan (Mieke)" class="portrait-image" width="440" height="550">
-            <div class="portrait-audio-widget">
-              <button class="audio-trigger-btn" id="heroAudioBtn" aria-label="Beluister fragment">▶</button>
-              <div class="audio-trigger-meta"><h5>Kandra Faya (Live)</h5><p>2:14 • SPOKEN WORD RECITAL</p></div>
-            </div>
-          </div>
+      </div>
+
+      <!-- 3. Bottom Asymmetric Strip -->
+      <div class="hero-bottom-strip">
+        <div class="hero-token-list">
+          <span class="hero-usp-token">🇸🇷 SRANANTONGO</span>
+          <span class="hero-usp-token">🇳🇱 NEDERLANDS</span>
+          <span class="hero-usp-token">🇬🇧 ENGLISH</span>
+          <span class="hero-usp-token">STAGE &amp; STUDIO</span>
+        </div>
+        <div class="hero-quote-box">
+          <p class="hero-quote-text">"Ala wortu abi wan sten — Elk woord draagt een stem en een herinnering."</p>
         </div>
       </div>
     </section>
