@@ -1,21 +1,57 @@
 /**
  * Milobiwan's Poetry & Spoken Word Repertoire
  * Languages: Sranantongo, Nederlands, English, Fusion
- * 
- * Plaats hieronder de authentieke teksten van Milobiwan met het juiste taallabel.
- * Structuur per gedicht:
- * {
- *   id: 'unieke-id',
- *   title: 'Titel van het werk',
- *   language: 'sranan' | 'dutch' | 'english' | 'fusion',
- *   languageLabel: 'Sranantongo' | 'Nederlands' | 'English' | 'Drietalig / Fusion',
- *   flag: '🇸🇷' | '🇳🇱' | '🇬🇧' | '🌐',
- *   badgeClass: 'badge-sranan' | 'badge-dutch' | 'badge-english' | 'badge-fusion',
- *   theme: 'Thema',
- *   snippet: 'Korte uitsnede...',
- *   fullText: 'Volledige tekst...',
- *   translationNote: 'Toelichting of vertaling (optioneel)',
- * }
  */
 
-export const poemsData = [];
+const STORAGE_KEY = 'milobiwan_poems';
+
+export const LANGUAGE_CONFIG = {
+  sranan: {
+    languageLabel: 'Sranantongo',
+    flag: '🇸🇷',
+    badgeClass: 'badge-sranan'
+  },
+  dutch: {
+    languageLabel: 'Nederlands',
+    flag: '🇳🇱',
+    badgeClass: 'badge-dutch'
+  },
+  english: {
+    languageLabel: 'English',
+    flag: '🇬🇧',
+    badgeClass: 'badge-english'
+  },
+  fusion: {
+    languageLabel: 'Drietalig / Fusion',
+    flag: '🌐',
+    badgeClass: 'badge-fusion'
+  }
+};
+
+export const initialPoems = [];
+
+export function getStoredPoems() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('Kon opgeslagen gedichten niet laden uit localStorage:', err);
+  }
+  return initialPoems;
+}
+
+export function saveStoredPoems(poems) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(poems));
+  } catch (err) {
+    console.error('Fout bij opslaan in localStorage:', err);
+  }
+}
+
+export const poemsData = getStoredPoems();
+

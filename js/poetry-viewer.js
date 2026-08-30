@@ -1,7 +1,7 @@
-import { poemsData } from './poems-data.js';
+import { getStoredPoems } from './poems-data.js';
 
 let currentFilter = 'all';
-let activePoemId = poemsData[0]?.id || '';
+let activePoemId = '';
 
 export function initPoetryViewer() {
   const indexContainer = document.getElementById('anthologyIndex');
@@ -12,6 +12,11 @@ export function initPoetryViewer() {
 
   if (!indexContainer || !stageContainer) return;
 
+  const currentPoems = getStoredPoems();
+  if (currentPoems.length > 0 && !activePoemId) {
+    activePoemId = currentPoems[0].id;
+  }
+
   renderAnthology(indexContainer, stageContainer, currentFilter);
 
   // Filter Buttons
@@ -21,9 +26,10 @@ export function initPoetryViewer() {
       button.classList.add('active');
       currentFilter = button.dataset.filter || 'all';
 
+      const poems = getStoredPoems();
       const matching = currentFilter === 'all'
-        ? poemsData
-        : poemsData.filter(p => p.language === currentFilter);
+        ? poems
+        : poems.filter(p => p.language === currentFilter);
 
       if (matching.length > 0) {
         activePoemId = matching[0].id;
@@ -49,11 +55,12 @@ export function initPoetryViewer() {
 }
 
 function renderAnthology(indexEl, stageEl, filter) {
+  const allPoems = getStoredPoems();
   const filtered = filter === 'all'
-    ? poemsData
-    : poemsData.filter(p => p.language === filter);
+    ? allPoems
+    : allPoems.filter(p => p.language === filter);
 
-  if (poemsData.length === 0) {
+  if (allPoems.length === 0) {
     indexEl.innerHTML = `
       <div style="padding: var(--space-6) var(--space-4); text-align: center;">
         <span class="mono-tag" style="margin-bottom: var(--space-2); display: inline-block;">ARCHIEF IN VOORBEREIDING</span>
@@ -112,11 +119,12 @@ function renderAnthology(indexEl, stageEl, filter) {
 }
 
 function renderReadingStage(stageEl, poemId) {
-  const poem = poemsData.find(p => p.id === poemId) || poemsData[0];
+  const allPoems = getStoredPoems();
+  const poem = allPoems.find(p => p.id === poemId) || allPoems[0];
   if (!poem) return;
 
   // Split lines and format with line numbers
-  const lines = poem.fullText.split('\n');
+  const lines = (poem.fullText || '').split('\n');
   const formattedLines = lines.map((line, idx) => {
     const lineNum = String(idx + 1).padStart(2, '0');
     return `
@@ -164,7 +172,8 @@ function renderReadingStage(stageEl, poemId) {
 }
 
 export function openPoemModal(poemId) {
-  const poem = poemsData.find(p => p.id === poemId);
+  const allPoems = getStoredPoems();
+  const poem = allPoems.find(p => p.id === poemId);
   const dialog = document.getElementById('poemDialog');
   if (!poem || !dialog) return;
 

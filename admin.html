@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milobiwan // Studio & Tekstbeheer</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/theme.css"><link rel="stylesheet" href="styles/layout.css"><link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css"><link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-masthead" aria-label="Milobiwan Home">
+        <span class="brand-title">MILOBIWAN</span>
+        <span class="brand-subtitle">Studio // Tekstbeheer</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: var(--space-4);">
+        <a href="index.html" class="link-editorial">&larr; Terug naar Website</a>
+        <button id="logoutBtn" class="btn btn-secondary btn-sm" style="display: none;">Vergrendel</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. PIN Security Gate -->
+    <section class="auth-overlay" id="authGate">
+      <div class="auth-card">
+        <div class="auth-icon-wrap">🔒</div>
+        <span class="mono-tag" style="margin-bottom: var(--space-2);">BEVEILIGDE TOEGANG</span>
+        <h2 style="font-size: 1.6rem; margin-bottom: var(--space-2);">Dichteres Studio</h2>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Voer de 4-cijferige pincode in om gedichten en gesproken teksten te beheren.</p>
+        
+        <form id="pinForm">
+          <div class="pin-input-group">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autofocus autocomplete="off">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+          </div>
+          <div class="pin-error-msg" id="pinError"></div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Ontgrendel Studio</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. Studio Management Workspace -->
+    <section class="studio-workspace" id="studioWorkspace">
+      <div class="studio-topbar">
+        <div>
+          <span class="mono-tag">[ REPERTOIRE BEHEER ]</span>
+          <h1 style="font-size: 2.2rem; margin-top: var(--space-1);">Poëzie &amp; Spoken Word Studio</h1>
+        </div>
+        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+          <a href="#editorSection" class="btn btn-primary btn-sm" id="newPoemBtn">+ Nieuw Werk Toevoegen</a>
+          <button class="btn btn-secondary btn-sm" id="exportCodeBtn">📋 Kopieer Code voor GitHub</button>
+        </div>
+      </div>
+
+      <div class="studio-grid" id="editorSection">
+        <!-- Editor Form -->
+        <div class="editor-card">
+          <div class="card-header-bar">
+            <h3 id="formTitle" style="font-size: 1.25rem;">Tekst Bewerken of Toevoegen</h3>
+            <span class="mono-tag" id="editModeIndicator">NIEUW</span>
+          </div>
+
+          <form id="poemForm">
+            <input type="hidden" id="poemId">
+
+            <div class="form-group">
+              <label class="form-label" for="inputTitle">Titel van het werk *</label>
+              <input type="text" id="inputTitle" class="form-input" required placeholder="bijv. Kandra Faya of Drie Stromen">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Taal &amp; Categorie *</label>
+              <div class="lang-radio-grid">
+                <label class="lang-radio-label selected">
+                  <input type="radio" name="poemLanguage" value="sranan" checked>
+                  <span>🇸🇷 Sranantongo</span>
+                </label>
+                <label class="lang-radio-label">
+                  <input type="radio" name="poemLanguage" value="dutch">
+                  <span>🇳🇱 Nederlands</span>
+                </label>
+                <label class="lang-radio-label">
+                  <input type="radio" name="poemLanguage" value="english">
+                  <span>🇬🇧 English</span>
+                </label>
+                <label class="lang-radio-label">
+                  <input type="radio" name="poemLanguage" value="fusion">
+                  <span>🌐 Drietalig / Fusion</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inputTheme">Thema / Rubriek *</label>
+              <input type="text" id="inputTheme" class="form-input" required placeholder="bijv. Wortels &amp; Kracht, Liefde &amp; Ziel, Diaspora">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inputText">Gedichttekst / Spoken Word Strofen *</label>
+              <textarea id="inputText" class="form-textarea" rows="9" required style="font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.6;" placeholder="Typ of plak hier de strofen en verzen..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inputNote">Culturele toelichting &amp; vertaling (optioneel)</label>
+              <textarea id="inputNote" class="form-textarea" rows="3" placeholder="Uitleg over specifieke odo's, begrippen of de achtergrond van het gedicht..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6);">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">Opslaan in Archief</button>
+              <button type="button" class="btn btn-secondary" id="resetFormBtn">Wissen</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="preview-card">
+          <div class="card-header-bar">
+            <h3 style="font-size: 1.25rem;">Live Voorvertoning</h3>
+            <span class="mono-tag" id="previewBadge">🇸🇷 SRANANTONGO</span>
+          </div>
+          
+          <div style="margin-bottom: var(--space-4);">
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); margin-bottom: 0.25rem;" id="previewTheme">THEMA: VOORBEELD</div>
+            <h2 id="previewTitle" style="font-size: 1.75rem;">Titel van Gedicht</h2>
+          </div>
+
+          <div id="previewLines" style="min-height: 240px; margin-bottom: var(--space-6);"></div>
+
+          <div id="previewGlossary" class="stage-glossary-box" style="display: none;">
+            <div class="glossary-label">CULTURELE CONTEXT &amp; VERTALING</div>
+            <p class="glossary-text" id="previewGlossaryText"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Existing Poems Manager -->
+      <div class="manager-card" style="margin-top: var(--space-8);">
+        <div class="card-header-bar">
+          <h3 style="font-size: 1.25rem;">Actuele Werken in Archief (<span id="poemCount">0</span>)</h3>
+          <span class="mono-tag">LOKAAL &amp; LIVE GESYNCHRONISEERD</span>
+        </div>
+        <div id="poemsListContainer"></div>
+      </div>
+
+      <!-- Export Modal/Box -->
+      <div id="exportModal" style="display: none; margin-top: var(--space-8);" class="manager-card">
+        <div class="card-header-bar">
+          <h3 style="font-size: 1.25rem;">Gegenereerde Code voor <code>js/poems-data.js</code></h3>
+          <button id="closeExportBtn" class="link-editorial">Sluiten &times;</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Kopieer onderstaande code als je de gedichten direct in de broncode van de website wilt opslaan:</p>
+        <pre class="export-code-box" id="exportCodeContent"></pre>
+        <button id="copyCodeDirectBtn" class="btn btn-accent btn-sm">Kopieer Code naar Klembord</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
