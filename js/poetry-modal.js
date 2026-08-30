@@ -77,9 +77,6 @@ export function openPoemModal(poemId) {
         ${imagePagesHtml}
         <div class="artwork-copyright-footer" style="margin-top: var(--space-4);">
           <div class="artwork-copyright-text">&copy; Milobiwan &bull; milobiwan.nl &bull; Alle rechten voorbehouden</div>
-          <a href="${poem.imageUrl}" download="${poem.id || 'milobiwan'}.jpg" class="artwork-download-link">
-            <span>Download Origineel &darr;</span>
-          </a>
         </div>
       </div>
     ` : '';

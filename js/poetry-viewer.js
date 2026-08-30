@@ -183,9 +183,6 @@ function renderReadingStage(stageEl, poemId) {
         ${artworkPagesHtml}
         <div class="artwork-copyright-footer">
           <div class="artwork-copyright-text">&copy; Milobiwan &bull; milobiwan.nl &bull; Alle rechten voorbehouden</div>
-          <a href="${poem.imageUrl}" download="${poem.id || 'milobiwan'}.jpg" class="artwork-download-link">
-            <span>Download Origineel &darr;</span>
-          </a>
         </div>
         <div class="artwork-switch-prompt" style="margin-top: var(--space-4);">
           <span>Originele typografie.</span>
