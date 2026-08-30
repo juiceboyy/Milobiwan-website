@@ -1,5 +1,5 @@
 /**
- * Netlify Serverless Function: AI Poetic Title Suggestions
+ * Netlify Serverless Function: AI Poetic Title Suggestions & Auto Language Detection
  * Powered by Google Gemini 2.5 Flash
  */
 
@@ -11,12 +11,6 @@ const HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type, x-studio-pin',
   'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
-
-function isAuthorized(event) {
-  const pinHeader = event.headers['x-studio-pin'] || event.headers['X-Studio-Pin'] || '';
-  const serverPin = process.env.STUDIO_PIN || process.env.ADMIN_PIN || '';
-  return Boolean(serverPin && pinHeader && String(pinHeader).trim() === String(serverPin).trim());
-}
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -32,7 +26,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { text, language, theme } = JSON.parse(event.body || '{}');
+    const { text, theme } = JSON.parse(event.body || '{}');
 
     if (!text || typeof text !== 'string' || text.trim().length < 5) {
       return {
@@ -45,13 +39,15 @@ exports.handler = async (event) => {
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
-      console.warn('GEMINI_API_KEY is niet ingesteld. Lokale heuristische titels worden gebruikt.');
+      console.warn('GEMINI_API_KEY is niet ingesteld. Lokale heuristische detectie wordt gebruikt.');
+      const detectedLang = detectLanguageHeuristic(text);
       return {
         statusCode: 200,
         headers: HEADERS,
         body: JSON.stringify({
           success: true,
-          titles: generateFallbackTitles(text, language, theme),
+          language: detectedLang,
+          titles: generateFallbackTitles(text, detectedLang, theme),
           source: 'heuristic'
         })
       };
@@ -60,26 +56,29 @@ exports.handler = async (event) => {
     // Google Gemini 2.5 Flash API Initialisatie
     const ai = new GoogleGenAI({ apiKey });
 
-    const langName = language === 'sranan' ? 'Sranantongo' : (language === 'english' ? 'English' : (language === 'fusion' ? 'Sranantongo/Nederlands/Engels' : 'Nederlands'));
     const prompt = `Je bent de redactionele assistent van dichteres en spoken word artiest Milobiwan (Mieke).
-Lees deze tekst (${langName}):
+Analyseer de volgende voordrachttekst:
 """
 ${text.slice(0, 1500)}
 """
 
-Bedenk 4 natuurlijke, krachtige en nuchtere titels.
-Belangrijke regels:
-- Houd titels KORT (meestal 1 tot 3 woorden, maximaal 4).
-- GEEN overdreven literaire clichés of pompeuze komma-titels (zoals "Goudgele korrels, verborgen tijd" of "Het paradijs van...").
-- Kies echte, herkenbare kernwoorden of een treffende zinsflard direct uit de tekst (bijv. specifieke herinneringen, voorwerpen, odo's of begrippen zoals "Het Erf", "Twee Knotjes", "Kwikwiba", "Droog Zand").
-- Zorg voor 4 verschillende invalshoeken:
-  1. Een direct sleutelbegrip (1 of 2 woorden).
-  2. Een opvallend beeld of voorwerp uit de tekst.
-  3. Een treffende korte zinsflard of gevoel uit de tekst.
-  4. Een culturele of sferische titel.
+Taak:
+1. Bepaal in welke taal deze tekst hoofdzakelijk is geschreven. Kies strikt uit:
+   - "sranan" (voor Sranantongo)
+   - "dutch" (voor Nederlands)
+   - "english" (voor Engels)
+   - "fusion" (voor een bewuste mix van talen, meertalig of fusion)
+2. Bedenk 4 natuurlijke, krachtige en nuchtere titels in de taal van het gedicht.
+   Regels voor de titels:
+   - Houd titels KORT (1 tot 3 woorden, maximaal 4).
+   - GEEN overdreven clichés of pompeuze komma-constructies.
+   - Kies echte kernwoorden, voorwerpen, odo's of treffende zinsflarden direct uit de tekst.
 
-Geef UITSLUITEND een JSON-array van 4 strings terug, bijv:
-["Titel Een", "Titel Twee", "Titel Drie", "Titel Vier"]`;
+Geef UITSLUITEND een JSON-object terug in dit formaat:
+{
+  "language": "english",
+  "titles": ["Titel Een", "Titel Twee", "Titel Drie", "Titel Vier"]
+}`;
 
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
@@ -87,46 +86,84 @@ Geef UITSLUITEND een JSON-array van 4 strings terug, bijv:
       model: modelName,
       contents: prompt,
       config: {
-        temperature: 0.3,
+        temperature: 0.2,
         responseMimeType: 'application/json'
       }
     });
 
     const responseText = response.text || '';
-    let titles = [];
+    let parsed = null;
 
     try {
-      titles = JSON.parse(responseText);
+      parsed = JSON.parse(responseText);
     } catch {
-      // Fallback regex extractie
-      const matches = responseText.match(/"([^"\\]*(\\.[^"\\]*)*)"/g);
-      if (matches) {
-        titles = matches.map(m => m.replace(/^"|"$/g, '').trim()).filter(Boolean).slice(0, 4);
+      // Fallback
+    }
+
+    let detectedLang = 'sranan';
+    let titles = [];
+
+    if (parsed && typeof parsed === 'object') {
+      if (['sranan', 'dutch', 'english', 'fusion'].includes(parsed.language)) {
+        detectedLang = parsed.language;
+      }
+      if (Array.isArray(parsed.titles) && parsed.titles.length > 0) {
+        titles = parsed.titles.map(t => String(t).trim()).filter(Boolean).slice(0, 4);
       }
     }
 
-    if (!Array.isArray(titles) || titles.length === 0) {
-      titles = generateFallbackTitles(text, language, theme);
+    if (titles.length === 0) {
+      detectedLang = detectLanguageHeuristic(text);
+      titles = generateFallbackTitles(text, detectedLang, theme);
     }
 
-    return {
-      statusCode: 200,
-      headers: HEADERS,
-      body: JSON.stringify({ success: true, titles: titles.slice(0, 4), source: 'gemini' })
-    };
-  } catch (err) {
-    console.error('Fout bij genereren van titels via Gemini:', err);
     return {
       statusCode: 200,
       headers: HEADERS,
       body: JSON.stringify({
         success: true,
-        titles: generateFallbackTitles(text, language, theme),
+        language: detectedLang,
+        titles: titles.slice(0, 4),
+        source: 'gemini'
+      })
+    };
+  } catch (err) {
+    console.error('Fout bij genereren van titels en taaldetectie via Gemini:', err);
+    const body = JSON.parse(event.body || '{}');
+    const detectedLang = detectLanguageHeuristic(body.text || '');
+    return {
+      statusCode: 200,
+      headers: HEADERS,
+      body: JSON.stringify({
+        success: true,
+        language: detectedLang,
+        titles: generateFallbackTitles(body.text || '', detectedLang, body.theme),
         source: 'heuristic-fallback'
       })
     };
   }
 };
+
+function detectLanguageHeuristic(text) {
+  const lower = text.toLowerCase();
+  const englishWords = ['the', 'and', 'with', 'for', 'you', 'world', 'wait', 'breeze', 'wings', 'life', 'get', 'from', 'this', 'that'];
+  const srananWords = ['mi', 'yu', 'fu', 'den', 'na', 'te', 'kon', 'wan', 'krakti', 'faya', 'sranan', 'sten', 'wortu'];
+  const dutchWords = ['de', 'het', 'een', 'en', 'van', 'in', 'is', 'op', 'te', 'met', 'voor', 'niet', 'maar', 'als'];
+
+  let enCount = 0, srCount = 0, nlCount = 0;
+  const words = lower.split(/\W+/);
+  words.forEach(w => {
+    if (englishWords.includes(w)) enCount++;
+    if (srananWords.includes(w)) srCount++;
+    if (dutchWords.includes(w)) nlCount++;
+  });
+
+  if (srCount > 0 && nlCount > 0 && Math.abs(srCount - nlCount) < 3) return 'fusion';
+  if (enCount > nlCount && enCount > srCount) return 'english';
+  if (srCount > nlCount && srCount > enCount) return 'sranan';
+  if (nlCount > enCount && nlCount > srCount) return 'dutch';
+  return 'sranan';
+}
 
 function generateFallbackTitles(text, lang, theme) {
   const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 2 && !l.startsWith('#'));
