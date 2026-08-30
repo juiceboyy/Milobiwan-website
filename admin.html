@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/theme.css"><link rel="stylesheet" href="styles/layout.css"><link rel="stylesheet" href="styles/header.css">
   <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css"><link rel="stylesheet" href="styles/admin.css">
+  <link rel="stylesheet" href="styles/admin-media.css">
 </head>
 <body>
   <header class="site-header">
@@ -111,6 +112,34 @@
               <textarea id="inputText" class="form-textarea" rows="9" required style="font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.6;" placeholder="Typ of plak hier de strofen en verzen..."></textarea>
             </div>
 
+            <!-- Image Upload & OCR Zone -->
+            <div class="form-group">
+              <label class="form-label">Originele Afbeelding / Typografiekaart (optioneel met AI OCR)</label>
+              <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
+              
+              <div class="image-upload-zone" id="imageUploadZone">
+                <div class="image-upload-prompt">
+                  <span class="image-upload-icon">📷</span>
+                  <div class="image-upload-title">Klik of sleep afbeelding hierheen</div>
+                  <div class="image-upload-hint">Foto van kaart, poster of manuscript &bull; AI leest de tekst automatisch uit via OCR</div>
+                </div>
+              </div>
+
+              <div class="image-preview-box" id="imagePreviewBox">
+                <img id="imagePreviewThumbnail" src="" alt="Thumbnail" class="image-preview-thumb">
+                <div class="image-preview-meta">
+                  <div style="font-size: 0.85rem; font-weight: 500;">Originele Typografiekaart Gekoppeld</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Zichtbaar in het archief voor bezoekers</div>
+                </div>
+                <button type="button" id="removeImageBtn" class="btn btn-secondary btn-sm" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3); font-size: 0.75rem;">Verwijder</button>
+              </div>
+
+              <div id="ocrStatusMessage" class="ocr-status-msg">
+                <span class="ocr-spinner" id="ocrSpinner"></span>
+                <span id="ocrStatusText"></span>
+              </div>
+            </div>
+
             <div class="form-group">
               <label class="form-label" for="inputNote">Culturele toelichting &amp; vertaling (optioneel)</label>
               <textarea id="inputNote" class="form-textarea" rows="3" placeholder="Uitleg over specifieke odo's, begrippen of de achtergrond van het gedicht..."></textarea>
@@ -135,9 +164,14 @@
             <h2 id="previewTitle" style="font-size: 1.75rem;">Titel van Gedicht</h2>
           </div>
 
-          <div id="previewLines" style="min-height: 240px; margin-bottom: var(--space-6);"></div>
+          <div id="previewLines" style="min-height: 200px; margin-bottom: var(--space-4);"></div>
 
-          <div id="previewGlossary" class="stage-glossary-box" style="display: none;">
+          <div id="previewArtworkContainer" class="preview-artwork-container" style="display: none;">
+            <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-bottom: var(--space-2);">[ ORIGINELE TYPOGRAFIE KAART ]</div>
+            <img id="previewArtworkImg" src="" alt="Gedichtkaart" class="preview-artwork-img">
+          </div>
+
+          <div id="previewGlossary" class="stage-glossary-box" style="display: none; margin-top: var(--space-4);">
             <div class="glossary-label">CULTURELE CONTEXT &amp; VERTALING</div>
             <p class="glossary-text" id="previewGlossaryText"></p>
           </div>

@@ -143,20 +143,36 @@ function renderReadingStage(stageEl, poemId) {
     `;
   }).join('');
 
+  const hasImage = Boolean(poem.imageUrl);
+
   stageEl.innerHTML = `
     <div class="stage-header">
       <div class="stage-title-wrap">
         <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel}${poem.theme ? ` // 📁 ${poem.theme}` : ''}</span>
         <h3>${poem.title}</h3>
       </div>
-      <button class="link-editorial" id="openFullModalBtn">
-        <span>Volledig Scherm &rarr;</span>
-      </button>
+      <div style="display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap;">
+        ${hasImage ? `
+          <div class="view-mode-tabs" id="viewModeTabs">
+            <button class="view-tab-btn active" id="tabTextBtn">📄 Tekst</button>
+            <button class="view-tab-btn" id="tabImageBtn">🖼️ Kaart</button>
+          </div>
+        ` : ''}
+        <button class="link-editorial" id="openFullModalBtn">
+          <span>Volledig Scherm &rarr;</span>
+        </button>
+      </div>
     </div>
 
-    <div class="stage-poem-content animate-fade-in">
+    <div class="stage-poem-content animate-fade-in" id="stageTextContent">
       ${formattedLines}
     </div>
+
+    ${hasImage ? `
+      <div class="stage-artwork-content animate-fade-in" id="stageArtworkContent" style="display: none; text-align: center; padding: var(--space-4);">
+        <img src="${poem.imageUrl}" alt="${poem.title} originele typografie" style="max-width: 100%; max-height: 480px; border-radius: var(--radius-md); box-shadow: 0 12px 32px rgba(0,0,0,0.5);">
+      </div>
+    ` : ''}
 
     ${poem.translationNote ? `
       <div class="stage-glossary-box">
@@ -172,6 +188,28 @@ function renderReadingStage(stageEl, poemId) {
       <a href="#contact" class="btn btn-secondary btn-sm">Draag voor op Evenement</a>
     </div>
   `;
+
+  // Attach Tab Listeners if Image is available
+  if (hasImage) {
+    const tabText = stageEl.querySelector('#tabTextBtn');
+    const tabImage = stageEl.querySelector('#tabImageBtn');
+    const textContent = stageEl.querySelector('#stageTextContent');
+    const artworkContent = stageEl.querySelector('#stageArtworkContent');
+
+    tabText?.addEventListener('click', () => {
+      tabText.classList.add('active');
+      tabImage?.classList.remove('active');
+      if (textContent) textContent.style.display = 'block';
+      if (artworkContent) artworkContent.style.display = 'none';
+    });
+
+    tabImage?.addEventListener('click', () => {
+      tabImage.classList.add('active');
+      tabText?.classList.remove('active');
+      if (textContent) textContent.style.display = 'none';
+      if (artworkContent) artworkContent.style.display = 'block';
+    });
+  }
 
   const modalBtn = stageEl.querySelector('#openFullModalBtn');
   if (modalBtn) {
@@ -207,12 +245,21 @@ export function openPoemModal(poemId) {
 
   if (modalBody) {
     const lines = poem.fullText.split('\n');
-    modalBody.innerHTML = lines.map((line, idx) => `
+    const textHtml = lines.map((line, idx) => `
       <div class="poem-line-row">
         <span class="poem-line-num">${String(idx + 1).padStart(2, '0')}</span>
         <span class="poem-line-text">${line || '&nbsp;'}</span>
       </div>
     `).join('');
+
+    const imageHtml = poem.imageUrl ? `
+      <div style="text-align: center; margin-top: var(--space-6);">
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); margin-bottom: var(--space-2);">[ ORIGINELE KAART ]</div>
+        <img src="${poem.imageUrl}" alt="${poem.title}" style="max-width: 100%; max-height: 520px; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+      </div>
+    ` : '';
+
+    modalBody.innerHTML = textHtml + imageHtml;
   }
 
   if (modalGlossary) {

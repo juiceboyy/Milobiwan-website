@@ -1,19 +1,23 @@
 /**
  * Milobiwan – Studio & Repertoire Editor (Admin)
- * Connects directly with Netlify Blobs central database
+ * Connects directly with Firebase Firestore Cloud Database
  */
 
 import { setupPinAuth, getStudioPin } from './admin-auth.js';
 import { setupAiTitleSuggestions } from './admin-ai.js';
-import { fetchPoems, savePoemToDb, deletePoemFromDb, getStoredPoems, subscribeToLivePoems, LANGUAGE_CONFIG, slugify } from './poems-data.js';
+import { setupImageOcr } from './admin-ocr.js';
+import { refreshPoemsList } from './admin-list.js';
+import { fetchPoems, savePoemToDb, getStoredPoems, subscribeToLivePoems, LANGUAGE_CONFIG, slugify } from './poems-data.js';
+
+let ocrManager = null;
 
 function init() {
   setupPinAuth(async () => {
     await fetchPoems();
-    refreshPoemsList();
+    refreshPoemsList({ onEditPoem: editPoem });
     updateLivePreview();
     subscribeToLivePoems(() => {
-      refreshPoemsList();
+      refreshPoemsList({ onEditPoem: editPoem });
     });
   });
   setupEditor();
@@ -50,9 +54,44 @@ function setupEditor() {
     onSelectTitle: () => updateLivePreview()
   });
 
+  // AI Image OCR Upload
+  ocrManager = setupImageOcr({
+    onOcrSuccess: (ocrData) => {
+      if (ocrData.text && inputText) inputText.value = ocrData.text;
+      if (ocrData.language) {
+        const radio = document.querySelector(`input[name="poemLanguage"][value="${ocrData.language}"]`);
+        if (radio) {
+          radio.checked = true;
+          document.querySelectorAll('.lang-radio-label').forEach(lbl => lbl.classList.remove('selected'));
+          radio.closest('.lang-radio-label')?.classList.add('selected');
+        }
+      }
+      if (Array.isArray(ocrData.suggestedTitles) && ocrData.suggestedTitles.length > 0) {
+        const suggestionsBox = document.getElementById('aiSuggestionsContainer');
+        if (suggestionsBox) {
+          suggestionsBox.innerHTML = ocrData.suggestedTitles.map(t => `
+            <button type="button" class="ai-title-chip" data-title="${t.replace(/"/g, '&quot;')}">
+              <span class="chip-plus">+</span>
+              <span>${t}</span>
+            </button>
+          `).join('');
+          suggestionsBox.querySelectorAll('.ai-title-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+              if (inputTitle) inputTitle.value = chip.dataset.title;
+              updateLivePreview();
+            });
+          });
+        }
+      }
+      updateLivePreview();
+    },
+    onImageChanged: () => updateLivePreview()
+  });
+
   function resetForm() {
     form?.reset();
     if (inputId) inputId.value = '';
+    ocrManager?.clear();
     const suggestionsBox = document.getElementById('aiSuggestionsContainer');
     if (suggestionsBox) suggestionsBox.innerHTML = '';
     const formTitle = document.getElementById('formTitle');
@@ -81,6 +120,7 @@ function setupEditor() {
     const translationNote = inputNote.value.trim();
     const langConfig = LANGUAGE_CONFIG[lang] || LANGUAGE_CONFIG.sranan;
     const currentId = inputId.value;
+    const imageUrl = ocrManager?.getImageData() || '';
 
     const poemData = {
       id: currentId || (slugify(title) + '-' + Date.now().toString().slice(-4)),
@@ -92,7 +132,8 @@ function setupEditor() {
       theme,
       snippet: fullText.split('\n').slice(0, 4).join('\n'),
       fullText,
-      translationNote
+      translationNote,
+      imageUrl
     };
 
     if (submitBtn) {
@@ -103,7 +144,7 @@ function setupEditor() {
     try {
       const result = await savePoemToDb(poemData);
       if (result.success) {
-        refreshPoemsList();
+        refreshPoemsList({ onEditPoem: editPoem });
         resetForm();
         alert(`Gedicht "${title}" is succesvol opgeslagen in Firebase Firestore!`);
       } else {
@@ -135,6 +176,8 @@ export function updateLivePreview() {
   const previewLines = document.getElementById('previewLines');
   const previewGlossary = document.getElementById('previewGlossary');
   const previewGlossaryText = document.getElementById('previewGlossaryText');
+  const previewArtwork = document.getElementById('previewArtworkContainer');
+  const previewArtworkImg = document.getElementById('previewArtworkImg');
 
   if (previewBadge) previewBadge.textContent = `${config.flag} ${config.languageLabel.toUpperCase()}`;
   if (previewTheme) {
@@ -157,6 +200,16 @@ export function updateLivePreview() {
     `).join('');
   }
 
+  const currentImg = ocrManager?.getImageData() || '';
+  if (previewArtwork && previewArtworkImg) {
+    if (currentImg) {
+      previewArtworkImg.src = currentImg;
+      previewArtwork.style.display = 'block';
+    } else {
+      previewArtwork.style.display = 'none';
+    }
+  }
+
   if (previewGlossary && previewGlossaryText) {
     if (note.trim()) {
       previewGlossary.style.display = 'block';
@@ -165,50 +218,6 @@ export function updateLivePreview() {
       previewGlossary.style.display = 'none';
     }
   }
-}
-
-export function refreshPoemsList() {
-  const listContainer = document.getElementById('poemsListContainer');
-  const countEl = document.getElementById('poemCount');
-  const poems = getStoredPoems();
-
-  if (countEl) countEl.textContent = String(poems.length);
-  if (!listContainer) return;
-
-  if (poems.length === 0) {
-    listContainer.innerHTML = `
-      <div style="padding: var(--space-8); text-align: center; color: var(--text-muted);">
-        <p style="font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: var(--space-2);">[ NOG GEEN GEDICHTEN IN CLOUD DATABASE ]</p>
-        <p style="font-size: 0.95rem;">Gebruik het formulier hierboven om een gedicht toe te voegen aan de database.</p>
-      </div>
-    `;
-    return;
-  }
-
-  listContainer.innerHTML = poems.map(poem => `
-    <div class="cms-poem-row">
-      <div class="cms-poem-info">
-        <div style="display: flex; gap: var(--space-2); align-items: center; margin-bottom: var(--space-1);">
-          <span class="badge ${poem.badgeClass}">${poem.flag} ${poem.languageLabel}</span>
-          ${poem.theme ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent);">📁 ${poem.theme}</span>` : ''}
-        </div>
-        <h4 style="font-size: 1.15rem; margin-bottom: var(--space-1);">${poem.title}</h4>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">${(poem.fullText || '').split('\n').length} versregels</p>
-      </div>
-      <div class="cms-poem-actions">
-        <button class="btn btn-secondary btn-sm edit-poem-btn" data-id="${poem.id}">Bewerken</button>
-        <button class="btn btn-secondary btn-sm delete-poem-btn" data-id="${poem.id}" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3);">Verwijderen</button>
-      </div>
-    </div>
-  `).join('');
-
-  listContainer.querySelectorAll('.edit-poem-btn').forEach(btn => {
-    btn.addEventListener('click', () => editPoem(btn.dataset.id));
-  });
-
-  listContainer.querySelectorAll('.delete-poem-btn').forEach(btn => {
-    btn.addEventListener('click', () => deletePoem(btn.dataset.id));
-  });
 }
 
 function editPoem(id) {
@@ -224,9 +233,13 @@ function editPoem(id) {
 
   if (inputId) inputId.value = poem.id;
   if (inputTitle) inputTitle.value = poem.title;
-  if (inputTheme) inputTheme.value = poem.theme;
+  if (inputTheme) inputTheme.value = poem.theme || '';
   if (inputText) inputText.value = poem.fullText;
   if (inputNote) inputNote.value = poem.translationNote || '';
+
+  if (ocrManager) {
+    ocrManager.setImageData(poem.imageUrl || '');
+  }
 
   const langRadio = document.querySelector(`input[name="poemLanguage"][value="${poem.language}"]`);
   if (langRadio) {
@@ -245,22 +258,6 @@ function editPoem(id) {
     window.scrollTo({ top: editorSec.offsetTop - 80, behavior: 'smooth' });
   }
   updateLivePreview();
-}
-
-async function deletePoem(id) {
-  const poems = getStoredPoems();
-  const poem = poems.find(p => p.id === id);
-  if (!poem) return;
-
-  if (confirm(`Weet je zeker dat je "${poem.title}" wilt verwijderen uit de database?`)) {
-    const result = await deletePoemFromDb(id);
-    if (result.success) {
-      refreshPoemsList();
-      alert(`"${poem.title}" is succesvol verwijderd.`);
-    } else {
-      alert(`Fout bij verwijderen: ${result.error}`);
-    }
-  }
 }
 
 // DOMContentLoaded Safe Guard
