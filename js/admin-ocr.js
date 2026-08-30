@@ -73,9 +73,9 @@ export function setupImageOcr({ onOcrSuccess, onImageChanged }) {
     try {
       let pages = [];
       if (isPdf) {
-        pages = await renderPdfPages(file, 900, 0.75);
+        pages = await renderPdfPages(file, 1400, 0.80);
       } else {
-        const compressed = await compressImage(file, 900, 0.75);
+        const compressed = await compressImage(file, 1400, 0.80);
         pages = [compressed];
       }
 
@@ -158,7 +158,7 @@ export function setupImageOcr({ onOcrSuccess, onImageChanged }) {
 /**
  * Converteert alle pagina's van een PDF naar geoptimaliseerde JPEG data URL's via pdf.js
  */
-async function renderPdfPages(file, maxDimension = 900, quality = 0.75) {
+async function renderPdfPages(file, maxDimension = 1400, quality = 0.80) {
   if (typeof window.pdfjsLib === 'undefined') {
     throw new Error('PDF.js bibliotheek is nog aan het laden.');
   }
@@ -175,7 +175,7 @@ async function renderPdfPages(file, maxDimension = 900, quality = 0.75) {
     let scale = 1.5;
     if (unscaledViewport.width > 0 && unscaledViewport.height > 0) {
       const maxDim = Math.max(unscaledViewport.width, unscaledViewport.height);
-      scale = Math.min(2.0, maxDimension / maxDim);
+      scale = Math.min(2.2, maxDimension / maxDim);
     }
 
     const viewport = page.getViewport({ scale });
@@ -195,7 +195,7 @@ async function renderPdfPages(file, maxDimension = 900, quality = 0.75) {
 /**
  * Comprimeert een afbeelding naar client-side JPEG
  */
-function compressImage(file, maxDimension = 900, quality = 0.75) {
+function compressImage(file, maxDimension = 1400, quality = 0.80) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
