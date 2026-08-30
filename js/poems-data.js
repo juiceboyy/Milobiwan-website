@@ -37,39 +37,20 @@ export async function fetchPoems() {
     const res = await fetch('/api/poems');
     if (res.ok) {
       const data = await res.json();
-      if (data.success && Array.isArray(data.poems)) {
+      if (data.success && Array.isArray(data.poems) && data.poems.length > 0) {
         inMemoryCache = data.poems;
         saveToLocalCache(data.poems);
         return data.poems;
       }
     }
   } catch (err) {
-    console.warn('Centrale database niet bereikbaar, fallback naar cache:', err);
+    console.warn('Centrale database niet bereikbaar, behoud lokale cache:', err);
   }
   return getStoredPoems();
 }
 
 export async function savePoemToDb(poem, pin) {
-  try {
-    const res = await fetch('/api/poems', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-studio-pin': pin
-      },
-      body: JSON.stringify({ poem })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (res.ok && data.success && Array.isArray(data.poems)) {
-      inMemoryCache = data.poems;
-      saveToLocalCache(data.poems);
-      return { success: true, poems: data.poems };
-    }
-  } catch (err) {
-    console.warn('Cloud database sync mislukt, opslaan in veilige cache:', err);
-  }
-
-  // Fail-safe: altijd bewaren in cache
+  // 1. Altijd eerst direct opslaan in veilige lokale opslag
   const current = getStoredPoems();
   const existingIdx = current.findIndex(p => p.id === poem.id);
   let updated = [];
@@ -81,10 +62,38 @@ export async function savePoemToDb(poem, pin) {
   }
   inMemoryCache = updated;
   saveToLocalCache(updated);
+
+  // 2. Probeer te synchroniseren naar de cloud API
+  try {
+    const res = await fetch('/api/poems', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-studio-pin': pin
+      },
+      body: JSON.stringify({ poem })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success && Array.isArray(data.poems) && data.poems.length > 0) {
+      inMemoryCache = data.poems;
+      saveToLocalCache(data.poems);
+      return { success: true, poems: data.poems };
+    }
+  } catch (err) {
+    console.warn('Cloud sync tijdelijk offline, lokaal veilig opgeslagen:', err);
+  }
+
   return { success: true, poems: updated };
 }
 
 export async function deletePoemFromDb(id, pin) {
+  // 1. Direct lokaal bijwerken
+  const current = getStoredPoems();
+  const updated = current.filter(p => p.id !== id);
+  inMemoryCache = updated;
+  saveToLocalCache(updated);
+
+  // 2. Probeer te synchroniseren naar de cloud API
   try {
     const res = await fetch('/api/poems', {
       method: 'DELETE',
@@ -101,13 +110,9 @@ export async function deletePoemFromDb(id, pin) {
       return { success: true, poems: data.poems };
     }
   } catch (err) {
-    console.warn('Cloud database sync mislukt, verwijderen uit cache:', err);
+    console.warn('Cloud delete tijdelijk offline, lokaal verwijderd:', err);
   }
 
-  const current = getStoredPoems();
-  const updated = current.filter(p => p.id !== id);
-  inMemoryCache = updated;
-  saveToLocalCache(updated);
   return { success: true, poems: updated };
 }
 
