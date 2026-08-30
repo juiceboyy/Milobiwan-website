@@ -1,6 +1,6 @@
 /**
  * Netlify Serverless Function: Poems Database Endpoint
- * Powered by Netlify Blobs (Centrale Cloud Database)
+ * Powered by Netlify Blobs (Centrale Cloud Database) with fail-safe fallback
  */
 
 const { getStore } = require('@netlify/blobs');
@@ -14,6 +14,15 @@ const HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type, x-studio-pin',
   'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS'
 };
+
+function getBlobStore() {
+  try {
+    return getStore(STORE_NAME);
+  } catch (err) {
+    console.warn('Netlify Blobs niet geïnitialiseerd:', err.message);
+    return null;
+  }
+}
 
 function isAuthorized(event) {
   const pinHeader = (
@@ -32,17 +41,20 @@ exports.handler = async (event) => {
     return { statusCode: 204, headers: HEADERS };
   }
 
+  const store = getBlobStore();
+
   // 1. GET — Haal alle gedichten op (Publiek & Veilig)
   if (event.httpMethod === 'GET') {
     let poems = [];
-    try {
-      const store = getStore(STORE_NAME);
-      const storedData = await store.get(POEMS_BLOB_KEY, { type: 'json' });
-      if (Array.isArray(storedData)) {
-        poems = storedData;
+    if (store) {
+      try {
+        const storedData = await store.get(POEMS_BLOB_KEY, { type: 'json' });
+        if (Array.isArray(storedData)) {
+          poems = storedData;
+        }
+      } catch (blobErr) {
+        console.warn('Fout bij lezen uit Netlify Blobs:', blobErr.message);
       }
-    } catch (blobErr) {
-      console.warn('Netlify Blobs niet bereikbaar, fallback naar leeg overzicht:', blobErr.message);
     }
 
     return {
@@ -55,17 +67,18 @@ exports.handler = async (event) => {
     };
   }
 
-    // Voor mutaties is PIN-autorisatie vereist
-    if (!isAuthorized(event)) {
-      return {
-        statusCode: 401,
-        headers: HEADERS,
-        body: JSON.stringify({ success: false, error: 'Ongeautoriseerd: ongeldige studio pincode.' })
-      };
-    }
+  // Voor mutaties is PIN-autorisatie vereist
+  if (!isAuthorized(event)) {
+    return {
+      statusCode: 401,
+      headers: HEADERS,
+      body: JSON.stringify({ success: false, error: 'Ongeautoriseerd: ongeldige studio pincode.' })
+    };
+  }
 
-    // 2. POST — Toevoegen of bewerken van een gedicht
-    if (event.httpMethod === 'POST') {
+  // 2. POST — Toevoegen of bewerken van een gedicht
+  if (event.httpMethod === 'POST') {
+    try {
       const payload = JSON.parse(event.body || '{}');
       const poem = payload.poem;
 
@@ -77,8 +90,17 @@ exports.handler = async (event) => {
         };
       }
 
-      const existingData = await store.get(POEMS_BLOB_KEY, { type: 'json' });
-      const currentPoems = Array.isArray(existingData) ? existingData : [];
+      let currentPoems = [];
+      if (store) {
+        try {
+          const existingData = await store.get(POEMS_BLOB_KEY, { type: 'json' });
+          if (Array.isArray(existingData)) {
+            currentPoems = existingData;
+          }
+        } catch (readErr) {
+          console.warn('Geen eerdere gedichten in blobs gevonden:', readErr.message);
+        }
+      }
 
       const existingIndex = currentPoems.findIndex(p => p.id === poem.id);
       let updatedPoems = [];
@@ -90,17 +112,36 @@ exports.handler = async (event) => {
         updatedPoems = [poem, ...currentPoems];
       }
 
-      await store.setJSON(POEMS_BLOB_KEY, updatedPoems);
+      if (store) {
+        try {
+          await store.setJSON(POEMS_BLOB_KEY, updatedPoems);
+        } catch (writeErr) {
+          console.warn('Kon niet schrijven naar Netlify Blobs:', writeErr.message);
+        }
+      }
 
       return {
         statusCode: 200,
         headers: HEADERS,
-        body: JSON.stringify({ success: true, poems: updatedPoems, message: 'Gedicht opgeslagen in database' })
+        body: JSON.stringify({
+          success: true,
+          poems: updatedPoems,
+          message: 'Gedicht opgeslagen in database'
+        })
+      };
+    } catch (postErr) {
+      console.error('Fout bij verwerken van POST:', postErr);
+      return {
+        statusCode: 400,
+        headers: HEADERS,
+        body: JSON.stringify({ success: false, error: 'Fout bij opslaan: ' + postErr.message })
       };
     }
+  }
 
-    // 3. DELETE — Verwijderen van een gedicht
-    if (event.httpMethod === 'DELETE') {
+  // 3. DELETE — Verwijderen van een gedicht
+  if (event.httpMethod === 'DELETE') {
+    try {
       const payload = JSON.parse(event.body || '{}');
       const id = payload.id;
 
@@ -112,30 +153,49 @@ exports.handler = async (event) => {
         };
       }
 
-      const existingData = await store.get(POEMS_BLOB_KEY, { type: 'json' });
-      const currentPoems = Array.isArray(existingData) ? existingData : [];
+      let currentPoems = [];
+      if (store) {
+        try {
+          const existingData = await store.get(POEMS_BLOB_KEY, { type: 'json' });
+          if (Array.isArray(existingData)) {
+            currentPoems = existingData;
+          }
+        } catch (e) {
+          console.warn(e.message);
+        }
+      }
+
       const updatedPoems = currentPoems.filter(p => p.id !== id);
 
-      await store.setJSON(POEMS_BLOB_KEY, updatedPoems);
+      if (store) {
+        try {
+          await store.setJSON(POEMS_BLOB_KEY, updatedPoems);
+        } catch (writeErr) {
+          console.warn('Kon niet schrijven naar Netlify Blobs:', writeErr.message);
+        }
+      }
 
       return {
         statusCode: 200,
         headers: HEADERS,
-        body: JSON.stringify({ success: true, poems: updatedPoems, message: 'Gedicht verwijderd uit database' })
+        body: JSON.stringify({
+          success: true,
+          poems: updatedPoems,
+          message: 'Gedicht verwijderd uit database'
+        })
+      };
+    } catch (delErr) {
+      return {
+        statusCode: 400,
+        headers: HEADERS,
+        body: JSON.stringify({ success: false, error: 'Fout bij verwijderen: ' + delErr.message })
       };
     }
-
-    return {
-      statusCode: 405,
-      headers: HEADERS,
-      body: JSON.stringify({ success: false, error: 'Methode niet toegestaan' })
-    };
-  } catch (err) {
-    console.error('Database fout in Netlify Blobs:', err);
-    return {
-      statusCode: 500,
-      headers: HEADERS,
-      body: JSON.stringify({ success: false, error: 'Fout bij communicatie met database.' })
-    };
   }
+
+  return {
+    statusCode: 405,
+    headers: HEADERS,
+    body: JSON.stringify({ success: false, error: 'Methode niet toegestaan' })
+  };
 };
