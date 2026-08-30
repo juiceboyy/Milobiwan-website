@@ -5,6 +5,12 @@
 
 const AUTH_KEY = 'milobiwan_studio_auth';
 
+const PIN_VAL_KEY = 'milobiwan_pin_val';
+
+export function getStudioPin() {
+  return sessionStorage.getItem(PIN_VAL_KEY) || '';
+}
+
 export function setupPinAuth(onAuthenticated) {
   const authGate = document.getElementById('authGate');
   const workspace = document.getElementById('studioWorkspace');
@@ -70,6 +76,7 @@ export function setupPinAuth(onAuthenticated) {
 
       if (response.ok && data.success) {
         sessionStorage.setItem(AUTH_KEY, 'true');
+        sessionStorage.setItem(PIN_VAL_KEY, enteredPin);
         if (pinError) pinError.textContent = '';
         checkSession();
       } else {
@@ -94,6 +101,7 @@ export function setupPinAuth(onAuthenticated) {
 
   logoutBtn?.addEventListener('click', () => {
     sessionStorage.removeItem(AUTH_KEY);
+    sessionStorage.removeItem(PIN_VAL_KEY);
     checkSession();
   });
 

@@ -1,0 +1,13 @@
+{
+  "name": "milobiwan-website",
+  "version": "1.0.0",
+  "description": "Milobiwan (Mieke) – Vocal Archive & Spoken Word Website",
+  "private": true,
+  "scripts": {
+    "dev": "npx -y serve .",
+    "build": "echo 'Static build ready'"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

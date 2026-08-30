@@ -1,4 +1,4 @@
-import { getStoredPoems } from './poems-data.js';
+import { fetchPoems, getStoredPoems } from './poems-data.js';
 
 let currentFilter = 'all';
 let activePoemId = '';
@@ -18,6 +18,14 @@ export function initPoetryViewer() {
   }
 
   renderAnthology(indexContainer, stageContainer, currentFilter);
+
+  // Asynchrone live synchronisatie met centrale Netlify Blobs database
+  fetchPoems().then((livePoems) => {
+    if (livePoems && livePoems.length > 0 && !activePoemId) {
+      activePoemId = livePoems[0].id;
+    }
+    renderAnthology(indexContainer, stageContainer, currentFilter);
+  });
 
   // Filter Buttons
   filterButtons.forEach(button => {

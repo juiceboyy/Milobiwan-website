@@ -1,12 +1,14 @@
 /**
  * Milobiwan – Studio & Repertoire Editor (Admin)
+ * Connects directly with Netlify Blobs central database
  */
 
-import { setupPinAuth } from './admin-auth.js';
-import { getStoredPoems, saveStoredPoems, LANGUAGE_CONFIG } from './poems-data.js';
+import { setupPinAuth, getStudioPin } from './admin-auth.js';
+import { fetchPoems, savePoemToDb, deletePoemFromDb, getStoredPoems, LANGUAGE_CONFIG } from './poems-data.js';
 
 function init() {
-  setupPinAuth(() => {
+  setupPinAuth(async () => {
+    await fetchPoems();
     refreshPoemsList();
     updateLivePreview();
   });
@@ -18,6 +20,7 @@ function setupEditor() {
   const form = document.getElementById('poemForm');
   const resetBtn = document.getElementById('resetFormBtn');
   const newPoemBtn = document.getElementById('newPoemBtn');
+  const submitBtn = form?.querySelector('button[type="submit"]');
 
   const inputId = document.getElementById('poemId');
   const inputTitle = document.getElementById('inputTitle');
@@ -58,7 +61,7 @@ function setupEditor() {
     inputTitle?.focus();
   });
 
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const title = inputTitle.value.trim();
     const lang = document.querySelector('input[name="poemLanguage"]:checked')?.value || 'sranan';
@@ -66,9 +69,8 @@ function setupEditor() {
     const fullText = inputText.value.trim();
     const translationNote = inputNote.value.trim();
     const langConfig = LANGUAGE_CONFIG[lang] || LANGUAGE_CONFIG.sranan;
-
-    const existingPoems = getStoredPoems();
     const currentId = inputId.value;
+    const pin = getStudioPin();
 
     const poemData = {
       id: currentId || (slugify(title) + '-' + Date.now().toString().slice(-4)),
@@ -83,17 +85,29 @@ function setupEditor() {
       translationNote
     };
 
-    let updatedPoems = [];
-    if (currentId) {
-      updatedPoems = existingPoems.map(p => p.id === currentId ? poemData : p);
-    } else {
-      updatedPoems = [poemData, ...existingPoems];
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Opslaan in Cloud Database...';
     }
 
-    saveStoredPoems(updatedPoems);
-    refreshPoemsList();
-    resetForm();
-    alert(`Gedicht "${title}" succesvol opgeslagen in het archief!`);
+    try {
+      const result = await savePoemToDb(poemData, pin);
+      if (result.success) {
+        refreshPoemsList();
+        resetForm();
+        alert(`Gedicht "${title}" is succesvol centraal opgeslagen!`);
+      } else {
+        alert(`Fout bij opslaan: ${result.error}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Verbindingsfout bij het opslaan.');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Opslaan in Archief';
+      }
+    }
   });
 }
 
@@ -147,8 +161,8 @@ export function refreshPoemsList() {
   if (poems.length === 0) {
     listContainer.innerHTML = `
       <div style="padding: var(--space-8); text-align: center; color: var(--text-muted);">
-        <p style="font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: var(--space-2);">[ NOG GEEN GEDICHTEN IN ARCHIEF ]</p>
-        <p style="font-size: 0.95rem;">Gebruik het formulier hierboven om je eerste gedicht of spoken word tekst toe te voegen.</p>
+        <p style="font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: var(--space-2);">[ NOG GEEN GEDICHTEN IN DATABASE ]</p>
+        <p style="font-size: 0.95rem;">Gebruik het formulier hierboven om een gedicht toe te voegen aan de centrale database.</p>
       </div>
     `;
     return;
@@ -216,16 +230,20 @@ function editPoem(id) {
   updateLivePreview();
 }
 
-function deletePoem(id) {
+async function deletePoem(id) {
   const poems = getStoredPoems();
   const poem = poems.find(p => p.id === id);
   if (!poem) return;
 
-  if (confirm(`Weet je zeker dat je "${poem.title}" wilt verwijderen?`)) {
-    const updated = poems.filter(p => p.id !== id);
-    saveStoredPoems(updated);
-    refreshPoemsList();
-    alert(`"${poem.title}" is verwijderd.`);
+  if (confirm(`Weet je zeker dat je "${poem.title}" wilt verwijderen uit de database?`)) {
+    const pin = getStudioPin();
+    const result = await deletePoemFromDb(id, pin);
+    if (result.success) {
+      refreshPoemsList();
+      alert(`"${poem.title}" is succesvol verwijderd.`);
+    } else {
+      alert(`Fout bij verwijderen: ${result.error}`);
+    }
   }
 }
 
