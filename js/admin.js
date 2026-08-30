@@ -4,7 +4,8 @@
  */
 
 import { setupPinAuth, getStudioPin } from './admin-auth.js';
-import { fetchPoems, savePoemToDb, deletePoemFromDb, getStoredPoems, LANGUAGE_CONFIG } from './poems-data.js';
+import { setupAiTitleSuggestions } from './admin-ai.js';
+import { fetchPoems, savePoemToDb, deletePoemFromDb, getStoredPoems, LANGUAGE_CONFIG, slugify } from './poems-data.js';
 
 function init() {
   setupPinAuth(async () => {
@@ -41,9 +42,17 @@ function setupEditor() {
     });
   });
 
+  // AI Title Suggestions
+  setupAiTitleSuggestions({
+    getPin: getStudioPin,
+    onSelectTitle: () => updateLivePreview()
+  });
+
   function resetForm() {
     form?.reset();
     if (inputId) inputId.value = '';
+    const suggestionsBox = document.getElementById('aiSuggestionsContainer');
+    if (suggestionsBox) suggestionsBox.innerHTML = '';
     const formTitle = document.getElementById('formTitle');
     const editModeIndicator = document.getElementById('editModeIndicator');
     if (formTitle) formTitle.textContent = 'Tekst Bewerken of Toevoegen';
@@ -272,13 +281,6 @@ function setupExport() {
       });
     }
   });
-}
-
-function slugify(text) {
-  return text.toString().toLowerCase().trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-');
 }
 
 // DOMContentLoaded Safe Guard

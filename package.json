@@ -8,6 +8,7 @@
     "build": "echo 'Static build ready'"
   },
   "dependencies": {
+    "@google/genai": "^0.1.2",
     "@netlify/blobs": "^8.1.0"
   }
 }

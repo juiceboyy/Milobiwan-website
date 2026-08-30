@@ -70,8 +70,14 @@
             <input type="hidden" id="poemId">
 
             <div class="form-group">
-              <label class="form-label" for="inputTitle">Titel van het werk *</label>
-              <input type="text" id="inputTitle" class="form-input" required placeholder="bijv. Kandra Faya of Drie Stromen">
+              <div class="title-label-row">
+                <label class="form-label" for="inputTitle" style="margin-bottom: 0;">Titel van het werk *</label>
+                <button type="button" class="ai-suggest-btn" id="aiSuggestBtn" title="Genereer titelsuggesties op basis van de tekst">
+                  <span>✨ AI Titels</span>
+                </button>
+              </div>
+              <input type="text" id="inputTitle" class="form-input" required placeholder="Typ zelf een titel of kies hieronder een AI-suggestie...">
+              <div id="aiSuggestionsContainer" class="ai-suggestions-box"></div>
             </div>
 
             <div class="form-group">
