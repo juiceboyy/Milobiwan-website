@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Milobiwan (Mieke) – Performance Ledger & Commissioning Studio
+   ========================================================================== */
+
+/* Performance Ledger (Podia) */
+.ledger-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.agenda-empty {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.agenda-empty-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: var(--tracking-widest);
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.agenda-empty p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 500px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.ledger-row {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  align-items: center;
+  gap: var(--space-6);
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-6);
+  transition: box-shadow var(--trans-fast), background-color var(--trans-fast);
+}
+
+.ledger-row:hover {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel-hover);
+}
+
+.ledger-row-past {
+  opacity: 0.75;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.past-events-wrapper {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-4);
+}
+
+.past-events-toggle {
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  transition: color var(--trans-fast);
+}
+
+.past-events-toggle:hover {
+  color: var(--accent);
+}
+
+.ledger-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: var(--tracking-wide);
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.ledger-info h4 {
+  font-size: 1.2rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.ledger-venue {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Commissioning Studio (Boekingen) */
+.program-item {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-6);
+  margin-bottom: var(--space-3);
+  transition: box-shadow var(--trans-fast);
+}
+
+.program-item:hover {
+  box-shadow: var(--border-subpixel-hover);
+}
+
+.program-item h4 {
+  font-size: 1.1rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.program-item p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Surgical Form Inputs */
+.form-box {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-md);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.form-group {
+  margin-bottom: var(--space-4);
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  transition: box-shadow var(--trans-fast);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Toast Notice */
+.toast-notice {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel-active), 0 16px 36px rgba(0,0,0,0.6);
+  color: var(--text-primary);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-sm);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  transform: translateY(150%);
+  opacity: 0;
+  transition: all var(--trans-base);
+}
+
+.toast-notice.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .ledger-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}

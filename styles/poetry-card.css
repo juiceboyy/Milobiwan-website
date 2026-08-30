@@ -1,194 +1,271 @@
-/* Poetry Cards Grid & Poem Reader Modal */
-.poetry-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
+/* ==========================================================================
+   Milobiwan (Mieke) – Poetry Studio & 12-Column Anthology Reader (4 + 8)
+   ========================================================================== */
+
+/* Split Stage Layout */
+.anthology-grid {
+  align-items: start;
 }
 
-.poem-card {
-  background-color: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
+/* Left Column: Archive Index (col-span-4) */
+.anthology-index-card {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
   border-radius: var(--radius-md);
-  padding: 2rem;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.archive-index-header {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.anthology-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  box-shadow: none;
+  transition: all var(--trans-fast);
+}
+
+.anthology-item:hover {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+}
+
+.anthology-item.active {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel-active);
+  border-left: 2px solid var(--accent);
+}
+
+.item-index-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent);
+  margin-bottom: var(--space-1);
+}
+
+.item-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+/* Right Column: Featured Reader Stage (col-span-8) */
+.anthology-stage-card {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-md);
+  padding: clamp(1.75rem, 4vw, 3rem);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-smooth);
-  position: relative;
-  overflow: hidden;
+  min-height: 600px;
 }
 
-.poem-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-terracotta), var(--color-gold));
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.poem-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(194, 89, 39, 0.3);
-}
-
-.poem-card:hover::before {
-  opacity: 1;
-}
-
-.poem-card-header {
+.stage-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-bottom: var(--space-6);
+  box-shadow: var(--border-divider);
+  margin-bottom: var(--space-6);
 }
 
-.poem-card-title {
-  font-size: 1.5rem;
-  line-height: 1.2;
-  margin-bottom: 0.35rem;
+.view-mode-tabs {
+  display: inline-flex;
+  background-color: var(--bg-surface-elevated);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--border-subpixel);
 }
 
-.poem-card-theme {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+.view-tab-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--trans-fast);
 }
 
-.poem-snippet {
+.view-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.view-tab-btn.active {
+  background-color: var(--accent);
+  color: var(--text-inverse);
+  box-shadow: var(--border-subpixel-active);
+}
+
+.stage-title-wrap h3 {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  letter-spacing: var(--tracking-tighter);
+  margin-bottom: var(--space-2);
+}
+
+/* Visual Artwork Stage Content (Beeld Eerst) */
+.stage-artwork-content {
+  margin-bottom: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stage-artwork-frame {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--border-subpixel);
+  background-color: var(--bg-surface-elevated);
+  padding: var(--space-2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+}
+
+.stage-artwork-img {
+  max-width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  display: block;
+}
+
+.artwork-switch-prompt {
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Poem Body */
+.stage-poem-content {
+  margin-bottom: var(--space-8);
+}
+
+.poem-line-row {
+  margin-bottom: var(--space-2);
+}
+
+.poem-line-text {
   font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: var(--color-text-main);
-  margin-bottom: 1.5rem;
-  white-space: pre-line;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  line-clamp: 4;
-  overflow: clip;
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  color: var(--text-primary);
+  line-height: 1.65;
+  display: block;
 }
 
-.poem-card-footer {
+/* Cultural Annotations Inset */
+.stage-glossary-box {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.glossary-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+
+.glossary-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-line;
+  margin: 0;
+}
+
+.stage-footer-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border-subtle);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  box-shadow: var(--border-divider-top);
 }
 
-.btn-read-poem {
-  font-weight: 600;
-  font-size: 0.88rem;
-  color: var(--color-terracotta);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.btn-read-poem:hover {
-  color: var(--color-terracotta-dark);
-  text-decoration: underline;
-}
-
-.btn-listen-mini {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-  padding: 0.3rem 0.6rem;
-  border-radius: var(--radius-full);
-  background: var(--color-bg-secondary);
-}
-
-.btn-listen-mini:hover {
-  color: var(--color-terracotta);
-  background: var(--color-terracotta-light);
-}
-
-/* Modal Dialog for Poems */
-.poem-dialog {
-  border: none;
-  border-radius: var(--radius-lg);
-  max-width: 680px;
-  width: 90%;
-  margin: auto;
-  padding: 0;
-  background-color: var(--color-bg-surface);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-}
-
-.poem-dialog::backdrop {
-  background: rgba(30, 23, 19, 0.7);
-  backdrop-filter: blur(4px);
-}
-
-.modal-content {
-  padding: 2.5rem;
-  position: relative;
-  max-height: 85vh;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-}
-
-.modal-close {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  background: var(--color-bg-secondary);
+/* Multi-Page Artwork & PDF Scroll View */
+.multipage-page-item {
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  color: var(--color-text-main);
-  transition: background var(--transition-fast);
+  margin-bottom: var(--space-6);
 }
 
-.modal-close:hover {
-  background: var(--color-terracotta-light);
-  color: var(--color-terracotta);
-}
-
-.modal-poem-title {
-  font-size: 2.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.modal-poem-body {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  line-height: 1.8;
-  white-space: pre-line;
-  margin-block: 2rem;
-  padding: 1.5rem;
-  background-color: var(--color-bg-primary);
-  border-radius: var(--radius-sm);
-  border-left: 3px solid var(--color-terracotta);
-}
-
-.modal-glossary {
-  background-color: var(--color-bg-secondary);
-  padding: 1.25rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.88rem;
-}
-
-.modal-glossary h5 {
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
+.multipage-page-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: var(--tracking-widest);
+  color: var(--accent);
+  margin-bottom: var(--space-2);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-terracotta);
-  margin-bottom: 0.5rem;
+}
+
+.artwork-copyright-footer {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  box-shadow: var(--border-divider-top);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.artwork-copyright-text {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-wide);
+}
+
+.artwork-download-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  text-decoration: none;
+  transition: all var(--trans-fast);
+}
+
+.artwork-download-link:hover {
+  color: var(--accent-hover);
 }

@@ -1,0 +1,275 @@
+/* ==========================================================================
+   Milobiwan – Studio & CMS Editor Styles
+   ========================================================================== */
+
+/* Auth Lock Screen */
+.auth-overlay {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+.auth-card {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel), 0 20px 50px rgba(0,0,0,0.6);
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 5vw, 3rem);
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+}
+
+.auth-icon-wrap {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: var(--space-4);
+  color: var(--accent);
+}
+
+.pin-input-group {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+}
+
+.pin-digit {
+  width: 3.4rem;
+  height: 4.2rem;
+  border: 1.5px solid rgba(212, 140, 93, 0.35);
+  border-radius: var(--radius-sm);
+  background-color: #1e1917;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: all var(--trans-fast);
+}
+
+.pin-digit:hover {
+  border-color: rgba(212, 140, 93, 0.6);
+}
+
+.pin-digit:focus {
+  outline: none;
+  border-color: var(--accent);
+  background-color: #26201d;
+  box-shadow: 0 0 0 3px rgba(212, 140, 93, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.pin-error-msg {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #ff6b6b;
+  min-height: 1.2rem;
+  margin-bottom: var(--space-4);
+}
+
+/* Studio Workspace */
+.studio-workspace {
+  display: none;
+  padding-bottom: var(--space-12);
+}
+
+.studio-workspace.unlocked {
+  display: block;
+}
+
+.studio-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding: var(--space-6) 0;
+  box-shadow: var(--border-divider);
+  margin-bottom: var(--space-8);
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.editor-card, .preview-card, .manager-card {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-md);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.card-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  box-shadow: var(--border-divider);
+}
+
+/* Language Selector Pills */
+.lang-radio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.lang-radio-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all var(--trans-fast);
+}
+
+.lang-radio-label:hover {
+  box-shadow: var(--border-subpixel-active);
+}
+
+.lang-radio-label input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+.lang-radio-label.selected {
+  background-color: rgba(212, 140, 93, 0.12);
+  border-left: 2px solid var(--accent);
+}
+
+/* Existing Poems List in CMS */
+.cms-poem-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-3);
+  transition: all var(--trans-fast);
+}
+
+.cms-poem-row:hover {
+  box-shadow: var(--border-subpixel-active);
+}
+
+.cms-poem-info {
+  flex: 1;
+}
+
+.cms-poem-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Export Code Box */
+.export-code-box {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  max-height: 220px;
+  overflow-y: auto;
+  white-space: pre;
+  margin: var(--space-4) 0;
+}
+
+/* AI Title Suggestions UI */
+.title-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.ai-suggest-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: rgba(212, 140, 93, 0.1);
+  transition: all var(--trans-fast);
+}
+
+.ai-suggest-btn:hover {
+  background-color: rgba(212, 140, 93, 0.2);
+  transform: translateY(-1px);
+}
+
+.ai-suggest-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ai-suggestions-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  min-height: 1.8rem;
+}
+
+.ai-title-chip {
+  background-color: var(--bg-surface-elevated);
+  border: 1px dashed rgba(212, 140, 93, 0.45);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.75rem;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ai-title-chip:hover {
+  background-color: rgba(212, 140, 93, 0.18);
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.ai-title-chip .chip-plus {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.7;
+}

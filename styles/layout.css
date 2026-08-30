@@ -1,129 +1,109 @@
-/* Layout Containers & Section Rules */
+/* ==========================================================================
+   Milobiwan (Mieke) – Layout Architecture & 12-Column Bento System
+   ========================================================================== */
+
+/* Main Site Container */
 .container {
   width: 100%;
-  max-width: var(--container-max);
+  max-width: var(--max-width-site);
   margin-inline: auto;
-  padding-inline: 1.5rem;
+  padding-inline: clamp(1rem, 3.5vw, 2.5rem);
 }
 
-.container-narrow {
-  width: 100%;
-  max-width: var(--container-narrow);
-  margin-inline: auto;
-  padding-inline: 1.5rem;
+/* 12-Column Grid System */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
 }
 
+.col-span-12 { grid-column: span 12 / span 12; }
+.col-span-8  { grid-column: span 8 / span 12; }
+.col-span-7  { grid-column: span 7 / span 12; }
+.col-span-6  { grid-column: span 6 / span 12; }
+.col-span-5  { grid-column: span 5 / span 12; }
+.col-span-4  { grid-column: span 4 / span 12; }
+.col-span-3  { grid-column: span 3 / span 12; }
+
+/* Sections */
 .section {
-  padding-block: var(--spacing-3xl);
+  padding-block: clamp(4rem, 8vw, 7rem);
   position: relative;
+  box-shadow: var(--border-divider-top);
 }
 
-.section-alt {
-  background-color: var(--color-bg-secondary);
+.section-hero {
+  padding-top: clamp(2.5rem, 6vw, 4.5rem);
+  padding-bottom: clamp(4rem, 8vw, 6.5rem);
+  box-shadow: none;
 }
 
-.section-dark {
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-light);
-}
-
-.section-dark h2,
-.section-dark h3,
-.section-dark h4 {
-  color: var(--color-text-light);
-}
-
-.section-dark .section-subtitle {
-  color: var(--color-gold);
-}
-
+/* Section Editorial Headers */
 .section-header {
-  text-align: center;
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
-.section-subtitle {
-  font-family: var(--font-sans);
+.mono-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-terracotta);
-  display: inline-block;
-  margin-bottom: 0.75rem;
+  color: var(--accent);
+  margin-bottom: var(--space-3);
 }
 
 .section-title {
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  letter-spacing: -0.01em;
-  margin-bottom: 1rem;
+  font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+  letter-spacing: var(--tracking-tighter);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
 }
 
-.section-lead {
-  font-size: 1.15rem;
-  color: var(--color-text-muted);
-  max-width: 650px;
-  margin-inline: auto;
-}
-
-.section-dark .section-lead {
-  color: rgba(253, 250, 246, 0.75);
-}
-
-/* Bio Layout Grid */
-.bio-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
-}
-
-.bio-quote-highlight {
-  font-family: var(--font-serif);
-  font-size: 1.45rem;
-  line-height: 1.5;
-  color: var(--color-terracotta-dark);
-  border-left: 3px solid var(--color-ochre);
-  padding-left: 1.5rem;
-  margin-block: 1.5rem;
+.section-title em {
   font-style: italic;
+  font-weight: var(--font-normal);
+  color: var(--text-secondary);
 }
 
-.roots-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 2rem;
+.section-desc {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  color: var(--text-secondary);
+  max-width: 640px;
+  line-height: 1.65;
 }
 
-.roots-card {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  padding: 1.25rem;
+/* Architectural Bento Cards (Shadow-as-Border) */
+.bento-card {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-md);
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  transition: box-shadow var(--trans-fast);
+  position: relative;
+}
+
+.bento-card:hover {
+  box-shadow: var(--border-subpixel-hover);
+}
+
+.bento-inset {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
   border-radius: var(--radius-sm);
-  text-align: center;
+  padding: var(--space-4) var(--space-6);
 }
 
-.roots-card-flag {
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem;
-}
-
-.roots-card h4 {
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-}
-
-.roots-card p {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-}
-
-@media (max-width: 850px) {
-  .bio-grid {
-    grid-template-columns: 1fr;
-  }
-  .roots-cards {
-    grid-template-columns: 1fr;
+/* Asymmetric Bento Span Utilities */
+@media (max-width: 1024px) {
+  .col-span-8,
+  .col-span-7,
+  .col-span-5,
+  .col-span-4,
+  .col-span-3 {
+    grid-column: span 12 / span 12;
   }
 }

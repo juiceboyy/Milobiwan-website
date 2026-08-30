@@ -1,31 +1,39 @@
 /**
- * Main Application Entry Point for Milobiwan's Website
+ * Milobiwan (Mieke) – Main Application Bootstrap
  */
 
 import { initNavigation } from './navigation.js';
 import { initPoetryViewer } from './poetry-viewer.js';
-import { initAudioPlayer } from './audio-player.js';
+import { initAgendaViewer } from './agenda-viewer.js';
 
 function init() {
   initNavigation();
   initPoetryViewer();
-  initAudioPlayer();
-
-  // Async icon guard if external library is present
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-  } else {
-    const interval = setInterval(() => {
-      if (typeof lucide !== 'undefined') {
-        clearInterval(interval);
-        lucide.createIcons();
-      }
-    }, 100);
-    setTimeout(() => clearInterval(interval), 10000);
-  }
+  initAgendaViewer();
+  initBookingForm();
 }
 
-// DOMContentLoaded Guard
+function initBookingForm() {
+  const form = document.getElementById('bookingForm');
+  const toast = document.getElementById('bookingToast');
+
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (toast) {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 5000);
+    }
+
+    form.reset();
+  });
+}
+
+// DOMContentLoaded Safe Guard
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {

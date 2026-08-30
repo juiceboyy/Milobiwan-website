@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milobiwan // Studio & Tekstbeheer</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/theme.css"><link rel="stylesheet" href="styles/layout.css"><link rel="stylesheet" href="styles/header.css">
+  <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css"><link rel="stylesheet" href="styles/admin.css">
+  <link rel="stylesheet" href="styles/admin-media.css">
+  <link rel="stylesheet" href="styles/admin-events.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-masthead" aria-label="Milobiwan Home">
+        <span class="brand-title">MILOBIWAN</span>
+        <span class="brand-subtitle">Studio // Tekstbeheer</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: var(--space-4);">
+        <a href="index.html" class="link-editorial">&larr; Terug naar Website</a>
+        <button id="logoutBtn" class="btn btn-secondary btn-sm" style="display: none;">Vergrendel</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 1. PIN Security Gate -->
+    <section class="auth-overlay" id="authGate">
+      <div class="auth-card">
+        <div class="auth-icon-wrap">🔒</div>
+        <span class="mono-tag" style="margin-bottom: var(--space-2);">BEVEILIGDE TOEGANG</span>
+        <h2 style="font-size: 1.6rem; margin-bottom: var(--space-2);">Dichteres Studio</h2>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Voer de 4-cijferige pincode in om gedichten en gesproken teksten te beheren.</p>
+        
+        <form id="pinForm">
+          <div class="pin-input-group">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autofocus autocomplete="off">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <input type="password" maxlength="1" class="pin-digit" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+          </div>
+          <div class="pin-error-msg" id="pinError"></div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Ontgrendel Studio</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. Studio Management Workspace -->
+    <section class="studio-workspace" id="studioWorkspace">
+      <div class="studio-topbar">
+        <div>
+          <span class="mono-tag">[ REPERTOIRE &amp; AGENDABEHEER ]</span>
+          <h1 style="font-size: 2.2rem; margin-top: var(--space-1);">Milobiwan Studio</h1>
+        </div>
+      </div>
+
+      <!-- Studio Tabs Navigation -->
+      <nav class="studio-tabs" aria-label="Studio Secties">
+        <button type="button" class="studio-tab-btn active" data-tab="poemsTabPane">
+          <span>01 // Poëzie &amp; Repertoire</span>
+        </button>
+        <button type="button" class="studio-tab-btn" data-tab="eventsTabPane">
+          <span>02 // Optredens &amp; Agenda</span>
+        </button>
+      </nav>
+
+      <!-- 2A. Poems Workspace Pane -->
+      <div class="tab-pane active" id="poemsTabPane">
+
+      <div class="studio-grid" id="editorSection">
+        <!-- Editor Form -->
+        <div class="editor-card">
+          <div class="card-header-bar">
+            <h3 id="formTitle" style="font-size: 1.25rem;">Tekst Bewerken of Toevoegen</h3>
+            <span class="mono-tag" id="editModeIndicator">NIEUW</span>
+          </div>
+
+          <form id="poemForm">
+            <input type="hidden" id="poemId">
+
+            <div class="form-group">
+              <div class="title-label-row">
+                <label class="form-label" for="inputTitle" style="margin-bottom: 0;">Titel van het werk *</label>
+                <button type="button" class="ai-suggest-btn" id="aiSuggestBtn" title="Genereer titelsuggesties op basis van de tekst">
+                  <span>+ AI Titels</span>
+                </button>
+              </div>
+              <input type="text" id="inputTitle" class="form-input" required placeholder="Typ zelf een titel of kies hieronder een AI-suggestie...">
+              <div id="aiSuggestionsContainer" class="ai-suggestions-box"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Taal *</label>
+              <div class="lang-radio-grid">
+                <label class="lang-radio-label selected">
+                  <input type="radio" name="poemLanguage" value="sranan" checked>
+                  <span>🇸🇷 Sranantongo</span>
+                </label>
+                <label class="lang-radio-label">
+                  <input type="radio" name="poemLanguage" value="dutch">
+                  <span>🇳🇱 Nederlands</span>
+                </label>
+                <label class="lang-radio-label">
+                  <input type="radio" name="poemLanguage" value="english">
+                  <span>🇬🇧 English</span>
+                </label>
+                <label class="lang-radio-label">
+                  <input type="radio" name="poemLanguage" value="fusion">
+                  <span>🌐 Drietalig / Fusion</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inputTheme">Tags / Projecten (optioneel, komma-gescheiden)</label>
+              <input type="text" id="inputTheme" class="form-input" placeholder="bijv. Keti Koti, Moederland, Zand-cyclus...">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inputText">Gedichttekst / Spoken Word Strofen *</label>
+              <textarea id="inputText" class="form-textarea" rows="9" required style="font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.6;" placeholder="Typ of plak hier de strofen en verzen..."></textarea>
+            </div>
+
+            <!-- Image / PDF Upload & OCR Zone -->
+            <div class="form-group">
+              <label class="form-label">Origineel Beeld / Typografie / PDF (optioneel met AI OCR)</label>
+              <input type="file" id="imageUploadInput" accept="image/*,application/pdf" style="display: none;">
+              
+              <div class="image-upload-zone" id="imageUploadZone">
+                <div class="image-upload-prompt">
+                  <div class="image-upload-title">+ Upload Beeld of PDF (ook meerdere pagina's)</div>
+                  <div class="image-upload-hint">Foto, poster of PDF document &bull; AI leest alle pagina's automatisch uit via OCR</div>
+                </div>
+              </div>
+
+              <div class="image-preview-box" id="imagePreviewBox">
+                <img id="imagePreviewThumbnail" src="" alt="Thumbnail" class="image-preview-thumb">
+                <div class="image-preview-meta">
+                  <div style="font-size: 0.85rem; font-weight: 500;" id="imagePreviewTitle">Origineel Beeld Gekoppeld</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);" id="imagePreviewSubtitle">Zichtbaar in het archief voor bezoekers</div>
+                </div>
+                <button type="button" id="removeImageBtn" class="btn btn-secondary btn-sm" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3); font-size: 0.75rem;">Verwijder</button>
+              </div>
+
+              <div id="ocrStatusMessage" class="ocr-status-msg">
+                <span class="ocr-spinner" id="ocrSpinner"></span>
+                <span id="ocrStatusText"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="inputNote">Culturele toelichting &amp; vertaling (optioneel)</label>
+              <textarea id="inputNote" class="form-textarea" rows="3" placeholder="Uitleg over specifieke odo's, begrippen of de achtergrond van het gedicht..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6);">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">Opslaan in Archief</button>
+              <button type="button" class="btn btn-secondary" id="resetFormBtn">Wissen</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="preview-card">
+          <div class="card-header-bar">
+            <h3 style="font-size: 1.25rem;">Live Voorvertoning</h3>
+            <span class="mono-tag" id="previewBadge">🇸🇷 SRANANTONGO</span>
+          </div>
+          
+          <div style="margin-bottom: var(--space-4);">
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); margin-bottom: 0.25rem;" id="previewTheme">THEMA: VOORBEELD</div>
+            <h2 id="previewTitle" style="font-size: 1.75rem;">Titel van Gedicht</h2>
+          </div>
+
+          <div id="previewLines" style="min-height: 200px; margin-bottom: var(--space-4);"></div>
+
+          <div id="previewArtworkContainer" class="preview-artwork-container" style="display: none;">
+            <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-bottom: var(--space-2);">[ ORIGINEEL BEELD ]</div>
+            <img id="previewArtworkImg" src="" alt="Gedichtbeeld" class="preview-artwork-img">
+          </div>
+
+          <div id="previewGlossary" class="stage-glossary-box" style="display: none; margin-top: var(--space-4);">
+            <div class="glossary-label">CULTURELE CONTEXT &amp; VERTALING</div>
+            <p class="glossary-text" id="previewGlossaryText"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Existing Poems Manager -->
+      <div class="manager-card" style="margin-top: var(--space-8);">
+        <div class="card-header-bar">
+          <h3 style="font-size: 1.25rem;">Actuele Werken in Archief (<span id="poemCount">0</span>)</h3>
+          <span class="mono-tag">FIREBASE FIRESTORE CLOUD DATABASE</span>
+        </div>
+        <div id="poemsListContainer"></div>
+      </div>
+      </div> <!-- End #poemsTabPane -->
+
+      <!-- 2B. Events & Agenda Workspace Pane -->
+      <div class="tab-pane" id="eventsTabPane">
+        <div class="editor-card" id="eventEditorCard">
+          <div class="card-header-bar">
+            <h3 id="eventFormTitle" style="font-size: 1.25rem;">Optreden Toevoegen</h3>
+            <span class="mono-tag" id="eventEditModeIndicator">NIEUW</span>
+          </div>
+
+          <form id="eventForm">
+            <input type="hidden" id="eventId">
+
+            <div class="form-group">
+              <label class="form-label" for="eventTitle">Titel / Evenementnaam *</label>
+              <input type="text" id="eventTitle" class="form-input" required placeholder="bijv. Roots & Rhythm Spoken Word Night">
+            </div>
+
+            <div class="event-form-grid">
+              <div class="form-group">
+                <label class="form-label" for="eventDate">Datum *</label>
+                <input type="date" id="eventDate" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="eventTime">Tijd / Aanvang (optioneel)</label>
+                <input type="text" id="eventTime" class="form-input" placeholder="bijv. 20:00 of 14:00 - 17:00">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="eventLocation">Locatie / Zaal &amp; Stad *</label>
+              <input type="text" id="eventLocation" class="form-input" required placeholder="bijv. Theater Zuidplein, Rotterdam">
+            </div>
+
+            <div class="event-form-grid">
+              <div class="form-group">
+                <label class="form-label" for="eventUrl">Ticket / Info Link (optioneel)</label>
+                <input type="url" id="eventUrl" class="form-input" placeholder="https://... (leeg = contactformulier)">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="eventBtnText">Knoptekst</label>
+                <input type="text" id="eventBtnText" class="form-input" value="Reserveren" placeholder="Reserveren, Tickets, Aanmelden...">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6);">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">Optreden Opslaan</button>
+              <button type="button" class="btn btn-secondary" id="resetEventBtn">Wissen</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Existing Events Manager -->
+        <div class="manager-card" style="margin-top: var(--space-8);">
+          <div class="card-header-bar">
+            <h3 style="font-size: 1.25rem;">Geplande &amp; Eerdere Optredens (<span id="eventCount">0</span>)</h3>
+            <span class="mono-tag">FIREBASE FIRESTORE CLOUD DATABASE</span>
+          </div>
+          <div id="eventsListContainer"></div>
+        </div>
+      </div> <!-- End #eventsTabPane -->
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

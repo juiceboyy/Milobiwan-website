@@ -1,66 +1,81 @@
+/* ==========================================================================
+   Milobiwan (Mieke) – Modern Web Design System & Tokens
+   Doctrine: Achromatic Foundations, Surgical Accent, Shadow-as-Border,
+             Max Weight 600, Negative Tracking, 4px Spacing Baseline
+   ========================================================================== */
+
 :root {
-  /* Color Palette - Warm Earth, Terracotta, Ochre, Jade & Gold */
-  --color-bg-primary: #fdfaf6;
-  --color-bg-secondary: #f4ede2;
-  --color-bg-surface: #ffffff;
-  --color-bg-card: rgba(255, 255, 255, 0.85);
-  --color-bg-dark: #1e1713;
-  --color-bg-dark-surface: #2b221c;
+  /* Achromatic Foundations */
+  --bg-canvas: #0c0c0c;
+  --bg-surface: #141414;
+  --bg-surface-elevated: #1a1a1a;
+  --bg-surface-subtle: #1f1f1f;
+  
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
+  --text-inverse: #0c0c0c;
 
-  --color-text-main: #2b231d;
-  --color-text-muted: #6b5c52;
-  --color-text-light: #fdfaf6;
-  --color-text-accent: #c25927;
+  /* Single Interactive High-Voltage Accent: Sunburst Ochre */
+  --accent: #d9822b;
+  --accent-hover: #eb943c;
+  --accent-subtle: rgba(217, 130, 43, 0.12);
+  --accent-glow: rgba(217, 130, 43, 0.25);
 
-  --color-terracotta: #c25927;
-  --color-terracotta-dark: #9e431a;
-  --color-terracotta-light: #f5ded3;
-  --color-ochre: #d68928;
-  --color-gold: #c8963e;
-  --color-jade: #2b5e48;
-  --color-jade-light: #e3efe9;
-  --color-coral: #d85c4b;
+  /* Sub-Pixel Shadow-as-Border (Zero-blur) */
+  --border-subpixel: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --border-subpixel-active: 0 0 0 1px rgba(217, 130, 43, 0.6);
+  --border-subpixel-hover: 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --border-divider: 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  --border-divider-top: 0 -1px 0 0 rgba(255, 255, 255, 0.08);
 
-  --color-border: #e6dbce;
-  --color-border-subtle: rgba(230, 219, 206, 0.6);
+  /* Double-Ring Focus State */
+  --focus-ring: 0 0 0 2px #0c0c0c, 0 0 0 4px #d9822b;
 
-  /* Typography */
-  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  /* Typography Families */
+  --font-serif: 'Fraunces', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-accent: 'Cormorant Garamond', Georgia, serif;
+  --font-mono: 'Space Mono', 'SFMono-Regular', Consolas, monospace;
 
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2.5rem;
-  --spacing-2xl: 4rem;
-  --spacing-3xl: 6rem;
+  /* Strict Font Weights (No bold > 600) */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
 
-  /* Shadows & Elevation */
-  --shadow-sm: 0 2px 8px rgba(30, 23, 19, 0.05);
-  --shadow-md: 0 8px 24px rgba(30, 23, 19, 0.08);
-  --shadow-lg: 0 16px 36px rgba(30, 23, 19, 0.12);
-  --shadow-glow: 0 0 30px rgba(194, 89, 39, 0.2);
+  /* Letter Spacing Rules */
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.1em;
+  --tracking-widest: 0.2em;
 
-  /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 24px;
+  /* Mathematical 4px Spacing Scale */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-24: 6rem;     /* 96px */
+
+  /* Architectural Radii (Clean, subtle) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-full: 9999px;
 
-  /* Transitions */
-  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-slow: 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Timing */
+  --ease-sharp: cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-fast: 0.15s var(--ease-sharp);
+  --trans-base: 0.25s var(--ease-sharp);
 
   /* Max Widths */
-  --container-max: 1200px;
-  --container-narrow: 840px;
+  --max-width-site: 1280px;
 }
 
-/* Global Reset & Base Styles */
+/* Global Reset */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -70,21 +85,22 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-weight: var(--font-normal);
+  font-size: 1rem;
+  line-height: 1.6;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  font-family: var(--font-sans);
-  color: var(--color-text-main);
-  background-color: var(--color-bg-primary);
-  line-height: 1.65;
-  font-size: 1rem;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(214, 137, 40, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(194, 89, 39, 0.04) 0%, transparent 40%);
+  min-height: 100vh;
 }
 
 img {
@@ -96,7 +112,7 @@ img {
 a {
   color: inherit;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: color var(--trans-fast);
 }
 
 button {
@@ -109,13 +125,19 @@ button {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--color-text-main);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-tighter);
+  line-height: 1.05;
+  color: var(--text-primary);
+  text-wrap: balance;
 }
 
 p {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
+  font-weight: var(--font-normal);
+  line-height: 1.7;
+  text-wrap: pretty;
 }
 
 p:last-child {
@@ -123,6 +145,11 @@ p:last-child {
 }
 
 ::selection {
-  background-color: var(--color-terracotta-light);
-  color: var(--color-terracotta-dark);
+  background-color: var(--accent);
+  color: var(--text-inverse);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
