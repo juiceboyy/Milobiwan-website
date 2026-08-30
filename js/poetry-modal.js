@@ -55,6 +55,17 @@ export function openPoemModal(poemId) {
       </div>
     `;
 
+    const pages = Array.isArray(poem.imagePages) && poem.imagePages.length > 0
+      ? poem.imagePages
+      : (poem.imageUrl ? [poem.imageUrl] : []);
+
+    const imagePagesHtml = pages.map((pImg, idx) => `
+      <div class="multipage-page-item" style="margin-bottom: var(--space-4);">
+        ${pages.length > 1 ? `<div class="multipage-page-badge">[ PAGINA ${idx + 1} / ${pages.length} ]</div>` : ''}
+        <img src="${pImg}" alt="${poem.title} pagina ${idx + 1}" style="max-width: 100%; max-height: 540px; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+      </div>
+    `).join('');
+
     const imageHtml = hasImage ? `
       <div id="modalImageSection" style="text-align: center; margin-bottom: var(--space-6);">
         <div style="display: flex; justify-content: center; margin-bottom: var(--space-4);">
@@ -63,7 +74,13 @@ export function openPoemModal(poemId) {
             <button class="view-tab-btn" id="modalTabTextBtn">Tekst</button>
           </div>
         </div>
-        <img src="${poem.imageUrl}" alt="${poem.title}" style="max-width: 100%; max-height: 520px; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+        ${imagePagesHtml}
+        <div class="artwork-copyright-footer" style="margin-top: var(--space-4);">
+          <div class="artwork-copyright-text">&copy; Milobiwan &bull; milobiwan.nl &bull; Alle rechten voorbehouden</div>
+          <a href="${poem.imageUrl}" download="${poem.id || 'milobiwan'}.jpg" class="artwork-download-link">
+            <span>Download Origineel &darr;</span>
+          </a>
+        </div>
       </div>
     ` : '';
 

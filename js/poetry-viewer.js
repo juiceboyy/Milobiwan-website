@@ -143,7 +143,20 @@ function renderReadingStage(stageEl, poemId) {
     </div>
   `).join('');
 
-  stageEl.innerHTML = `
+    const pages = Array.isArray(poem.imagePages) && poem.imagePages.length > 0
+      ? poem.imagePages
+      : (poem.imageUrl ? [poem.imageUrl] : []);
+
+    const artworkPagesHtml = pages.map((pageImg, idx) => `
+      <div class="multipage-page-item">
+        ${pages.length > 1 ? `<div class="multipage-page-badge">[ PAGINA ${idx + 1} / ${pages.length} ]</div>` : ''}
+        <div class="stage-artwork-frame">
+          <img src="${pageImg}" alt="${poem.title} pagina ${idx + 1}" class="stage-artwork-img">
+        </div>
+      </div>
+    `).join('');
+
+    stageEl.innerHTML = `
     <div class="stage-header">
       <div class="stage-title-wrap">
         <div style="display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; margin-bottom: 0.35rem;">
@@ -159,10 +172,6 @@ function renderReadingStage(stageEl, poemId) {
             <button class="view-tab-btn" id="tabTextBtn">Tekst</button>
           </div>
         ` : ''}
-        <button class="link-editorial" id="stageShareBtn" title="Deel als beeld met copyright" aria-label="Deel gedicht">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-          <span>Delen &rarr;</span>
-        </button>
         <button class="link-editorial" id="openFullModalBtn">
           <span>Volledig Scherm &rarr;</span>
         </button>
@@ -171,10 +180,14 @@ function renderReadingStage(stageEl, poemId) {
 
     ${hasImage ? `
       <div class="stage-artwork-content animate-fade-in" id="stageArtworkContent">
-        <div class="stage-artwork-frame">
-          <img src="${poem.imageUrl}" alt="${poem.title} visueel werk" class="stage-artwork-img">
+        ${artworkPagesHtml}
+        <div class="artwork-copyright-footer">
+          <div class="artwork-copyright-text">&copy; Milobiwan &bull; milobiwan.nl &bull; Alle rechten voorbehouden</div>
+          <a href="${poem.imageUrl}" download="${poem.id || 'milobiwan'}.jpg" class="artwork-download-link">
+            <span>Download Origineel &darr;</span>
+          </a>
         </div>
-        <div class="artwork-switch-prompt">
+        <div class="artwork-switch-prompt" style="margin-top: var(--space-4);">
           <span>Originele typografie.</span>
           <button class="link-editorial" id="quickSwitchTextBtn"><span>Lees versregels &rarr;</span></button>
         </div>

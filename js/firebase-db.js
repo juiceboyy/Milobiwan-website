@@ -78,6 +78,7 @@ export async function savePoemToFirestore(poem) {
       fullText: String(poem.fullText || ''),
       translationNote: String(poem.translationNote || ''),
       imageUrl: String(poem.imageUrl || ''),
+      imagePages: Array.isArray(poem.imagePages) ? poem.imagePages : (poem.imageUrl ? [poem.imageUrl] : []),
       updatedAt: new Date().toISOString()
     };
     await setDoc(docRef, dataToSave);

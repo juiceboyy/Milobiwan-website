@@ -123,23 +123,23 @@
               <textarea id="inputText" class="form-textarea" rows="9" required style="font-family: var(--font-serif); font-size: 1.05rem; line-height: 1.6;" placeholder="Typ of plak hier de strofen en verzen..."></textarea>
             </div>
 
-            <!-- Image Upload & OCR Zone -->
+            <!-- Image / PDF Upload & OCR Zone -->
             <div class="form-group">
-              <label class="form-label">Origineel Beeld / Typografie (optioneel met AI OCR)</label>
-              <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
+              <label class="form-label">Origineel Beeld / Typografie / PDF (optioneel met AI OCR)</label>
+              <input type="file" id="imageUploadInput" accept="image/*,application/pdf" style="display: none;">
               
               <div class="image-upload-zone" id="imageUploadZone">
                 <div class="image-upload-prompt">
-                  <div class="image-upload-title">+ Upload Beeld / Foto van Gedicht</div>
-                  <div class="image-upload-hint">Foto van kaart, poster of manuscript &bull; AI leest de tekst automatisch uit via OCR</div>
+                  <div class="image-upload-title">+ Upload Beeld of PDF (ook meerdere pagina's)</div>
+                  <div class="image-upload-hint">Foto, poster of PDF document &bull; AI leest alle pagina's automatisch uit via OCR</div>
                 </div>
               </div>
 
               <div class="image-preview-box" id="imagePreviewBox">
                 <img id="imagePreviewThumbnail" src="" alt="Thumbnail" class="image-preview-thumb">
                 <div class="image-preview-meta">
-                  <div style="font-size: 0.85rem; font-weight: 500;">Origineel Beeld Gekoppeld</div>
-                  <div style="font-size: 0.75rem; color: var(--text-muted);">Zichtbaar in het archief voor bezoekers</div>
+                  <div style="font-size: 0.85rem; font-weight: 500;" id="imagePreviewTitle">Origineel Beeld Gekoppeld</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);" id="imagePreviewSubtitle">Zichtbaar in het archief voor bezoekers</div>
                 </div>
                 <button type="button" id="removeImageBtn" class="btn btn-secondary btn-sm" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3); font-size: 0.75rem;">Verwijder</button>
               </div>
@@ -260,6 +260,7 @@
     </section>
   </main>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script type="module" src="js/admin.js"></script>
 </body>
 </html>

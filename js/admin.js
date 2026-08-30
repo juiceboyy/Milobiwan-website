@@ -148,6 +148,7 @@ function setupEditor() {
     const langConfig = LANGUAGE_CONFIG[lang] || LANGUAGE_CONFIG.sranan;
     const currentId = inputId.value;
     const imageUrl = ocrManager?.getImageData() || '';
+    const imagePages = ocrManager?.getImagePages() || (imageUrl ? [imageUrl] : []);
 
     const poemData = {
       id: currentId || (slugify(title) + '-' + Date.now().toString().slice(-4)),
@@ -161,7 +162,8 @@ function setupEditor() {
       snippet: fullText.split('\n').slice(0, 4).join('\n'),
       fullText,
       translationNote,
-      imageUrl
+      imageUrl,
+      imagePages
     };
 
     if (submitBtn) {
@@ -266,7 +268,7 @@ function editPoem(id) {
   if (inputNote) inputNote.value = poem.translationNote || '';
 
   if (ocrManager) {
-    ocrManager.setImageData(poem.imageUrl || '');
+    ocrManager.setImageData(poem.imageUrl || '', poem.imagePages || []);
   }
 
   const langRadio = document.querySelector(`input[name="poemLanguage"][value="${poem.language}"]`);

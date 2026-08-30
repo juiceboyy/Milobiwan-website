@@ -1,5 +1,5 @@
 /**
- * Netlify Serverless Function: AI Multimodal OCR for Poems
+ * Netlify Serverless Function: AI Multimodal OCR for Poems & Multi-Page Documents
  * Powered by Google Gemini Vision
  */
 
@@ -26,9 +26,13 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { imageBase64, mimeType } = JSON.parse(event.body || '{}');
+    const { imageBase64, imagesBase64, mimeType } = JSON.parse(event.body || '{}');
 
-    if (!imageBase64) {
+    const imageList = Array.isArray(imagesBase64) && imagesBase64.length > 0
+      ? imagesBase64
+      : (imageBase64 ? [imageBase64] : []);
+
+    if (imageList.length === 0) {
       return {
         statusCode: 400,
         headers: HEADERS,
@@ -51,40 +55,39 @@ exports.handler = async (event) => {
     const ai = new GoogleGenAI({ apiKey });
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
-    // Haal base64 clean data op
-    const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z0-9+]+;base64,/, '');
-
     const prompt = `Je bent een nauwkeurige OCR- en transcriptie-assistent voor poëzie en spoken word van Milobiwan.
-Bekijk deze afbeelding van een gedicht/kaart.
+Bekijk de pagina's van dit gedicht/document (${imageList.length} pagina${imageList.length > 1 ? '\'s' : ''}).
 Taken:
-1. Extraheer de volledige gedichttekst exact zoals afgebeeld. Behoud alle strofen, witregels, verzen en interpunctie nauwkeurig.
-2. Bedenk 4 beknopte, nuchtere titels (1-3 woorden) op basis van de tekst.
+1. Extraheer de volledige tekst van alle pagina's in chronologische volgorde en voeg ze samen tot één compleet gedicht. Behoud alle strofen, witregels, verzen en interpunctie nauwkeurig.
+2. Bedenk 4 beknopte, nuchtere titels (1-3 woorden) in de taal van het gedicht.
 3. Detecteer de hoofdtaal (keuze uit: 'sranan', 'dutch', 'english', 'fusion').
 
 Geef UITSLUITEND een geldig JSON-object terug in dit formaat (zonder markdown codeblocks):
 {
-  "text": "Exacte strofen en verzen...",
+  "text": "Exacte samengevoegde strofen en verzen van alle pagina's...",
   "suggestedTitles": ["Titel 1", "Titel 2", "Titel 3", "Titel 4"],
   "language": "dutch",
   "authorTag": "Handtekening of auteur tag indien aanwezig"
 }`;
 
+    const parts = [{ text: prompt }];
+
+    imageList.forEach((img, idx) => {
+      const cleanData = img.replace(/^data:image\/[a-zA-Z0-9+]+;base64,/, '');
+      if (imageList.length > 1) {
+        parts.push({ text: `Pagina ${idx + 1} van ${imageList.length}:` });
+      }
+      parts.push({
+        inlineData: {
+          data: cleanData,
+          mimeType: mimeType || 'image/jpeg'
+        }
+      });
+    });
+
     const response = await ai.models.generateContent({
       model: modelName,
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: prompt },
-            {
-              inlineData: {
-                data: cleanBase64,
-                mimeType: mimeType || 'image/jpeg'
-              }
-            }
-          ]
-        }
-      ],
+      contents: [{ role: 'user', parts }],
       config: {
         temperature: 0.1,
         responseMimeType: 'application/json'
