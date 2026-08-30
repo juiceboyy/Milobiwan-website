@@ -1,0 +1,14 @@
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Build & Dependencies
+node_modules/
+.netlify/

@@ -1,8 +1,8 @@
 /**
- * Milobiwan Studio – Authentication Module (PIN Protection)
+ * Milobiwan Studio – Authentication Module
+ * Verifies PIN securely via serverless backend environment variable (STUDIO_PIN)
  */
 
-const PIN_CODE = '1919';
 const AUTH_KEY = 'milobiwan_studio_auth';
 
 export function setupPinAuth(onAuthenticated) {
@@ -12,6 +12,7 @@ export function setupPinAuth(onAuthenticated) {
   const pinForm = document.getElementById('pinForm');
   const pinDigits = document.querySelectorAll('.pin-digit');
   const pinError = document.getElementById('pinError');
+  const submitBtn = pinForm?.querySelector('button[type="submit"]');
 
   function checkSession() {
     const isAuth = sessionStorage.getItem(AUTH_KEY) === 'true';
@@ -43,17 +44,51 @@ export function setupPinAuth(onAuthenticated) {
     });
   });
 
-  pinForm?.addEventListener('submit', (e) => {
+  pinForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const entered = Array.from(pinDigits).map(d => d.value).join('');
-    if (entered === PIN_CODE) {
-      sessionStorage.setItem(AUTH_KEY, 'true');
-      if (pinError) pinError.textContent = '';
-      checkSession();
-    } else {
-      if (pinError) pinError.textContent = 'Onjuiste pincode. Probeer opnieuw.';
-      pinDigits.forEach(d => { d.value = ''; });
-      pinDigits[0]?.focus();
+    const enteredPin = Array.from(pinDigits).map(d => d.value).join('');
+
+    if (enteredPin.length < 4) {
+      if (pinError) pinError.textContent = 'Voer een 4-cijferige pincode in.';
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifiëren...';
+    }
+    if (pinError) pinError.textContent = '';
+
+    try {
+      const response = await fetch('/api/verify-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: enteredPin })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok && data.success) {
+        sessionStorage.setItem(AUTH_KEY, 'true');
+        if (pinError) pinError.textContent = '';
+        checkSession();
+      } else {
+        if (pinError) {
+          pinError.textContent = data.error || 'Onjuiste pincode. Probeer opnieuw.';
+        }
+        pinDigits.forEach(d => { d.value = ''; });
+        pinDigits[0]?.focus();
+      }
+    } catch (err) {
+      console.error('Verificatiefout:', err);
+      if (pinError) {
+        pinError.textContent = 'Verbindingsfout bij het controleren van de pincode.';
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Ontgrendel Studio';
+      }
     }
   });
 
