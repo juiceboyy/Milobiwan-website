@@ -2,11 +2,23 @@ import { getStoredPoems, subscribeToLivePoems } from './poems-data.js';
 import { openPoemModal } from './poetry-modal.js';
 
 let currentFilter = 'all';
+let currentTagFilter = 'all';
 let activePoemId = '';
+
+export function getPoemTags(poem) {
+  if (Array.isArray(poem.tags) && poem.tags.length > 0) {
+    return poem.tags.map(t => String(t).trim()).filter(Boolean);
+  }
+  if (poem.theme && typeof poem.theme === 'string') {
+    return poem.theme.split(',').map(t => t.trim()).filter(Boolean);
+  }
+  return [];
+}
 
 export function initPoetryViewer() {
   const indexContainer = document.getElementById('anthologyIndex');
   const stageContainer = document.getElementById('anthologyStage');
+  const tagFilterBar = document.getElementById('tagFilterBar');
   const filterButtons = document.querySelectorAll('.filter-btn');
   const dialog = document.getElementById('poemDialog');
   const closeBtn = document.getElementById('modalCloseBtn');
@@ -18,32 +30,24 @@ export function initPoetryViewer() {
     activePoemId = currentPoems[0].id;
   }
 
-  renderAnthology(indexContainer, stageContainer, currentFilter);
+  renderAnthology(indexContainer, stageContainer, tagFilterBar);
 
   // Real-time Firebase Firestore database synchronisatie
   subscribeToLivePoems((livePoems) => {
     if (livePoems && livePoems.length > 0 && !activePoemId) {
       activePoemId = livePoems[0].id;
     }
-    renderAnthology(indexContainer, stageContainer, currentFilter);
+    renderAnthology(indexContainer, stageContainer, tagFilterBar);
   });
 
-  // Filter Buttons
+  // Language Filter Buttons
   filterButtons.forEach(button => {
     button.addEventListener('click', () => {
       filterButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
       currentFilter = button.dataset.filter || 'all';
 
-      const poems = getStoredPoems();
-      const matching = currentFilter === 'all'
-        ? poems
-        : poems.filter(p => p.language === currentFilter);
-
-      if (matching.length > 0) {
-        activePoemId = matching[0].id;
-      }
-      renderAnthology(indexContainer, stageContainer, currentFilter);
+      renderAnthology(indexContainer, stageContainer, tagFilterBar);
     });
   });
 
@@ -63,11 +67,55 @@ export function initPoetryViewer() {
   }
 }
 
-function renderAnthology(indexEl, stageEl, filter) {
+function renderTagFilterBar(allPoems, tagBarEl, onSelectTag) {
+  if (!tagBarEl) return;
+
+  // Extract unique tags
+  const tagSet = new Set();
+  allPoems.forEach(p => {
+    getPoemTags(p).forEach(tag => tagSet.add(tag));
+  });
+
+  const uniqueTags = Array.from(tagSet).sort();
+
+  if (uniqueTags.length === 0) {
+    tagBarEl.style.display = 'none';
+    tagBarEl.innerHTML = '';
+    return;
+  }
+
+  tagBarEl.style.display = 'flex';
+  tagBarEl.innerHTML = `
+    <span class="tag-filter-label">TAGS:</span>
+    <button class="tag-chip-btn ${currentTagFilter === 'all' ? 'active' : ''}" data-tag="all">Alles</button>
+    ${uniqueTags.map(tag => `
+      <button class="tag-chip-btn ${currentTagFilter === tag ? 'active' : ''}" data-tag="${tag}">#${tag}</button>
+    `).join('')}
+  `;
+
+  tagBarEl.querySelectorAll('.tag-chip-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentTagFilter = btn.dataset.tag || 'all';
+      if (typeof onSelectTag === 'function') onSelectTag();
+    });
+  });
+}
+
+function renderAnthology(indexEl, stageEl, tagBarEl) {
   const allPoems = getStoredPoems();
-  const filtered = filter === 'all'
-    ? allPoems
-    : allPoems.filter(p => p.language === filter);
+
+  // Render Dynamic Tags Bar
+  renderTagFilterBar(allPoems, tagBarEl, () => {
+    renderAnthology(indexEl, stageEl, tagBarEl);
+  });
+
+  // Compound Filter: Language AND Tag
+  const filtered = allPoems.filter(p => {
+    const langMatch = currentFilter === 'all' || p.language === currentFilter;
+    const poemTags = getPoemTags(p);
+    const tagMatch = currentTagFilter === 'all' || poemTags.includes(currentTagFilter);
+    return langMatch && tagMatch;
+  });
 
   if (allPoems.length === 0) {
     indexEl.innerHTML = `
@@ -90,8 +138,8 @@ function renderAnthology(indexEl, stageEl, filter) {
   }
 
   if (filtered.length === 0) {
-    indexEl.innerHTML = `<p style="padding: 1.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-align: center;">GEEN WERKEN IN DEZE TAAL</p>`;
-    stageEl.innerHTML = `<p style="padding: 2rem; color: var(--text-muted); text-align: center;">Kies een andere taalfilter hierboven.</p>`;
+    indexEl.innerHTML = `<p style="padding: 1.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-align: center;">GEEN WERKEN GEVONDEN</p>`;
+    stageEl.innerHTML = `<p style="padding: 2rem; color: var(--text-muted); text-align: center;">Kies een andere taal of tag hierboven.</p>`;
     return;
   }
 
@@ -130,6 +178,11 @@ function renderReadingStage(stageEl, poemId) {
   if (!poem) return;
 
   const hasImage = Boolean(poem.imageUrl);
+  const tags = getPoemTags(poem);
+  const tagsHtml = tags.length > 0
+    ? tags.map(t => `<span class="badge" style="font-size: 0.65rem; color: var(--accent); border-color: rgba(212,140,93,0.35);">#${t}</span>`).join(' ')
+    : '';
+
   const lines = (poem.fullText || '').split('\n');
   const formattedLines = lines.map((line, idx) => `
     <div class="poem-line-row">
@@ -141,7 +194,10 @@ function renderReadingStage(stageEl, poemId) {
   stageEl.innerHTML = `
     <div class="stage-header">
       <div class="stage-title-wrap">
-        <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel}${poem.theme ? ` // ${poem.theme}` : ''}</span>
+        <div style="display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; margin-bottom: 0.35rem;">
+          <span class="badge ${poem.badgeClass}">${poem.flag} ${poem.languageLabel}</span>
+          ${tagsHtml}
+        </div>
         <h3>${poem.title}</h3>
       </div>
       <div style="display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap;">

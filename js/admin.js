@@ -115,7 +115,8 @@ function setupEditor() {
     e.preventDefault();
     const title = inputTitle.value.trim();
     const lang = document.querySelector('input[name="poemLanguage"]:checked')?.value || 'sranan';
-    const theme = inputTheme.value.trim();
+    const rawTags = inputTheme.value.trim();
+    const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
     const fullText = inputText.value.trim();
     const translationNote = inputNote.value.trim();
     const langConfig = LANGUAGE_CONFIG[lang] || LANGUAGE_CONFIG.sranan;
@@ -129,7 +130,8 @@ function setupEditor() {
       languageLabel: langConfig.languageLabel,
       flag: langConfig.flag,
       badgeClass: langConfig.badgeClass,
-      theme,
+      tags,
+      theme: rawTags,
       snippet: fullText.split('\n').slice(0, 4).join('\n'),
       fullText,
       translationNote,
@@ -164,7 +166,8 @@ function setupEditor() {
 
 export function updateLivePreview() {
   const title = document.getElementById('inputTitle')?.value || 'Titel van Gedicht';
-  const theme = document.getElementById('inputTheme')?.value || '';
+  const rawTags = document.getElementById('inputTheme')?.value || '';
+  const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
   const text = document.getElementById('inputText')?.value || 'Hier verschijnt de live voordrachttekst met genummerde strofen...';
   const note = document.getElementById('inputNote')?.value || '';
   const lang = document.querySelector('input[name="poemLanguage"]:checked')?.value || 'sranan';
@@ -181,11 +184,14 @@ export function updateLivePreview() {
 
   if (previewBadge) previewBadge.textContent = `${config.flag} ${config.languageLabel.toUpperCase()}`;
   if (previewTheme) {
-    if (theme.trim()) {
-      previewTheme.style.display = 'inline-block';
-      previewTheme.textContent = `COLLECTIE: ${theme.toUpperCase()}`;
+    if (tags.length > 0) {
+      previewTheme.style.display = 'inline-flex';
+      previewTheme.style.gap = 'var(--space-1)';
+      previewTheme.style.flexWrap = 'wrap';
+      previewTheme.innerHTML = tags.map(t => `<span class="badge" style="font-size: 0.65rem; color: var(--accent); border-color: rgba(212,140,93,0.35);">#${t}</span>`).join(' ');
     } else {
       previewTheme.style.display = 'none';
+      previewTheme.innerHTML = '';
     }
   }
   if (previewTitle) previewTitle.textContent = title;
@@ -233,7 +239,12 @@ function editPoem(id) {
 
   if (inputId) inputId.value = poem.id;
   if (inputTitle) inputTitle.value = poem.title;
-  if (inputTheme) inputTheme.value = poem.theme || '';
+  
+  const poemTags = Array.isArray(poem.tags) && poem.tags.length > 0
+    ? poem.tags.join(', ')
+    : (poem.theme || '');
+  if (inputTheme) inputTheme.value = poemTags;
+
   if (inputText) inputText.value = poem.fullText;
   if (inputNote) inputNote.value = poem.translationNote || '';
 

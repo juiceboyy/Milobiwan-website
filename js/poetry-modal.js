@@ -17,9 +17,19 @@ export function openPoemModal(poemId) {
     modalBadge.className = `badge ${poem.badgeClass}`;
     modalBadge.textContent = `${poem.flag} ${poem.languageLabel}`;
   }
+  const poemTags = Array.isArray(poem.tags) && poem.tags.length > 0
+    ? poem.tags
+    : (poem.theme ? String(poem.theme).split(',').map(t => t.trim()).filter(Boolean) : []);
+
   if (modalTheme) {
-    modalTheme.style.display = poem.theme ? 'inline-block' : 'none';
-    modalTheme.textContent = poem.theme || '';
+    if (poemTags.length > 0) {
+      modalTheme.style.display = 'inline-flex';
+      modalTheme.style.gap = 'var(--space-1)';
+      modalTheme.innerHTML = poemTags.map(t => `<span class="badge" style="font-size: 0.68rem; color: var(--accent); border-color: rgba(212,140,93,0.35);">#${t}</span>`).join(' ');
+    } else {
+      modalTheme.style.display = 'none';
+      modalTheme.innerHTML = '';
+    }
   }
 
   if (modalBody) {

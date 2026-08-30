@@ -23,13 +23,19 @@ export function refreshPoemsList({ onEditPoem }) {
     return;
   }
 
-  listContainer.innerHTML = poems.map(poem => `
+  listContainer.innerHTML = poems.map(poem => {
+    const poemTags = Array.isArray(poem.tags) && poem.tags.length > 0
+      ? poem.tags
+      : (poem.theme ? String(poem.theme).split(',').map(t => t.trim()).filter(Boolean) : []);
+    const tagsHtml = poemTags.map(t => `<span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);">#${t}</span>`).join(' ');
+
+    return `
     <div class="cms-poem-row">
       <div class="cms-poem-info">
-        <div style="display: flex; gap: var(--space-2); align-items: center; margin-bottom: var(--space-1);">
+        <div style="display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; margin-bottom: var(--space-1);">
           <span class="badge ${poem.badgeClass}">${poem.flag} ${poem.languageLabel}</span>
-          ${poem.theme ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent);">${poem.theme}</span>` : ''}
-          ${poem.imageUrl ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); opacity: 0.8;">[BEELD]</span>` : ''}
+          ${tagsHtml}
+          ${poem.imageUrl ? `<span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); opacity: 0.8;">[BEELD]</span>` : ''}
         </div>
         <h4 style="font-size: 1.15rem; margin-bottom: var(--space-1);">${poem.title}</h4>
         <p style="font-size: 0.8rem; color: var(--text-muted);">${(poem.fullText || '').split('\n').length} versregels</p>
@@ -39,7 +45,8 @@ export function refreshPoemsList({ onEditPoem }) {
         <button class="btn btn-secondary btn-sm delete-poem-btn" data-id="${poem.id}" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3);">Verwijderen</button>
       </div>
     </div>
-  `).join('');
+    `;
+  }).join('');
 
   listContainer.querySelectorAll('.edit-poem-btn').forEach(btn => {
     btn.addEventListener('click', () => {

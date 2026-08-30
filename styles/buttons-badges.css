@@ -119,6 +119,51 @@
   box-shadow: var(--border-subpixel-active);
 }
 
+/* Dynamic Tag Filter Bar */
+.tag-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: calc(-1 * var(--space-4));
+  margin-bottom: var(--space-8);
+}
+
+.tag-filter-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: var(--space-1);
+}
+
+.tag-chip-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.tag-chip-btn:hover {
+  color: var(--text-primary);
+  border-color: rgba(212, 140, 93, 0.4);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.tag-chip-btn.active {
+  background-color: rgba(212, 140, 93, 0.15);
+  color: var(--accent);
+  border-style: solid;
+  border-color: var(--accent);
+  font-weight: 500;
+}
+
 /* Minimalist Language Badges */
 .badge {
   display: inline-flex;
