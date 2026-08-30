@@ -52,17 +52,12 @@
   border-left: 2px solid var(--accent);
 }
 
-.item-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-1);
-}
-
 .item-index-num {
+  display: block;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   color: var(--accent);
+  margin-bottom: var(--space-1);
 }
 
 .item-title {

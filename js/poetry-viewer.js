@@ -104,10 +104,7 @@ function renderAnthology(indexEl, stageEl, filter) {
     <div class="archive-index-header">ARCHIEF INDEX // 0${filtered.length}</div>
     ${filtered.map((poem, idx) => `
       <button class="anthology-item ${poem.id === activePoemId ? 'active' : ''}" data-id="${poem.id}">
-        <div class="item-top-row">
-          <span class="item-index-num">#0${idx + 1}</span>
-          <span class="badge ${poem.badgeClass}">${poem.flag} ${poem.languageLabel}</span>
-        </div>
+        <span class="item-index-num">#0${idx + 1}</span>
         <div class="item-title">${poem.title}</div>
       </button>
     `).join('')}
