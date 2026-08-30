@@ -122,7 +122,7 @@ function renderImageWithCopyright(canvas, poem) {
       ctx.fillStyle = '#d9822b';
       ctx.textBaseline = 'middle';
 
-      const rightText = '© MILOBIWAN';
+      const rightText = '© MILOBIWAN // milobiwan.nl';
       const rightMetrics = ctx.measureText(rightText);
       ctx.fillText(rightText, canvas.width - rightMetrics.width - 32, img.height + (bannerHeight / 2));
       resolve();
@@ -215,12 +215,12 @@ function renderTextQuoteCard(canvas, poem) {
   }
 
   // Footer Attribution
-  const footerFontSize = poemFontSize;
+  const footerFontSize = Math.min(poemFontSize, 32);
   ctx.font = `600 ${footerFontSize}px "Fraunces", Georgia, serif`;
   ctx.fillStyle = '#d9822b';
   ctx.textBaseline = 'bottom';
 
-  const copyrightText = '© MILOBIWAN';
+  const copyrightText = '© MILOBIWAN // milobiwan.nl';
   const copyrightMetrics = ctx.measureText(copyrightText);
   const footerX = width - paddingX - copyrightMetrics.width;
   const footerY = height - 90;
