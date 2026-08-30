@@ -136,9 +136,8 @@ function renderReadingStage(stageEl, poemId) {
     : '';
 
   const lines = (poem.fullText || '').split('\n');
-  const formattedLines = lines.map((line, idx) => `
+  const formattedLines = lines.map(line => `
     <div class="poem-line-row">
-      <span class="poem-line-num">${String(idx + 1).padStart(2, '0')}</span>
       <span class="poem-line-text">${line || '&nbsp;'}</span>
     </div>
   `).join('');

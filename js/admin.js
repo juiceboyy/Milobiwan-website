@@ -226,9 +226,8 @@ export function updateLivePreview() {
 
   if (previewLines) {
     const lines = text.split('\n');
-    previewLines.innerHTML = lines.map((line, idx) => `
+    previewLines.innerHTML = lines.map(line => `
       <div class="poem-line-row">
-        <span class="poem-line-num">${String(idx + 1).padStart(2, '0')}</span>
         <span class="poem-line-text">${line || '&nbsp;'}</span>
       </div>
     `).join('');

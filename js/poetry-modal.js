@@ -46,9 +46,8 @@ export function openPoemModal(poemId) {
     const lines = (poem.fullText || '').split('\n');
     const textHtml = `
       <div id="modalTextSection" style="${hasImage ? 'display: none;' : 'display: block;'}">
-        ${lines.map((line, idx) => `
+        ${lines.map(line => `
           <div class="poem-line-row">
-            <span class="poem-line-num">${String(idx + 1).padStart(2, '0')}</span>
             <span class="poem-line-text">${line || '&nbsp;'}</span>
           </div>
         `).join('')}

@@ -168,33 +168,21 @@
   color: var(--text-secondary);
 }
 
-/* Numbered Poem Body */
+/* Poem Body */
 .stage-poem-content {
   margin-bottom: var(--space-8);
 }
 
 .poem-line-row {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-6);
   margin-bottom: var(--space-2);
-}
-
-.poem-line-num {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-muted);
-  user-select: none;
-  width: 1.75rem;
-  text-align: right;
-  flex-shrink: 0;
 }
 
 .poem-line-text {
   font-family: var(--font-serif);
   font-size: clamp(1.15rem, 1.8vw, 1.35rem);
   color: var(--text-primary);
-  line-height: 1.6;
+  line-height: 1.65;
+  display: block;
 }
 
 /* Cultural Annotations Inset */
