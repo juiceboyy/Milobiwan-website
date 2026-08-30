@@ -1,7 +1,9 @@
-/**
- * Milobiwan's Poetry & Spoken Word Repertoire
- * Languages: Sranantongo, Nederlands, English, Fusion
- */
+import {
+  getPoemsFromFirestore,
+  savePoemToFirestore,
+  deletePoemFromFirestore,
+  onPoemsSnapshot
+} from './firebase-db.js';
 
 const STORAGE_KEY = 'milobiwan_poems_cache';
 
@@ -32,25 +34,28 @@ export const initialPoems = [];
 
 let inMemoryCache = null;
 
+/**
+ * Haalt alle gedichten op uit Firebase Firestore
+ */
 export async function fetchPoems() {
   try {
-    const res = await fetch('/api/poems');
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && Array.isArray(data.poems) && data.poems.length > 0) {
-        inMemoryCache = data.poems;
-        saveToLocalCache(data.poems);
-        return data.poems;
-      }
+    const livePoems = await getPoemsFromFirestore();
+    if (Array.isArray(livePoems)) {
+      inMemoryCache = livePoems;
+      saveToLocalCache(livePoems);
+      return livePoems;
     }
   } catch (err) {
-    console.warn('Centrale database niet bereikbaar, behoud lokale cache:', err);
+    console.warn('Firestore offline/fallback naar lokale cache:', err);
   }
   return getStoredPoems();
 }
 
-export async function savePoemToDb(poem, pin) {
-  // 1. Altijd eerst direct opslaan in veilige lokale opslag
+/**
+ * Slaat een gedicht op in de Firebase Firestore Cloud Database
+ */
+export async function savePoemToDb(poem) {
+  // 1. Directe lokale veilige cache bijwerking
   const current = getStoredPoems();
   const existingIdx = current.findIndex(p => p.id === poem.id);
   let updated = [];
@@ -63,57 +68,44 @@ export async function savePoemToDb(poem, pin) {
   inMemoryCache = updated;
   saveToLocalCache(updated);
 
-  // 2. Probeer te synchroniseren naar de cloud API
+  // 2. Schrijf naar Firebase Firestore
   try {
-    const res = await fetch('/api/poems', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-studio-pin': pin
-      },
-      body: JSON.stringify({ poem })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (res.ok && data.success && Array.isArray(data.poems) && data.poems.length > 0) {
-      inMemoryCache = data.poems;
-      saveToLocalCache(data.poems);
-      return { success: true, poems: data.poems };
-    }
+    await savePoemToFirestore(poem);
+    return { success: true, poems: updated };
   } catch (err) {
-    console.warn('Cloud sync tijdelijk offline, lokaal veilig opgeslagen:', err);
+    console.error('Fout bij opslaan in Firestore:', err);
+    return { success: false, error: err.message || 'Kon niet opslaan in Firestore' };
   }
-
-  return { success: true, poems: updated };
 }
 
-export async function deletePoemFromDb(id, pin) {
-  // 1. Direct lokaal bijwerken
+/**
+ * Verwijdert een gedicht uit Firebase Firestore
+ */
+export async function deletePoemFromDb(id) {
   const current = getStoredPoems();
   const updated = current.filter(p => p.id !== id);
   inMemoryCache = updated;
   saveToLocalCache(updated);
 
-  // 2. Probeer te synchroniseren naar de cloud API
   try {
-    const res = await fetch('/api/poems', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-studio-pin': pin
-      },
-      body: JSON.stringify({ id })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (res.ok && data.success && Array.isArray(data.poems)) {
-      inMemoryCache = data.poems;
-      saveToLocalCache(data.poems);
-      return { success: true, poems: data.poems };
-    }
+    await deletePoemFromFirestore(id);
+    return { success: true, poems: updated };
   } catch (err) {
-    console.warn('Cloud delete tijdelijk offline, lokaal verwijderd:', err);
+    console.error('Fout bij verwijderen uit Firestore:', err);
+    return { success: false, error: err.message || 'Kon niet verwijderen uit Firestore' };
   }
+}
 
-  return { success: true, poems: updated };
+export function subscribeToLivePoems(callback) {
+  return onPoemsSnapshot((livePoems) => {
+    if (Array.isArray(livePoems)) {
+      inMemoryCache = livePoems;
+      saveToLocalCache(livePoems);
+      if (typeof callback === 'function') {
+        callback(livePoems);
+      }
+    }
+  });
 }
 
 export function getStoredPoems() {

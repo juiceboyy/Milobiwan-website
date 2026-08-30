@@ -1,4 +1,4 @@
-import { fetchPoems, getStoredPoems } from './poems-data.js';
+import { fetchPoems, getStoredPoems, subscribeToLivePoems } from './poems-data.js';
 
 let currentFilter = 'all';
 let activePoemId = '';
@@ -19,8 +19,8 @@ export function initPoetryViewer() {
 
   renderAnthology(indexContainer, stageContainer, currentFilter);
 
-  // Asynchrone live synchronisatie met centrale Netlify Blobs database
-  fetchPoems().then((livePoems) => {
+  // Real-time Firebase Firestore database synchronisatie
+  subscribeToLivePoems((livePoems) => {
     if (livePoems && livePoems.length > 0 && !activePoemId) {
       activePoemId = livePoems[0].id;
     }
