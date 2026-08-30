@@ -176,11 +176,11 @@ function setupEditor() {
         resetForm();
         alert(`Gedicht "${title}" is succesvol opgeslagen in Firebase Firestore!`);
       } else {
-        alert(`Fout bij opslaan: ${result.error}`);
+        alert(`Fout bij opslaan in Firebase Firestore:\n${result.error}`);
       }
     } catch (err) {
-      console.error(err);
-      alert('Verbindingsfout bij het opslaan.');
+      console.error('Fout bij opslaan in Firebase:', err);
+      alert(`Verbindingsfout bij het opslaan in Firebase Firestore:\n${err.message || err}`);
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;

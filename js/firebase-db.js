@@ -66,7 +66,18 @@ export async function savePoemToFirestore(poem) {
   try {
     const docRef = doc(db, POEMS_COLLECTION, poem.id);
     const dataToSave = {
-      ...poem,
+      id: String(poem.id || ''),
+      title: String(poem.title || ''),
+      language: String(poem.language || 'sranan'),
+      languageLabel: String(poem.languageLabel || ''),
+      flag: String(poem.flag || ''),
+      badgeClass: String(poem.badgeClass || ''),
+      tags: Array.isArray(poem.tags) ? poem.tags : [],
+      theme: String(poem.theme || ''),
+      snippet: String(poem.snippet || ''),
+      fullText: String(poem.fullText || ''),
+      translationNote: String(poem.translationNote || ''),
+      imageUrl: String(poem.imageUrl || ''),
       updatedAt: new Date().toISOString()
     };
     await setDoc(docRef, dataToSave);

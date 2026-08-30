@@ -55,22 +55,21 @@ export async function fetchPoems() {
  * Slaat een gedicht op in de Firebase Firestore Cloud Database
  */
 export async function savePoemToDb(poem) {
-  // 1. Directe lokale veilige cache bijwerking
-  const current = getStoredPoems();
-  const existingIdx = current.findIndex(p => p.id === poem.id);
-  let updated = [];
-  if (existingIdx >= 0) {
-    updated = [...current];
-    updated[existingIdx] = poem;
-  } else {
-    updated = [poem, ...current];
-  }
-  inMemoryCache = updated;
-  saveToLocalCache(updated);
-
-  // 2. Schrijf naar Firebase Firestore
   try {
     await savePoemToFirestore(poem);
+
+    const current = getStoredPoems();
+    const existingIdx = current.findIndex(p => p.id === poem.id);
+    let updated = [];
+    if (existingIdx >= 0) {
+      updated = [...current];
+      updated[existingIdx] = poem;
+    } else {
+      updated = [poem, ...current];
+    }
+    inMemoryCache = updated;
+    saveToLocalCache(updated);
+
     return { success: true, poems: updated };
   } catch (err) {
     console.error('Fout bij opslaan in Firestore:', err);
@@ -82,13 +81,14 @@ export async function savePoemToDb(poem) {
  * Verwijdert een gedicht uit Firebase Firestore
  */
 export async function deletePoemFromDb(id) {
-  const current = getStoredPoems();
-  const updated = current.filter(p => p.id !== id);
-  inMemoryCache = updated;
-  saveToLocalCache(updated);
-
   try {
     await deletePoemFromFirestore(id);
+
+    const current = getStoredPoems();
+    const updated = current.filter(p => p.id !== id);
+    inMemoryCache = updated;
+    saveToLocalCache(updated);
+
     return { success: true, poems: updated };
   } catch (err) {
     console.error('Fout bij verwijderen uit Firestore:', err);
