@@ -88,7 +88,8 @@ async function copyImageBlobToClipboard(file) {
 
 async function createPoemShareFile(poem) {
   const canvas = document.createElement('canvas');
-  if (poem.imageUrl) {
+  const isMultiPage = Array.isArray(poem.imagePages) && poem.imagePages.length > 1;
+  if (poem.imageUrl && !isMultiPage) {
     await renderImageWithCopyright(canvas, poem);
   } else {
     renderTextQuoteCard(canvas, poem);
