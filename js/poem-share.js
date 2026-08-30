@@ -15,29 +15,26 @@ export async function sharePoem(poem, triggerBtn = null) {
 
   try {
     const file = await createPoemShareFile(poem);
-    // When sharing a file, only include files (and title) to avoid double-attachments in WhatsApp/iMessage
+    // Strictly pass only the file object to ensure native share sheet & clipboard only carry ONE single image
     const shareData = {
-      title: `${poem.title} — Milobiwan`,
       files: [file]
     };
 
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    if (navigator.canShare && navigator.canShare(shareData)) {
       await navigator.share(shareData);
       showShareToast('Gedeeld', 'Het beeld is succesvol gedeeld.');
-    } else if (navigator.share) {
-      try {
-        await navigator.share({ title: poem.title, url: window.location.href });
-        triggerFileDownload(file);
-      } catch (err) {
-        if (err.name !== 'AbortError') fallbackShare(file);
-      }
     } else {
-      fallbackShare(file);
+      await copyImageBlobToClipboard(file);
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
       console.error('Fout bij delen van gedicht:', error);
-      showShareToast('Delen niet gelukt', 'Er is een fout opgetreden bij het genereren.');
+      try {
+        const file = await createPoemShareFile(poem);
+        await copyImageBlobToClipboard(file);
+      } catch {
+        showShareToast('Delen niet gelukt', 'Er is een fout opgetreden bij het genereren.');
+      }
     }
   } finally {
     if (triggerBtn) {
@@ -47,6 +44,46 @@ export async function sharePoem(poem, triggerBtn = null) {
       if (originalContent) triggerBtn.innerHTML = originalContent;
     }
   }
+}
+
+export async function copyPoemImage(poem, triggerBtn = null) {
+  if (!poem) return;
+  const originalContent = triggerBtn ? triggerBtn.innerHTML : null;
+  if (triggerBtn) {
+    triggerBtn.disabled = true;
+    triggerBtn.style.opacity = '0.7';
+  }
+
+  try {
+    const file = await createPoemShareFile(poem);
+    await copyImageBlobToClipboard(file);
+  } catch (err) {
+    console.error('Kopiëren mislukt:', err);
+    showShareToast('Niet gelukt', 'Kon afbeelding niet direct kopiëren.');
+  } finally {
+    if (triggerBtn) {
+      triggerBtn.disabled = false;
+      triggerBtn.style.opacity = '1';
+      if (originalContent) triggerBtn.innerHTML = originalContent;
+    }
+  }
+}
+
+async function copyImageBlobToClipboard(file) {
+  if (navigator.clipboard?.write && window.ClipboardItem) {
+    try {
+      const blob = file.slice(0, file.size, 'image/png');
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ]);
+      showShareToast('Afbeelding Gekopieerd', 'Plak het beeld direct in WhatsApp (Cmd+V of Ctrl+V).');
+      return;
+    } catch (e) {
+      console.warn('Clipboard write fallback to download:', e);
+    }
+  }
+  triggerFileDownload(file);
+  showShareToast('Afbeelding Gedownload', 'De afbeelding is opgeslagen op je apparaat.');
 }
 
 async function createPoemShareFile(poem) {
@@ -135,9 +172,9 @@ function renderTextQuoteCard(canvas, poem) {
   });
 
   const bodyBlockHeight = wrappedPoemLines.length * poemLineHeight;
-  const totalContentHeight = titleBlockHeight + bodyBlockHeight + 120; // 120 footer buffer
+  const totalContentHeight = titleBlockHeight + bodyBlockHeight + 120;
 
-  // Calculate dynamic start Y (vertically centered or balanced)
+  // Calculate dynamic start Y
   let startY = Math.max(120, Math.round((height - totalContentHeight) / 2));
 
   // Render Title
@@ -159,7 +196,7 @@ function renderTextQuoteCard(canvas, poem) {
   ctx.stroke();
   startY += 48;
 
-  // Render Poem Lines (no line numbers, clear & spacious)
+  // Render Poem Lines
   ctx.font = `400 ${poemFontSize}px "Fraunces", Georgia, serif`;
   ctx.fillStyle = '#ede6de';
 
@@ -177,7 +214,7 @@ function renderTextQuoteCard(canvas, poem) {
     ctx.fillText('... (lees verder op milobiwan.nl)', paddingX, startY + 8);
   }
 
-  // Footer Attribution (Bottom-Right, same size as text, prominent)
+  // Footer Attribution
   const footerFontSize = poemFontSize;
   ctx.font = `600 ${footerFontSize}px "Fraunces", Georgia, serif`;
   ctx.fillStyle = '#d9822b';
@@ -206,18 +243,6 @@ function wrapText(ctx, text, maxWidth) {
   }
   if (currentLine) lines.push(currentLine);
   return lines;
-}
-
-async function fallbackShare(file) {
-  triggerFileDownload(file);
-  if (navigator.clipboard?.write && window.ClipboardItem) {
-    try {
-      await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
-    } catch (e) {
-      // Ignore clipboard failure on unsupported contexts
-    }
-  }
-  showShareToast('Afbeelding Opgeslagen', 'De afbeelding is gedownload en gekopieerd naar het klembord.');
 }
 
 function triggerFileDownload(file) {
