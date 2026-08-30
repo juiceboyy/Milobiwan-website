@@ -1,5 +1,4 @@
 import { poemsData } from './poems-data.js';
-import { playPoemTrack } from './audio-player.js';
 
 let currentFilter = 'all';
 let activePoemId = poemsData[0]?.id || '';
@@ -114,8 +113,8 @@ function renderReadingStage(stageEl, poemId) {
         <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel} // ${poem.theme}</span>
         <h3>${poem.title}</h3>
       </div>
-      <button class="btn btn-secondary btn-sm" id="stageListenBtn">
-        <span>Beluister Audio (${poem.audioDuration})</span>
+      <button class="link-editorial" id="openFullModalBtn">
+        <span>Volledig Scherm &rarr;</span>
       </button>
     </div>
 
@@ -131,20 +130,12 @@ function renderReadingStage(stageEl, poemId) {
     ` : ''}
 
     <div class="stage-footer-actions">
-      <button class="link-editorial" id="openFullModalBtn">
-        <span>Lees in Volledig Scherm &rarr;</span>
-      </button>
       <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
         VOCAL ARCHIVE // ${poem.id.toUpperCase()}
       </span>
+      <a href="#contact" class="btn btn-secondary btn-sm">Draag voor op Evenement</a>
     </div>
   `;
-
-  // Attach Listeners
-  const listenBtn = stageEl.querySelector('#stageListenBtn');
-  if (listenBtn) {
-    listenBtn.addEventListener('click', () => playPoemTrack(poem));
-  }
 
   const modalBtn = stageEl.querySelector('#openFullModalBtn');
   if (modalBtn) {
@@ -162,7 +153,6 @@ export function openPoemModal(poemId) {
   const modalTheme = document.getElementById('modalPoemTheme');
   const modalBody = document.getElementById('modalPoemBody');
   const modalGlossary = document.getElementById('modalPoemGlossary');
-  const modalListenBtn = document.getElementById('modalListenBtn');
 
   if (modalTitle) modalTitle.textContent = poem.title;
   if (modalBadge) {
@@ -191,10 +181,6 @@ export function openPoemModal(poemId) {
     } else {
       modalGlossary.style.display = 'none';
     }
-  }
-
-  if (modalListenBtn) {
-    modalListenBtn.onclick = () => playPoemTrack(poem);
   }
 
   if (typeof dialog.showModal === 'function') {

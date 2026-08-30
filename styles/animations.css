@@ -2,14 +2,6 @@
    Milobiwan (Mieke) – Micro-Animations & Reduced Motion
    ========================================================================== */
 
-/* Visualizer Pulse */
-@keyframes visualizerPulse {
-  0%   { height: 4px; }
-  35%  { height: 28px; }
-  70%  { height: 10px; }
-  100% { height: 34px; }
-}
-
 /* Status Indicator Pulse */
 @keyframes statusPulse {
   0%   { opacity: 0.4; transform: scale(0.9); }
@@ -46,11 +38,6 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  .visualizer-bar.playing {
-    animation: none !important;
-    height: 16px !important;
   }
 
   .status-dot {

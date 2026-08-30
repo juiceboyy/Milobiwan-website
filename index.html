@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/theme.css"><link rel="stylesheet" href="styles/layout.css"><link rel="stylesheet" href="styles/header.css"><link rel="stylesheet" href="styles/hero.css">
-  <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css"><link rel="stylesheet" href="styles/audio-booking.css"><link rel="stylesheet" href="styles/animations.css"><link rel="stylesheet" href="styles/footer.css">
+  <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css"><link rel="stylesheet" href="styles/agenda-booking.css"><link rel="stylesheet" href="styles/animations.css"><link rel="stylesheet" href="styles/footer.css">
 </head>
 <body>
   <!-- Architectural Masthead Header -->
@@ -24,8 +24,8 @@
         <ul class="nav-menu">
           <li><a href="#roots" class="nav-link">01 // STEM</a></li>
           <li><a href="#archief" class="nav-link">02 // ARCHIEF</a></li>
-          <li><a href="#soundscape" class="nav-link">03 // SOUNDSCAPE</a></li>
-          <li><a href="#podia" class="nav-link">04 // PODIA</a></li>
+          <li><a href="#podia" class="nav-link">03 // PODIA</a></li>
+          <li><a href="#contact" class="nav-link">04 // CONTACT</a></li>
         </ul>
         <a href="#contact" class="btn btn-primary btn-sm">Boek Voordracht</a>
       </nav>
@@ -45,9 +45,7 @@
       <!-- 1. Top Micro-Bar -->
       <div class="hero-micro-bar">
         <div class="hero-status-tag"><span class="status-dot"></span><span>VOCAL ARCHIVE // PARAMARIBO • AMSTERDAM</span></div>
-        <button class="hero-audio-pill" id="heroAudioBtn" aria-label="Beluister live fragment">
-          <span>▶</span><span>Kandra Faya (Live Recital)</span>
-        </button>
+        <a href="#contact" class="hero-audio-pill"><span>✦</span><span>STAGE RECITAL &amp; WORKSHOPS</span></a>
       </div>
 
       <!-- 2. Centerpiece Narrative -->
@@ -59,7 +57,7 @@
         </p>
         <div class="hero-actions-row">
           <a href="#archief" class="btn btn-accent">Open het Archief &rarr;</a>
-          <a href="#soundscape" class="btn hero-btn-secondary">Acoustic Suite</a>
+          <a href="#contact" class="btn hero-btn-secondary">Boek een Voordracht</a>
         </div>
       </div>
 
@@ -139,41 +137,11 @@
       </div>
     </section>
 
-    <!-- Section 03: Soundscape Chamber -->
-    <section class="section" id="soundscape">
-      <div class="container">
-        <div class="soundscape-suite">
-          <div class="grid-12" style="align-items: center;">
-            <div class="col-span-6">
-              <span class="mono-tag">03 // ACOUSTIC SUITE</span>
-              <h2 class="section-title" style="margin-bottom: var(--space-3);">De <em>Luisterkamer</em></h2>
-              <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: var(--space-6);">Spoken word is geschreven voor het oor. Activeer de ambient soundtrack om de diepe D3-basresonantie en de djembe-hartslag te ervaren.</p>
-              <button class="btn btn-accent" id="audioPlayBtn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                <span>Start Soundscape</span>
-              </button>
-            </div>
-            <div class="col-span-6 suite-player-box">
-              <div class="suite-track-info">
-                <div><h4 id="currentAudioTitle">Kandra Faya — Live Recital</h4><p id="currentAudioSub">SRANANTONGO // WORTELS & KRACHT (2:14)</p></div>
-                <span class="badge badge-sranan">ACTIVE STEM</span>
-              </div>
-              <div class="visualizer-stage" aria-hidden="true">
-                <div class="visualizer-bar"></div><div class="visualizer-bar"></div><div class="visualizer-bar"></div><div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div><div class="visualizer-bar"></div><div class="visualizer-bar"></div><div class="visualizer-bar"></div>
-              </div>
-              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); text-align: center;">WEB AUDIO AMBIENT ENGINE • 146.83HZ D3 ROOT PULSE</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 04: Performance Ledger -->
+    <!-- Section 03: Performance Ledger -->
     <section class="section" id="podia">
       <div class="container">
         <div class="section-header">
-          <span class="mono-tag">04 // PODIUM LEDGER</span>
+          <span class="mono-tag">03 // PODIUM LEDGER</span>
           <h2 class="section-title">Optredens & <em>Agenda</em></h2>
           <p class="section-desc">Live voordrachten tijdens literaire salons, festivals en theaterproducties.</p>
         </div>
@@ -197,11 +165,11 @@
       </div>
     </section>
 
-    <!-- Section 05: Commissioning Studio (5 + 7 Bento) -->
+    <!-- Section 04: Commissioning Studio (5 + 7 Bento) -->
     <section class="section" id="contact">
       <div class="container">
         <div class="section-header">
-          <span class="mono-tag">05 // COMMISSIONING & BOOKINGS</span>
+          <span class="mono-tag">04 // COMMISSIONING & BOOKINGS</span>
           <h2 class="section-title">Boek Milobiwan voor <em>jouw evenement</em></h2>
           <p class="section-desc">Voor festivals, maatwerkpoëzie, culturele manifestaties en educatieve workshops.</p>
         </div>
@@ -251,9 +219,8 @@
           <ul class="footer-nav-list">
             <li><a href="#roots">01 // STEM</a></li>
             <li><a href="#archief">02 // ARCHIEF</a></li>
-            <li><a href="#soundscape">03 // SOUNDSCAPE</a></li>
-            <li><a href="#podia">04 // PODIA</a></li>
-            <li><a href="#contact">05 // CONTACT</a></li>
+            <li><a href="#podia">03 // PODIA</a></li>
+            <li><a href="#contact">04 // CONTACT</a></li>
           </ul>
         </div>
         <div class="col-span-3">
@@ -282,7 +249,7 @@
       <div id="modalPoemBody" style="margin-bottom: var(--space-6);"></div>
       <div id="modalPoemGlossary" class="stage-glossary-box" style="display: none;"></div>
       <div style="display: flex; justify-content: flex-end;">
-        <button class="btn btn-secondary btn-sm" id="modalListenBtn">Beluister in Soundscape</button>
+        <a href="#contact" class="btn btn-secondary btn-sm" id="modalBookingBtn">Boek Voordracht</a>
       </div>
     </div>
   </dialog>
