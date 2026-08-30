@@ -232,6 +232,7 @@ export function updateLivePreview() {
     `).join('');
   }
 
+  const currentImg = ocrManager ? ocrManager.getImageData() : '';
   if (previewArtwork && previewArtworkImg) {
     previewArtwork.style.display = currentImg ? 'block' : 'none';
     if (currentImg) previewArtworkImg.src = currentImg;
