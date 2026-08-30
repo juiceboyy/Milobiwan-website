@@ -59,7 +59,7 @@ export function setupImageOcr({ onOcrSuccess, onImageChanged }) {
     setLoading(true, 'Afbeelding optimaliseren en tekst uitlezen met AI...');
 
     try {
-      const compressedDataUrl = await compressImage(file, 1200, 0.82);
+      const compressedDataUrl = await compressImage(file, 900, 0.75);
       currentImageDataUrl = compressedDataUrl;
 
       // Update thumbnail preview
