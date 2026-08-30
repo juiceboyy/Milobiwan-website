@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles/theme.css"><link rel="stylesheet" href="styles/layout.css"><link rel="stylesheet" href="styles/header.css">
   <link rel="stylesheet" href="styles/buttons-badges.css"><link rel="stylesheet" href="styles/poetry-card.css"><link rel="stylesheet" href="styles/admin.css">
   <link rel="stylesheet" href="styles/admin-media.css">
+  <link rel="stylesheet" href="styles/admin-events.css">
 </head>
 <body>
   <header class="site-header">
@@ -50,13 +51,23 @@
     <section class="studio-workspace" id="studioWorkspace">
       <div class="studio-topbar">
         <div>
-          <span class="mono-tag">[ REPERTOIRE BEHEER ]</span>
-          <h1 style="font-size: 2.2rem; margin-top: var(--space-1);">Poëzie &amp; Spoken Word Studio</h1>
-        </div>
-        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
-          <a href="#editorSection" class="btn btn-primary btn-sm" id="newPoemBtn">+ Nieuw Werk Toevoegen</a>
+          <span class="mono-tag">[ REPERTOIRE &amp; AGENDABEHEER ]</span>
+          <h1 style="font-size: 2.2rem; margin-top: var(--space-1);">Milobiwan Studio</h1>
         </div>
       </div>
+
+      <!-- Studio Tabs Navigation -->
+      <nav class="studio-tabs" aria-label="Studio Secties">
+        <button type="button" class="studio-tab-btn active" data-tab="poemsTabPane">
+          <span>01 // Poëzie &amp; Repertoire</span>
+        </button>
+        <button type="button" class="studio-tab-btn" data-tab="eventsTabPane">
+          <span>02 // Optredens &amp; Agenda</span>
+        </button>
+      </nav>
+
+      <!-- 2A. Poems Workspace Pane -->
+      <div class="tab-pane active" id="poemsTabPane">
 
       <div class="studio-grid" id="editorSection">
         <!-- Editor Form -->
@@ -185,6 +196,67 @@
         </div>
         <div id="poemsListContainer"></div>
       </div>
+      </div> <!-- End #poemsTabPane -->
+
+      <!-- 2B. Events & Agenda Workspace Pane -->
+      <div class="tab-pane" id="eventsTabPane">
+        <div class="editor-card" id="eventEditorCard">
+          <div class="card-header-bar">
+            <h3 id="eventFormTitle" style="font-size: 1.25rem;">Optreden Toevoegen</h3>
+            <span class="mono-tag" id="eventEditModeIndicator">NIEUW</span>
+          </div>
+
+          <form id="eventForm">
+            <input type="hidden" id="eventId">
+
+            <div class="form-group">
+              <label class="form-label" for="eventTitle">Titel / Evenementnaam *</label>
+              <input type="text" id="eventTitle" class="form-input" required placeholder="bijv. Roots & Rhythm Spoken Word Night">
+            </div>
+
+            <div class="event-form-grid">
+              <div class="form-group">
+                <label class="form-label" for="eventDate">Datum *</label>
+                <input type="date" id="eventDate" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="eventTime">Tijd / Aanvang (optioneel)</label>
+                <input type="text" id="eventTime" class="form-input" placeholder="bijv. 20:00 of 14:00 - 17:00">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="eventLocation">Locatie / Zaal &amp; Stad *</label>
+              <input type="text" id="eventLocation" class="form-input" required placeholder="bijv. Theater Zuidplein, Rotterdam">
+            </div>
+
+            <div class="event-form-grid">
+              <div class="form-group">
+                <label class="form-label" for="eventUrl">Ticket / Info Link (optioneel)</label>
+                <input type="url" id="eventUrl" class="form-input" placeholder="https://... (leeg = contactformulier)">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="eventBtnText">Knoptekst</label>
+                <input type="text" id="eventBtnText" class="form-input" value="Reserveren" placeholder="Reserveren, Tickets, Aanmelden...">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6);">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">Optreden Opslaan</button>
+              <button type="button" class="btn btn-secondary" id="resetEventBtn">Wissen</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Existing Events Manager -->
+        <div class="manager-card" style="margin-top: var(--space-8);">
+          <div class="card-header-bar">
+            <h3 style="font-size: 1.25rem;">Geplande &amp; Eerdere Optredens (<span id="eventCount">0</span>)</h3>
+            <span class="mono-tag">FIREBASE FIRESTORE CLOUD DATABASE</span>
+          </div>
+          <div id="eventsListContainer"></div>
+        </div>
+      </div> <!-- End #eventsTabPane -->
     </section>
   </main>
 

@@ -4,10 +4,12 @@
 
 import { initNavigation } from './navigation.js';
 import { initPoetryViewer } from './poetry-viewer.js';
+import { initAgendaViewer } from './agenda-viewer.js';
 
 function init() {
   initNavigation();
   initPoetryViewer();
+  initAgendaViewer();
   initBookingForm();
 }
 

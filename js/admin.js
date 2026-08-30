@@ -8,6 +8,7 @@ import { setupAiTitleSuggestions } from './admin-ai.js';
 import { setupImageOcr } from './admin-ocr.js';
 import { refreshPoemsList } from './admin-list.js';
 import { fetchPoems, savePoemToDb, getStoredPoems, subscribeToLivePoems, LANGUAGE_CONFIG, slugify } from './poems-data.js';
+import { initAdminEvents } from './admin-events.js';
 
 let ocrManager = null;
 
@@ -16,11 +17,30 @@ function init() {
     await fetchPoems();
     refreshPoemsList({ onEditPoem: editPoem });
     updateLivePreview();
+    initAdminEvents();
     subscribeToLivePoems(() => {
       refreshPoemsList({ onEditPoem: editPoem });
     });
   });
+  setupStudioTabs();
   setupEditor();
+}
+
+function setupStudioTabs() {
+  const tabBtns = document.querySelectorAll('.studio-tab-btn');
+  const panes = document.querySelectorAll('.tab-pane');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.remove('active'));
+      panes.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const targetPane = document.getElementById(targetId);
+      if (targetPane) targetPane.classList.add('active');
+    });
+  });
 }
 
 function setupEditor() {
@@ -206,23 +226,13 @@ export function updateLivePreview() {
     `).join('');
   }
 
-  const currentImg = ocrManager?.getImageData() || '';
   if (previewArtwork && previewArtworkImg) {
-    if (currentImg) {
-      previewArtworkImg.src = currentImg;
-      previewArtwork.style.display = 'block';
-    } else {
-      previewArtwork.style.display = 'none';
-    }
+    previewArtwork.style.display = currentImg ? 'block' : 'none';
+    if (currentImg) previewArtworkImg.src = currentImg;
   }
-
   if (previewGlossary && previewGlossaryText) {
-    if (note.trim()) {
-      previewGlossary.style.display = 'block';
-      previewGlossaryText.textContent = note;
-    } else {
-      previewGlossary.style.display = 'none';
-    }
+    previewGlossary.style.display = note.trim() ? 'block' : 'none';
+    if (note.trim()) previewGlossaryText.textContent = note;
   }
 }
 

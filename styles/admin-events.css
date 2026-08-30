@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Milobiwan (Mieke) – Studio Events & Tabbed Management
+   ========================================================================== */
+
+/* Studio Nav Tabs */
+.studio-tabs {
+  display: flex;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-2);
+}
+
+.studio-tab-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.studio-tab-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+}
+
+.studio-tab-btn.active {
+  color: var(--accent);
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel);
+  font-weight: var(--font-semibold);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Event Admin Specifics */
+.event-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .event-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.event-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.event-admin-row {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  transition: box-shadow var(--trans-fast), background-color var(--trans-fast);
+}
+
+.event-admin-row:hover {
+  background-color: var(--bg-surface-elevated);
+  box-shadow: var(--border-subpixel-hover);
+}
+
+.event-admin-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: var(--tracking-wide);
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.event-admin-info h4 {
+  font-size: 1.1rem;
+  font-weight: var(--font-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.event-admin-sub {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.event-badge-past {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  padding: 2px 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+}
+
+.event-badge-upcoming {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  padding: 2px 6px;
+  background-color: rgba(212, 163, 115, 0.15);
+  color: var(--accent);
+  border-radius: var(--radius-sm);
+}
+
+.event-admin-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+@media (max-width: 768px) {
+  .event-admin-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .event-admin-actions {
+    justify-content: flex-end;
+  }
+}
