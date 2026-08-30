@@ -43,7 +43,7 @@ export function openPoemModal(poemId) {
     const imagePagesHtml = pages.map((pImg, idx) => `
       <div class="multipage-page-item" style="margin-bottom: var(--space-4);">
         ${pages.length > 1 ? `<div class="multipage-page-badge">[ PAGINA ${idx + 1} / ${pages.length} ]</div>` : ''}
-        <img src="${pImg}" alt="${poem.title} pagina ${idx + 1}" style="max-width: 100%; max-height: 540px; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+        <img src="${pImg}" alt="${poem.title} pagina ${idx + 1}" style="max-width: 100%; max-height: 76vh; object-fit: contain; border-radius: var(--radius-md); box-shadow: 0 12px 36px rgba(0,0,0,0.6);">
       </div>
     `).join('');
 

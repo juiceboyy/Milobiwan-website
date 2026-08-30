@@ -1,37 +1,42 @@
 /* ==========================================================================
-   Milobiwan – Fullscreen Modal & Dialog Styles
+   Milobiwan – Fullscreen Editorial Modal & Dialog Styles
    ========================================================================== */
 
 .poem-dialog {
   border: none;
   border-radius: var(--radius-md);
-  max-width: 680px;
-  width: 90%;
+  max-width: min(1080px, 94vw);
+  width: 94vw;
   margin: auto;
   padding: 0;
   background-color: var(--bg-surface);
-  box-shadow: var(--border-subpixel), 0 24px 60px rgba(0, 0, 0, 0.8);
+  box-shadow: var(--border-subpixel), 0 28px 70px rgba(0, 0, 0, 0.85);
   color: var(--text-primary);
 }
 
 .poem-dialog::backdrop {
-  background: rgba(12, 12, 12, 0.88);
-  backdrop-filter: blur(10px);
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(12px);
 }
 
 .modal-inner {
-  padding: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(1.75rem, 5vw, 3.5rem);
   position: relative;
-  max-height: 85vh;
+  max-height: 92vh;
   overflow-y: auto;
+}
+
+.modal-inner .poem-line-text {
+  font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  line-height: 1.7;
 }
 
 .modal-close-btn {
   position: absolute;
   top: var(--space-4);
   right: var(--space-4);
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: var(--radius-sm);
   background-color: var(--bg-surface-elevated);
   box-shadow: var(--border-subpixel);
@@ -39,8 +44,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   transition: all var(--trans-fast);
+  cursor: pointer;
+  z-index: 10;
 }
 
 .modal-close-btn:hover {
