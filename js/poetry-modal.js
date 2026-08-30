@@ -1,5 +1,4 @@
 import { getStoredPoems } from './poems-data.js';
-import { sharePoem } from './poem-share.js';
 
 export function openPoemModal(poemId) {
   const allPoems = getStoredPoems();
@@ -12,14 +11,6 @@ export function openPoemModal(poemId) {
   const modalTheme = document.getElementById('modalPoemTheme');
   const modalBody = document.getElementById('modalPoemBody');
   const modalGlossary = document.getElementById('modalPoemGlossary');
-  const modalShareBtn = document.getElementById('modalShareBtn');
-
-  if (modalShareBtn) {
-    // Clone node or replace onclick to clear previous poem listeners
-    const newShareBtn = modalShareBtn.cloneNode(true);
-    modalShareBtn.parentNode.replaceChild(newShareBtn, modalShareBtn);
-    newShareBtn.addEventListener('click', () => sharePoem(poem, newShareBtn));
-  }
 
   if (modalTitle) modalTitle.textContent = poem.title;
   if (modalBadge) {
@@ -44,16 +35,7 @@ export function openPoemModal(poemId) {
   if (modalBody) {
     const hasImage = Boolean(poem.imageUrl);
     const lines = (poem.fullText || '').split('\n');
-    const textHtml = `
-      <div id="modalTextSection" style="${hasImage ? 'display: none;' : 'display: block;'}">
-        ${lines.map(line => `
-          <div class="poem-line-row">
-            <span class="poem-line-text">${line || '&nbsp;'}</span>
-          </div>
-        `).join('')}
-      </div>
-    `;
-
+    
     const pages = Array.isArray(poem.imagePages) && poem.imagePages.length > 0
       ? poem.imagePages
       : (poem.imageUrl ? [poem.imageUrl] : []);
@@ -65,14 +47,17 @@ export function openPoemModal(poemId) {
       </div>
     `).join('');
 
-    const imageHtml = hasImage ? `
-      <div id="modalImageSection" style="text-align: center; margin-bottom: var(--space-6);">
-        <div style="display: flex; justify-content: center; margin-bottom: var(--space-4);">
-          <div class="view-mode-tabs">
-            <button class="view-tab-btn active" id="modalTabImageBtn">Beeld</button>
-            <button class="view-tab-btn" id="modalTabTextBtn">Tekst</button>
-          </div>
+    const tabsHtml = hasImage ? `
+      <div style="display: flex; justify-content: center; margin-bottom: var(--space-6);">
+        <div class="view-mode-tabs">
+          <button class="view-tab-btn active" id="modalTabImageBtn">Beeld</button>
+          <button class="view-tab-btn" id="modalTabTextBtn">Tekst</button>
         </div>
+      </div>
+    ` : '';
+
+    const imageSectionHtml = hasImage ? `
+      <div id="modalImageSection" style="text-align: center; margin-bottom: var(--space-6);">
         ${imagePagesHtml}
         <div class="artwork-copyright-footer" style="margin-top: var(--space-4);">
           <div class="artwork-copyright-text">&copy; Milobiwan &bull; milobiwan.nl &bull; Alle rechten voorbehouden</div>
@@ -80,7 +65,17 @@ export function openPoemModal(poemId) {
       </div>
     ` : '';
 
-    modalBody.innerHTML = imageHtml + textHtml;
+    const textSectionHtml = `
+      <div id="modalTextSection" style="${hasImage ? 'display: none;' : 'display: block;'}">
+        ${lines.map(line => `
+          <div class="poem-line-row">
+            <span class="poem-line-text">${line || '&nbsp;'}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    modalBody.innerHTML = tabsHtml + imageSectionHtml + textSectionHtml;
 
     if (hasImage) {
       const modalTabImage = modalBody.querySelector('#modalTabImageBtn');
@@ -92,20 +87,14 @@ export function openPoemModal(poemId) {
         modalTabText.classList.add('active');
         modalTabImage?.classList.remove('active');
         if (txtSec) txtSec.style.display = 'block';
-        if (imgSec) {
-          const img = imgSec.querySelector('img');
-          if (img) img.style.display = 'none';
-        }
+        if (imgSec) imgSec.style.display = 'none';
       });
 
       modalTabImage?.addEventListener('click', () => {
         modalTabImage.classList.add('active');
         modalTabText?.classList.remove('active');
         if (txtSec) txtSec.style.display = 'none';
-        if (imgSec) {
-          const img = imgSec.querySelector('img');
-          if (img) img.style.display = 'inline-block';
-        }
+        if (imgSec) imgSec.style.display = 'block';
       });
     }
   }
