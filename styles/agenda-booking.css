@@ -9,6 +9,35 @@
   gap: var(--space-3);
 }
 
+.agenda-empty {
+  background-color: var(--bg-surface);
+  box-shadow: var(--border-subpixel);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.agenda-empty-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: var(--tracking-widest);
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.agenda-empty p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 500px;
+  margin: 0;
+  line-height: 1.6;
+}
+
 .ledger-row {
   display: grid;
   grid-template-columns: 140px 1fr auto;
