@@ -53,9 +53,29 @@ function renderAnthology(indexEl, stageEl, filter) {
     ? poemsData
     : poemsData.filter(p => p.language === filter);
 
+  if (poemsData.length === 0) {
+    indexEl.innerHTML = `
+      <div style="padding: var(--space-6) var(--space-4); text-align: center;">
+        <span class="mono-tag" style="margin-bottom: var(--space-2); display: inline-block;">ARCHIEF IN VOORBEREIDING</span>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: var(--space-2); line-height: 1.5;">Echte teksten van Milobiwan worden hier binnenkort ingeladen.</p>
+      </div>
+    `;
+    stageEl.innerHTML = `
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; padding: var(--space-8);">
+        <span class="mono-tag" style="margin-bottom: var(--space-3);">[ SPOKEN WORD ARCHIEF ]</span>
+        <h3 style="font-size: 1.8rem; margin-bottom: var(--space-3); color: var(--text-primary);">Wachten op originele teksten</h3>
+        <p style="max-width: 480px; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--space-6);">
+          De officiële en authentieke teksten van Milobiwan (in Sranantongo, Nederlands en Engels) worden klaargemaakt voor het archief.
+        </p>
+        <a href="#contact" class="btn btn-secondary btn-sm">Vraag direct een voordracht aan</a>
+      </div>
+    `;
+    return;
+  }
+
   if (filtered.length === 0) {
-    indexEl.innerHTML = `<p style="padding: 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">GEEN WERKEN IN SELECTIE</p>`;
-    stageEl.innerHTML = `<p style="padding: 2rem; color: var(--text-muted);">Selecteer een andere categorie.</p>`;
+    indexEl.innerHTML = `<p style="padding: 1.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-align: center;">GEEN WERKEN IN DEZE TAAL</p>`;
+    stageEl.innerHTML = `<p style="padding: 2rem; color: var(--text-muted); text-align: center;">Kies een andere taalfilter hierboven.</p>`;
     return;
   }
 
