@@ -1,4 +1,5 @@
 import { getStoredPoems } from './poems-data.js';
+import { sharePoem } from './poem-share.js';
 
 export function openPoemModal(poemId) {
   const allPoems = getStoredPoems();
@@ -11,6 +12,14 @@ export function openPoemModal(poemId) {
   const modalTheme = document.getElementById('modalPoemTheme');
   const modalBody = document.getElementById('modalPoemBody');
   const modalGlossary = document.getElementById('modalPoemGlossary');
+  const modalShareBtn = document.getElementById('modalShareBtn');
+
+  if (modalShareBtn) {
+    // Clone node or replace onclick to clear previous poem listeners
+    const newShareBtn = modalShareBtn.cloneNode(true);
+    modalShareBtn.parentNode.replaceChild(newShareBtn, modalShareBtn);
+    newShareBtn.addEventListener('click', () => sharePoem(poem, newShareBtn));
+  }
 
   if (modalTitle) modalTitle.textContent = poem.title;
   if (modalBadge) {

@@ -1,17 +1,14 @@
 import { getStoredPoems, subscribeToLivePoems } from './poems-data.js';
 import { openPoemModal } from './poetry-modal.js';
+import { sharePoem } from './poem-share.js';
 
 let currentFilter = 'all';
 let currentTagFilter = 'all';
 let activePoemId = '';
 
 export function getPoemTags(poem) {
-  if (Array.isArray(poem.tags) && poem.tags.length > 0) {
-    return poem.tags.map(t => String(t).trim()).filter(Boolean);
-  }
-  if (poem.theme && typeof poem.theme === 'string') {
-    return poem.theme.split(',').map(t => t.trim()).filter(Boolean);
-  }
+  if (Array.isArray(poem.tags) && poem.tags.length > 0) return poem.tags.map(t => String(t).trim()).filter(Boolean);
+  if (poem.theme && typeof poem.theme === 'string') return poem.theme.split(',').map(t => t.trim()).filter(Boolean);
   return [];
 }
 
@@ -26,42 +23,29 @@ export function initPoetryViewer() {
   if (!indexContainer || !stageContainer) return;
 
   const currentPoems = getStoredPoems();
-  if (currentPoems.length > 0 && !activePoemId) {
-    activePoemId = currentPoems[0].id;
-  }
+  if (currentPoems.length > 0 && !activePoemId) activePoemId = currentPoems[0].id;
 
   renderAnthology(indexContainer, stageContainer, tagFilterBar);
 
-  // Real-time Firebase Firestore database synchronisatie
   subscribeToLivePoems((livePoems) => {
-    if (livePoems && livePoems.length > 0 && !activePoemId) {
-      activePoemId = livePoems[0].id;
-    }
+    if (livePoems?.length > 0 && !activePoemId) activePoemId = livePoems[0].id;
     renderAnthology(indexContainer, stageContainer, tagFilterBar);
   });
 
-  // Language Filter Buttons
   filterButtons.forEach(button => {
     button.addEventListener('click', () => {
       filterButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
       currentFilter = button.dataset.filter || 'all';
-
       renderAnthology(indexContainer, stageContainer, tagFilterBar);
     });
   });
 
-  // Modal Dialog Close Handlers
   if (closeBtn && dialog) {
     closeBtn.addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', (e) => {
       const rect = dialog.getBoundingClientRect();
-      const inDialog = (
-        rect.top <= e.clientY &&
-        e.clientY <= rect.top + rect.height &&
-        rect.left <= e.clientX &&
-        e.clientX <= rect.left + rect.width
-      );
+      const inDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
       if (!inDialog) dialog.close();
     });
   }
@@ -69,13 +53,8 @@ export function initPoetryViewer() {
 
 function renderTagFilterBar(allPoems, tagBarEl, onSelectTag) {
   if (!tagBarEl) return;
-
-  // Extract unique tags
   const tagSet = new Set();
-  allPoems.forEach(p => {
-    getPoemTags(p).forEach(tag => tagSet.add(tag));
-  });
-
+  allPoems.forEach(p => getPoemTags(p).forEach(t => tagSet.add(t)));
   const uniqueTags = Array.from(tagSet).sort();
 
   if (uniqueTags.length === 0) {
@@ -88,9 +67,7 @@ function renderTagFilterBar(allPoems, tagBarEl, onSelectTag) {
   tagBarEl.innerHTML = `
     <span class="tag-filter-label">TAGS:</span>
     <button class="tag-chip-btn ${currentTagFilter === 'all' ? 'active' : ''}" data-tag="all">Alles</button>
-    ${uniqueTags.map(tag => `
-      <button class="tag-chip-btn ${currentTagFilter === tag ? 'active' : ''}" data-tag="${tag}">#${tag}</button>
-    `).join('')}
+    ${uniqueTags.map(tag => `<button class="tag-chip-btn ${currentTagFilter === tag ? 'active' : ''}" data-tag="${tag}">#${tag}</button>`).join('')}
   `;
 
   tagBarEl.querySelectorAll('.tag-chip-btn').forEach(btn => {
@@ -103,37 +80,17 @@ function renderTagFilterBar(allPoems, tagBarEl, onSelectTag) {
 
 function renderAnthology(indexEl, stageEl, tagBarEl) {
   const allPoems = getStoredPoems();
+  renderTagFilterBar(allPoems, tagBarEl, () => renderAnthology(indexEl, stageEl, tagBarEl));
 
-  // Render Dynamic Tags Bar
-  renderTagFilterBar(allPoems, tagBarEl, () => {
-    renderAnthology(indexEl, stageEl, tagBarEl);
-  });
-
-  // Compound Filter: Language AND Tag
   const filtered = allPoems.filter(p => {
     const langMatch = currentFilter === 'all' || p.language === currentFilter;
-    const poemTags = getPoemTags(p);
-    const tagMatch = currentTagFilter === 'all' || poemTags.includes(currentTagFilter);
+    const tagMatch = currentTagFilter === 'all' || getPoemTags(p).includes(currentTagFilter);
     return langMatch && tagMatch;
   });
 
   if (allPoems.length === 0) {
-    indexEl.innerHTML = `
-      <div style="padding: var(--space-6) var(--space-4); text-align: center;">
-        <span class="mono-tag" style="margin-bottom: var(--space-2); display: inline-block;">ARCHIEF IN VOORBEREIDING</span>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: var(--space-2); line-height: 1.5;">Originele teksten en beeldopnames worden ingeladen.</p>
-      </div>
-    `;
-    stageEl.innerHTML = `
-      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; padding: var(--space-8);">
-        <span class="mono-tag" style="margin-bottom: var(--space-3);">[ SPOKEN WORD ARCHIEF ]</span>
-        <h3 style="font-size: 1.8rem; margin-bottom: var(--space-3); color: var(--text-primary);">Wachten op originele teksten</h3>
-        <p style="max-width: 480px; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--space-6);">
-          De officiële en authentieke teksten van Milobiwan worden klaargemaakt voor het archief.
-        </p>
-        <a href="#contact" class="btn btn-secondary btn-sm">Vraag direct een voordracht aan</a>
-      </div>
-    `;
+    indexEl.innerHTML = `<div style="padding: var(--space-6) var(--space-4); text-align: center;"><span class="mono-tag" style="margin-bottom: var(--space-2); display: inline-block;">ARCHIEF IN VOORBEREIDING</span><p style="font-size: 0.85rem; color: var(--text-muted); margin-top: var(--space-2); line-height: 1.5;">Originele teksten en beeldopnames worden ingeladen.</p></div>`;
+    stageEl.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; padding: var(--space-8);"><span class="mono-tag" style="margin-bottom: var(--space-3);">[ SPOKEN WORD ARCHIEF ]</span><h3 style="font-size: 1.8rem; margin-bottom: var(--space-3); color: var(--text-primary);">Wachten op originele teksten</h3><p style="max-width: 480px; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--space-6);">De officiële en authentieke teksten van Milobiwan worden klaargemaakt voor het archief.</p><a href="#contact" class="btn btn-secondary btn-sm">Vraag direct een voordracht aan</a></div>`;
     return;
   }
 
@@ -143,11 +100,8 @@ function renderAnthology(indexEl, stageEl, tagBarEl) {
     return;
   }
 
-  if (!filtered.some(p => p.id === activePoemId)) {
-    activePoemId = filtered[0].id;
-  }
+  if (!filtered.some(p => p.id === activePoemId)) activePoemId = filtered[0].id;
 
-  // Render Left Index
   indexEl.innerHTML = `
     <div class="archive-index-header">ARCHIEF INDEX // 0${filtered.length}</div>
     ${filtered.map((poem, idx) => `
@@ -158,7 +112,6 @@ function renderAnthology(indexEl, stageEl, tagBarEl) {
     `).join('')}
   `;
 
-  // Attach Index Click Listeners
   indexEl.querySelectorAll('.anthology-item').forEach(btn => {
     btn.addEventListener('click', () => {
       activePoemId = btn.dataset.id;
@@ -168,7 +121,6 @@ function renderAnthology(indexEl, stageEl, tagBarEl) {
     });
   });
 
-  // Render Right Stage
   renderReadingStage(stageEl, activePoemId);
 }
 
@@ -207,6 +159,9 @@ function renderReadingStage(stageEl, poemId) {
             <button class="view-tab-btn" id="tabTextBtn">Tekst</button>
           </div>
         ` : ''}
+        <button class="link-editorial" id="stageShareBtn" title="Deel als beeld met copyright">
+          <span>Deel Werk &rarr;</span>
+        </button>
         <button class="link-editorial" id="openFullModalBtn">
           <span>Volledig Scherm &rarr;</span>
         </button>
@@ -240,11 +195,13 @@ function renderReadingStage(stageEl, poemId) {
       <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
         VOCAL ARCHIVE // ${poem.id.toUpperCase()}
       </span>
-      <a href="#contact" class="btn btn-secondary btn-sm">Draag voor op Evenement</a>
+      <div style="display: flex; gap: var(--space-2); align-items: center;">
+        <button class="btn btn-secondary btn-sm" id="stageFooterShareBtn">Deel Werk</button>
+        <a href="#contact" class="btn btn-secondary btn-sm">Draag voor op Evenement</a>
+      </div>
     </div>
   `;
 
-  // Attach Tab & Toggle Listeners
   if (hasImage) {
     const tabImage = stageEl.querySelector('#tabImageBtn');
     const tabText = stageEl.querySelector('#tabTextBtn');
@@ -258,7 +215,6 @@ function renderReadingStage(stageEl, poemId) {
       if (textContent) textContent.style.display = 'block';
       if (artworkContent) artworkContent.style.display = 'none';
     };
-
     const showImage = () => {
       tabImage?.classList.add('active');
       tabText?.classList.remove('active');
@@ -271,10 +227,14 @@ function renderReadingStage(stageEl, poemId) {
     tabImage?.addEventListener('click', showImage);
   }
 
+  const shareBtn = stageEl.querySelector('#stageShareBtn');
+  if (shareBtn) shareBtn.addEventListener('click', () => sharePoem(poem, shareBtn));
+
+  const footerShareBtn = stageEl.querySelector('#stageFooterShareBtn');
+  if (footerShareBtn) footerShareBtn.addEventListener('click', () => sharePoem(poem, footerShareBtn));
+
   const modalBtn = stageEl.querySelector('#openFullModalBtn');
-  if (modalBtn) {
-    modalBtn.addEventListener('click', () => openPoemModal(poem.id));
-  }
+  if (modalBtn) modalBtn.addEventListener('click', () => openPoemModal(poem.id));
 }
 
 export { openPoemModal };
