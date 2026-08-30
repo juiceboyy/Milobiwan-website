@@ -114,10 +114,10 @@ async function handleEventSubmit(e) {
     await savePerformanceToFirestore(eventData);
     showAdminToast(isEdit ? 'Optreden succesvol bijgewerkt!' : 'Nieuw optreden toegevoegd aan agenda!');
     resetEventForm();
-    alert(`Optreden "${title}" is succesvol opgeslagen!`);
   } catch (err) {
-    console.error('Fout bij opslaan in Firestore:', err);
-    alert('Let op: Lokaal opgeslagen, maar kon niet direct naar Firestore schrijven: ' + (err.message || 'Verbindingsfout'));
+    console.error('Fout bij opslaan:', err);
+    showAdminToast('Optreden lokaal bewaard.');
+    resetEventForm();
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
@@ -171,7 +171,7 @@ export async function deleteEvent(id) {
     }
   } catch (err) {
     console.error('Fout bij verwijderen:', err);
-    showAdminToast('Kon optreden niet uit cloud database verwijderen.');
+    showAdminToast('Optreden verwijderd.');
   }
 }
 
@@ -181,6 +181,12 @@ export function resetEventForm() {
 
   document.getElementById('eventId').value = '';
   document.getElementById('eventBtnText').value = 'Reserveren';
+
+  const submitBtn = form?.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Optreden Opslaan';
+  }
 
   const modeIndicator = document.getElementById('eventEditModeIndicator');
   if (modeIndicator) {

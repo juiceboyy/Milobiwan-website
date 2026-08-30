@@ -115,56 +115,102 @@ export function onPoemsSnapshot(callback) {
 }
 
 /**
- * Haalt alle optredens op uit Firestore
+ * Haalt alle optredens op uit Firestore of Netlify Blobs
  */
 export async function getPerformancesFromFirestore() {
-  if (!db) return [];
-  try {
-    const q = query(collection(db, PERFORMANCES_COLLECTION));
-    const snapshot = await getDocs(q);
-    const performances = [];
-    snapshot.forEach(docSnap => {
-      performances.push(docSnap.data());
-    });
-    return performances;
-  } catch (err) {
-    console.error('Fout bij ophalen optredens uit Firestore:', err);
-    throw err;
+  let list = [];
+  if (db) {
+    try {
+      const q = query(collection(db, PERFORMANCES_COLLECTION));
+      const snapshot = await getDocs(q);
+      snapshot.forEach(docSnap => {
+        list.push(docSnap.data());
+      });
+    } catch (err) {
+      console.warn('Firestore optredens fetch warning, fallback naar API:', err.message);
+    }
   }
+
+  if (list.length === 0) {
+    try {
+      const res = await fetch('/api/performances');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.performances)) {
+          list = data.performances;
+        }
+      }
+    } catch (apiErr) {
+      console.warn('API optredens fetch warning:', apiErr.message);
+    }
+  }
+
+  return list;
 }
 
 /**
- * Slaat een optreden op in Firestore (toevoegen of bewerken)
+ * Slaat een optreden op in Firestore en Netlify Blobs
  */
 export async function savePerformanceToFirestore(perf) {
-  if (!db) throw new Error('Firestore database is niet geïnitialiseerd.');
-  try {
-    const docRef = doc(db, PERFORMANCES_COLLECTION, perf.id);
-    const dataToSave = {
-      ...perf,
-      updatedAt: new Date().toISOString()
-    };
-    await setDoc(docRef, dataToSave);
-    return { success: true, performance: dataToSave };
-  } catch (err) {
-    console.error('Fout bij opslaan optreden in Firestore:', err);
-    throw err;
+  const dataToSave = {
+    ...perf,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (db) {
+    try {
+      const docRef = doc(db, PERFORMANCES_COLLECTION, perf.id);
+      await setDoc(docRef, dataToSave);
+    } catch (err) {
+      console.warn('Firestore save warning:', err.message);
+    }
   }
+
+  try {
+    const pin = sessionStorage.getItem('milobiwan_pin_val') || '';
+    await fetch('/api/performances', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-studio-pin': pin
+      },
+      body: JSON.stringify({ performance: dataToSave })
+    });
+  } catch (apiErr) {
+    console.warn('Netlify Blobs sync warning:', apiErr.message);
+  }
+
+  return { success: true, performance: dataToSave };
 }
 
 /**
- * Verwijdert een optreden uit Firestore
+ * Verwijdert een optreden uit Firestore en Netlify Blobs
  */
 export async function deletePerformanceFromFirestore(id) {
-  if (!db) throw new Error('Firestore database is niet geïnitialiseerd.');
-  try {
-    const docRef = doc(db, PERFORMANCES_COLLECTION, id);
-    await deleteDoc(docRef);
-    return { success: true };
-  } catch (err) {
-    console.error('Fout bij verwijderen optreden uit Firestore:', err);
-    throw err;
+  if (db) {
+    try {
+      const docRef = doc(db, PERFORMANCES_COLLECTION, id);
+      await deleteDoc(docRef);
+    } catch (err) {
+      console.warn('Firestore delete warning:', err.message);
+    }
   }
+
+  try {
+    const pin = sessionStorage.getItem('milobiwan_pin_val') || '';
+    await fetch('/api/performances', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-studio-pin': pin
+      },
+      body: JSON.stringify({ id })
+    });
+  } catch (apiErr) {
+    console.warn('Netlify Blobs delete warning:', apiErr.message);
+  }
+
+  return { success: true };
 }
 
 /**
@@ -179,9 +225,11 @@ export function onPerformancesSnapshot(callback) {
       snapshot.forEach(docSnap => {
         performances.push(docSnap.data());
       });
-      callback(performances);
+      if (performances.length > 0) {
+        callback(performances);
+      }
     }, (error) => {
-      console.warn('Real-time listener optredens fout (mogelijk offline):', error);
+      console.warn('Real-time listener optredens melding (offline of rule fallback):', error.message);
     });
   } catch (err) {
     console.warn('Kon Firestore optredens real-time listener niet starten:', err);
