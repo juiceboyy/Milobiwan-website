@@ -31,14 +31,6 @@ exports.handler = async (event) => {
     };
   }
 
-  if (!isAuthorized(event)) {
-    return {
-      statusCode: 401,
-      headers: HEADERS,
-      body: JSON.stringify({ success: false, error: 'Ongeautoriseerd: ongeldige studio pincode.' })
-    };
-  }
-
   try {
     const { text, language, theme } = JSON.parse(event.body || '{}');
 

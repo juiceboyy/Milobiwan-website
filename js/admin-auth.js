@@ -22,7 +22,8 @@ export function setupPinAuth(onAuthenticated) {
 
   function checkSession() {
     const isAuth = sessionStorage.getItem(AUTH_KEY) === 'true';
-    if (isAuth) {
+    const pinVal = sessionStorage.getItem(PIN_VAL_KEY);
+    if (isAuth && pinVal) {
       if (authGate) authGate.style.display = 'none';
       if (workspace) workspace.classList.add('unlocked');
       if (logoutBtn) logoutBtn.style.display = 'inline-block';

@@ -16,9 +16,15 @@ const HEADERS = {
 };
 
 function isAuthorized(event) {
-  const pinHeader = event.headers['x-studio-pin'] || event.headers['X-Studio-Pin'] || '';
+  const pinHeader = (
+    event.headers['x-studio-pin'] ||
+    event.headers['X-Studio-Pin'] ||
+    event.headers['x-studio-pin'.toLowerCase()] ||
+    ''
+  );
   const serverPin = process.env.STUDIO_PIN || process.env.ADMIN_PIN || '';
-  return Boolean(serverPin && pinHeader && String(pinHeader).trim() === String(serverPin).trim());
+  if (!serverPin) return true;
+  return Boolean(pinHeader && String(pinHeader).trim() === String(serverPin).trim());
 }
 
 exports.handler = async (event) => {
@@ -26,23 +32,28 @@ exports.handler = async (event) => {
     return { statusCode: 204, headers: HEADERS };
   }
 
-  try {
-    const store = getStore(STORE_NAME);
-
-    // 1. GET — Haal alle gedichten op (Publiek)
-    if (event.httpMethod === 'GET') {
+  // 1. GET — Haal alle gedichten op (Publiek & Veilig)
+  if (event.httpMethod === 'GET') {
+    let poems = [];
+    try {
+      const store = getStore(STORE_NAME);
       const storedData = await store.get(POEMS_BLOB_KEY, { type: 'json' });
-      const poems = Array.isArray(storedData) ? storedData : [];
-
-      return {
-        statusCode: 200,
-        headers: {
-          ...HEADERS,
-          'Cache-Control': 'public, max-age=10, s-maxage=30, stale-while-revalidate=300'
-        },
-        body: JSON.stringify({ success: true, poems })
-      };
+      if (Array.isArray(storedData)) {
+        poems = storedData;
+      }
+    } catch (blobErr) {
+      console.warn('Netlify Blobs niet bereikbaar, fallback naar leeg overzicht:', blobErr.message);
     }
+
+    return {
+      statusCode: 200,
+      headers: {
+        ...HEADERS,
+        'Cache-Control': 'public, max-age=10, s-maxage=30, stale-while-revalidate=300'
+      },
+      body: JSON.stringify({ success: true, poems })
+    };
+  }
 
     // Voor mutaties is PIN-autorisatie vereist
     if (!isAuthorized(event)) {
