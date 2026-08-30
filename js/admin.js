@@ -123,7 +123,7 @@ function setupEditor() {
 
 export function updateLivePreview() {
   const title = document.getElementById('inputTitle')?.value || 'Titel van Gedicht';
-  const theme = document.getElementById('inputTheme')?.value || 'Thema';
+  const theme = document.getElementById('inputTheme')?.value || '';
   const text = document.getElementById('inputText')?.value || 'Hier verschijnt de live voordrachttekst met genummerde strofen...';
   const note = document.getElementById('inputNote')?.value || '';
   const lang = document.querySelector('input[name="poemLanguage"]:checked')?.value || 'sranan';
@@ -137,7 +137,14 @@ export function updateLivePreview() {
   const previewGlossaryText = document.getElementById('previewGlossaryText');
 
   if (previewBadge) previewBadge.textContent = `${config.flag} ${config.languageLabel.toUpperCase()}`;
-  if (previewTheme) previewTheme.textContent = `THEMA: ${theme.toUpperCase()}`;
+  if (previewTheme) {
+    if (theme.trim()) {
+      previewTheme.style.display = 'inline-block';
+      previewTheme.textContent = `COLLECTIE: ${theme.toUpperCase()}`;
+    } else {
+      previewTheme.style.display = 'none';
+    }
+  }
   if (previewTitle) previewTitle.textContent = title;
 
   if (previewLines) {
@@ -183,7 +190,7 @@ export function refreshPoemsList() {
       <div class="cms-poem-info">
         <div style="display: flex; gap: var(--space-2); align-items: center; margin-bottom: var(--space-1);">
           <span class="badge ${poem.badgeClass}">${poem.flag} ${poem.languageLabel}</span>
-          <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent);">${poem.theme}</span>
+          ${poem.theme ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent);">📁 ${poem.theme}</span>` : ''}
         </div>
         <h4 style="font-size: 1.15rem; margin-bottom: var(--space-1);">${poem.title}</h4>
         <p style="font-size: 0.8rem; color: var(--text-muted);">${(poem.fullText || '').split('\n').length} versregels</p>

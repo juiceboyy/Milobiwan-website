@@ -146,7 +146,7 @@ function renderReadingStage(stageEl, poemId) {
   stageEl.innerHTML = `
     <div class="stage-header">
       <div class="stage-title-wrap">
-        <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel} // ${poem.theme}</span>
+        <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel}${poem.theme ? ` // 📁 ${poem.theme}` : ''}</span>
         <h3>${poem.title}</h3>
       </div>
       <button class="link-editorial" id="openFullModalBtn">
@@ -196,7 +196,14 @@ export function openPoemModal(poemId) {
     modalBadge.className = `badge ${poem.badgeClass}`;
     modalBadge.textContent = `${poem.flag} ${poem.languageLabel}`;
   }
-  if (modalTheme) modalTheme.textContent = poem.theme;
+  if (modalTheme) {
+    if (poem.theme) {
+      modalTheme.style.display = 'inline-block';
+      modalTheme.textContent = poem.theme;
+    } else {
+      modalTheme.style.display = 'none';
+    }
+  }
 
   if (modalBody) {
     const lines = poem.fullText.split('\n');
