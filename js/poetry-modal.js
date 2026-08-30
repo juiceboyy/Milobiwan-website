@@ -1,0 +1,96 @@
+import { getStoredPoems } from './poems-data.js';
+
+export function openPoemModal(poemId) {
+  const allPoems = getStoredPoems();
+  const poem = allPoems.find(p => p.id === poemId);
+  const dialog = document.getElementById('poemDialog');
+  if (!poem || !dialog) return;
+
+  const modalTitle = document.getElementById('modalPoemTitle');
+  const modalBadge = document.getElementById('modalPoemBadge');
+  const modalTheme = document.getElementById('modalPoemTheme');
+  const modalBody = document.getElementById('modalPoemBody');
+  const modalGlossary = document.getElementById('modalPoemGlossary');
+
+  if (modalTitle) modalTitle.textContent = poem.title;
+  if (modalBadge) {
+    modalBadge.className = `badge ${poem.badgeClass}`;
+    modalBadge.textContent = `${poem.flag} ${poem.languageLabel}`;
+  }
+  if (modalTheme) {
+    modalTheme.style.display = poem.theme ? 'inline-block' : 'none';
+    modalTheme.textContent = poem.theme || '';
+  }
+
+  if (modalBody) {
+    const hasImage = Boolean(poem.imageUrl);
+    const lines = (poem.fullText || '').split('\n');
+    const textHtml = `
+      <div id="modalTextSection" style="${hasImage ? 'display: none;' : 'display: block;'}">
+        ${lines.map((line, idx) => `
+          <div class="poem-line-row">
+            <span class="poem-line-num">${String(idx + 1).padStart(2, '0')}</span>
+            <span class="poem-line-text">${line || '&nbsp;'}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    const imageHtml = hasImage ? `
+      <div id="modalImageSection" style="text-align: center; margin-bottom: var(--space-6);">
+        <div style="display: flex; justify-content: center; margin-bottom: var(--space-4);">
+          <div class="view-mode-tabs">
+            <button class="view-tab-btn active" id="modalTabImageBtn">Beeld</button>
+            <button class="view-tab-btn" id="modalTabTextBtn">Tekst</button>
+          </div>
+        </div>
+        <img src="${poem.imageUrl}" alt="${poem.title}" style="max-width: 100%; max-height: 520px; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+      </div>
+    ` : '';
+
+    modalBody.innerHTML = imageHtml + textHtml;
+
+    if (hasImage) {
+      const modalTabImage = modalBody.querySelector('#modalTabImageBtn');
+      const modalTabText = modalBody.querySelector('#modalTabTextBtn');
+      const imgSec = modalBody.querySelector('#modalImageSection');
+      const txtSec = modalBody.querySelector('#modalTextSection');
+
+      modalTabText?.addEventListener('click', () => {
+        modalTabText.classList.add('active');
+        modalTabImage?.classList.remove('active');
+        if (txtSec) txtSec.style.display = 'block';
+        if (imgSec) {
+          const img = imgSec.querySelector('img');
+          if (img) img.style.display = 'none';
+        }
+      });
+
+      modalTabImage?.addEventListener('click', () => {
+        modalTabImage.classList.add('active');
+        modalTabText?.classList.remove('active');
+        if (txtSec) txtSec.style.display = 'none';
+        if (imgSec) {
+          const img = imgSec.querySelector('img');
+          if (img) img.style.display = 'inline-block';
+        }
+      });
+    }
+  }
+
+  if (modalGlossary) {
+    if (poem.translationNote) {
+      modalGlossary.style.display = 'block';
+      modalGlossary.innerHTML = `
+        <div class="glossary-label">CULTURELE CONTEXT & VERTALING</div>
+        <p class="glossary-text">${poem.translationNote}</p>
+      `;
+    } else {
+      modalGlossary.style.display = 'none';
+    }
+  }
+
+  if (typeof dialog.showModal === 'function') {
+    dialog.showModal();
+  }
+}
