@@ -4,14 +4,29 @@
  */
 
 import { getPerformancesFromFirestore, onPerformancesSnapshot } from './firebase-db.js';
+import {
+  EVENTS_STORAGE_KEY,
+  loadEventsCache,
+  saveEventsCache,
+  formatDutchDate,
+  escapeHtml
+} from './events-utils.js';
 
 export function initAgendaViewer() {
   const container = document.getElementById('agendaContainer');
   if (!container) return;
 
+  const cached = loadEventsCache();
+  if (Array.isArray(cached) && cached.length > 0) {
+    renderAgenda(cached, container);
+  }
+
   try {
     onPerformancesSnapshot((events) => {
-      renderAgenda(events, container);
+      if (Array.isArray(events)) {
+        saveEventsCache(events);
+        renderAgenda(events, container);
+      }
     });
   } catch (err) {
     console.warn('Real-time agenda snapshot error, fetching once:', err);
@@ -22,7 +37,10 @@ export function initAgendaViewer() {
 async function fetchAgendaOnce(container) {
   try {
     const events = await getPerformancesFromFirestore();
-    renderAgenda(events, container);
+    if (Array.isArray(events)) {
+      saveEventsCache(events);
+      renderAgenda(events, container);
+    }
   } catch (err) {
     console.error('Kon optredens niet laden:', err);
     renderFallbackEmpty(container);
@@ -37,7 +55,6 @@ function renderAgenda(events, container) {
 
   const todayStr = new Date().toISOString().split('T')[0];
   
-  // Splitsen in aankomend en verleden
   const upcoming = events
     .filter(ev => ev.date >= todayStr)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -48,7 +65,6 @@ function renderAgenda(events, container) {
 
   let html = '';
 
-  // 1. Aankomende optredens of Empty State
   if (upcoming.length > 0) {
     html += `
       <div class="ledger-list">
@@ -65,7 +81,6 @@ function renderAgenda(events, container) {
     `;
   }
 
-  // 2. Inklapbare eerdere optredens
   if (past.length > 0) {
     html += `
       <div class="past-events-wrapper" style="margin-top: var(--space-6);">
@@ -82,7 +97,6 @@ function renderAgenda(events, container) {
 
   container.innerHTML = html;
 
-  // Toggle logica voor eerdere optredens
   const toggleBtn = container.querySelector('#pastEventsToggle');
   const pastList = container.querySelector('#pastEventsList');
   if (toggleBtn && pastList) {
@@ -126,33 +140,4 @@ function renderFallbackEmpty(container) {
       <a href="#contact" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Boek een voordracht</a>
     </div>
   `;
-}
-
-function formatDutchDate(dateStr) {
-  if (!dateStr) return 'GEEN DATUM';
-  try {
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-      const day = parts[2];
-      const monthNames = ['OKT', 'NOV', 'DEC', 'JAN', 'FEB', 'MRT', 'APR', 'MEI', 'JUN', 'JUL', 'AUG', 'SEP'];
-      const realMonths = ['JAN', 'FEB', 'MRT', 'APR', 'MEI', 'JUN', 'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEC'];
-      const monthIndex = parseInt(parts[1], 10) - 1;
-      const month = realMonths[monthIndex] || parts[1];
-      const year = parts[0];
-      return `${day} // ${month} ${year}`;
-    }
-    return dateStr;
-  } catch {
-    return dateStr;
-  }
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }

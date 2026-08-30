@@ -13,34 +13,40 @@ import { initAdminEvents } from './admin-events.js';
 let ocrManager = null;
 
 function init() {
+  setupStudioTabs();
+  setupEditor();
+  initAdminEvents();
+
   setupPinAuth(async () => {
     await fetchPoems();
     refreshPoemsList({ onEditPoem: editPoem });
     updateLivePreview();
-    initAdminEvents();
     subscribeToLivePoems(() => {
       refreshPoemsList({ onEditPoem: editPoem });
     });
   });
-  setupStudioTabs();
-  setupEditor();
 }
 
 function setupStudioTabs() {
   const tabBtns = document.querySelectorAll('.studio-tab-btn');
   const panes = document.querySelectorAll('.tab-pane');
 
+  function switchTab(targetId) {
+    tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === targetId));
+    panes.forEach(p => p.classList.toggle('active', p.id === targetId));
+    sessionStorage.setItem('milobiwan_active_tab', targetId);
+  }
+
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      const targetId = btn.dataset.tab;
-      tabBtns.forEach(b => b.classList.remove('active'));
-      panes.forEach(p => p.classList.remove('active'));
-
-      btn.classList.add('active');
-      const targetPane = document.getElementById(targetId);
-      if (targetPane) targetPane.classList.add('active');
+      switchTab(btn.dataset.tab);
     });
   });
+
+  const savedTab = sessionStorage.getItem('milobiwan_active_tab');
+  if (savedTab && document.getElementById(savedTab)) {
+    switchTab(savedTab);
+  }
 }
 
 function setupEditor() {

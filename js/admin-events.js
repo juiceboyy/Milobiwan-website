@@ -9,30 +9,36 @@ import {
   deletePerformanceFromFirestore,
   onPerformancesSnapshot
 } from './firebase-db.js';
+import {
+  loadEventsCache,
+  saveEventsCache,
+  formatDutchDate,
+  showAdminToast,
+  escapeHtml
+} from './events-utils.js';
 
-let currentEvents = [];
+let currentEvents = loadEventsCache();
 
-/**
- * Initialiseert het Optredens & Agenda beheer binnen de Studio
- */
 export function initAdminEvents() {
   const eventForm = document.getElementById('eventForm');
   const resetEventBtn = document.getElementById('resetEventBtn');
-
   if (!eventForm) return;
 
-  // Real-time listener opzetten voor de lijst in de Studio
+  renderAdminEventsList(currentEvents);
+
   try {
     onPerformancesSnapshot((events) => {
-      currentEvents = events;
-      renderAdminEventsList(events);
+      if (Array.isArray(events)) {
+        currentEvents = events;
+        saveEventsCache(events);
+        renderAdminEventsList(events);
+      }
     });
   } catch (err) {
     console.warn('Kon realtime listener voor events niet laden:', err);
     loadEventsOnce();
   }
 
-  // Submit handler voor toevoegen of bewerken
   eventForm.addEventListener('submit', handleEventSubmit);
 
   if (resetEventBtn) {
@@ -43,16 +49,16 @@ export function initAdminEvents() {
 async function loadEventsOnce() {
   try {
     const events = await getPerformancesFromFirestore();
-    currentEvents = events;
-    renderAdminEventsList(events);
+    if (Array.isArray(events) && events.length > 0) {
+      currentEvents = events;
+      saveEventsCache(events);
+      renderAdminEventsList(events);
+    }
   } catch (err) {
     console.error('Fout bij eenmalig laden van events:', err);
   }
 }
 
-/**
- * Verwerkt het opslaan van een nieuw of bewerkt optreden
- */
 async function handleEventSubmit(e) {
   e.preventDefault();
 
@@ -72,7 +78,7 @@ async function handleEventSubmit(e) {
   const buttonText = btnTextInput.value.trim() || 'Reserveren';
 
   if (!title || !date || !location) {
-    showAdminToast('Vul in ieder geval een titel, datum en locatie in.');
+    alert('Vul minimaal een titel, datum en locatie in.');
     return;
   }
 
@@ -89,6 +95,15 @@ async function handleEventSubmit(e) {
     buttonText
   };
 
+  const existingIdx = currentEvents.findIndex(ev => ev.id === eventId);
+  if (existingIdx >= 0) {
+    currentEvents[existingIdx] = eventData;
+  } else {
+    currentEvents.unshift(eventData);
+  }
+  saveEventsCache(currentEvents);
+  renderAdminEventsList(currentEvents);
+
   const submitBtn = e.target.querySelector('button[type="submit"]');
   if (submitBtn) {
     submitBtn.disabled = true;
@@ -99,9 +114,10 @@ async function handleEventSubmit(e) {
     await savePerformanceToFirestore(eventData);
     showAdminToast(isEdit ? 'Optreden succesvol bijgewerkt!' : 'Nieuw optreden toegevoegd aan agenda!');
     resetEventForm();
+    alert(`Optreden "${title}" is succesvol opgeslagen!`);
   } catch (err) {
-    console.error('Fout bij opslaan van optreden:', err);
-    showAdminToast('Er ging iets mis bij het opslaan.');
+    console.error('Fout bij opslaan in Firestore:', err);
+    alert('Let op: Lokaal opgeslagen, maar kon niet direct naar Firestore schrijven: ' + (err.message || 'Verbindingsfout'));
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
@@ -110,9 +126,6 @@ async function handleEventSubmit(e) {
   }
 }
 
-/**
- * Vult het formulier voor bewerken van een bestaand optreden
- */
 export function editEvent(id) {
   const event = currentEvents.find(ev => ev.id === id);
   if (!event) return;
@@ -132,20 +145,12 @@ export function editEvent(id) {
   }
 
   const formTitle = document.getElementById('eventFormTitle');
-  if (formTitle) {
-    formTitle.textContent = 'Optreden Bewerken';
-  }
+  if (formTitle) formTitle.textContent = 'Optreden Bewerken';
 
-  // Scroll naar formulier
   const formCard = document.getElementById('eventEditorCard');
-  if (formCard) {
-    formCard.scrollIntoView({ behavior: 'smooth' });
-  }
+  if (formCard) formCard.scrollIntoView({ behavior: 'smooth' });
 }
 
-/**
- * Verwijdert een optreden na bevestiging
- */
 export async function deleteEvent(id) {
   const event = currentEvents.find(ev => ev.id === id);
   const title = event ? `"${event.title}"` : 'dit optreden';
@@ -153,6 +158,10 @@ export async function deleteEvent(id) {
   if (!confirm(`Weet je zeker dat je ${title} wilt verwijderen uit de agenda?`)) {
     return;
   }
+
+  currentEvents = currentEvents.filter(ev => ev.id !== id);
+  saveEventsCache(currentEvents);
+  renderAdminEventsList(currentEvents);
 
   try {
     await deletePerformanceFromFirestore(id);
@@ -162,13 +171,10 @@ export async function deleteEvent(id) {
     }
   } catch (err) {
     console.error('Fout bij verwijderen:', err);
-    showAdminToast('Kon optreden niet verwijderen.');
+    showAdminToast('Kon optreden niet uit cloud database verwijderen.');
   }
 }
 
-/**
- * Reset het event formulier naar de standaard 'Nieuw' status
- */
 export function resetEventForm() {
   const form = document.getElementById('eventForm');
   if (form) form.reset();
@@ -183,22 +189,15 @@ export function resetEventForm() {
   }
 
   const formTitle = document.getElementById('eventFormTitle');
-  if (formTitle) {
-    formTitle.textContent = 'Optreden Toevoegen';
-  }
+  if (formTitle) formTitle.textContent = 'Optreden Toevoegen';
 }
 
-/**
- * Rendert het overzicht van alle optredens in de Studio
- */
 function renderAdminEventsList(events) {
   const container = document.getElementById('eventsListContainer');
   const countEl = document.getElementById('eventCount');
   if (!container) return;
 
-  if (countEl) {
-    countEl.textContent = events.length;
-  }
+  if (countEl) countEl.textContent = events.length;
 
   if (events.length === 0) {
     container.innerHTML = `
@@ -209,7 +208,6 @@ function renderAdminEventsList(events) {
     return;
   }
 
-  // Sorteren: nieuwste datum bovenaan
   const sorted = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
   const today = new Date().toISOString().split('T')[0];
 
@@ -239,7 +237,6 @@ function renderAdminEventsList(events) {
     </div>
   `;
 
-  // Attach button events
   container.querySelectorAll('.edit-event-btn').forEach(btn => {
     btn.addEventListener('click', () => editEvent(btn.getAttribute('data-id')));
   });
@@ -247,47 +244,4 @@ function renderAdminEventsList(events) {
   container.querySelectorAll('.delete-event-btn').forEach(btn => {
     btn.addEventListener('click', () => deleteEvent(btn.getAttribute('data-id')));
   });
-}
-
-function formatDutchDate(dateStr) {
-  if (!dateStr) return 'GEEN DATUM';
-  try {
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-      const day = parts[2];
-      const monthNames = ['JAN', 'FEB', 'MRT', 'APR', 'MEI', 'JUN', 'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEC'];
-      const monthIndex = parseInt(parts[1], 10) - 1;
-      const month = monthNames[monthIndex] || parts[1];
-      const year = parts[0];
-      return `${day} // ${month} ${year}`;
-    }
-    return dateStr;
-  } catch {
-    return dateStr;
-  }
-}
-
-function showAdminToast(msg) {
-  let toast = document.getElementById('adminToast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'adminToast';
-    toast.className = 'toast-notice';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 3500);
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }
