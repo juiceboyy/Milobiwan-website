@@ -8,26 +8,7 @@ import { initPoetryViewer } from './poetry-viewer.js';
 function init() {
   initNavigation();
   initPoetryViewer();
-  initLinguisticArchive();
   initBookingForm();
-}
-
-function initLinguisticArchive() {
-  const tabs = document.querySelectorAll('.lang-tab-btn');
-  const panels = document.querySelectorAll('.lang-tab-panel');
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      panels.forEach(p => p.classList.remove('active'));
-
-      tab.classList.add('active');
-      const target = document.getElementById(`panel-${tab.dataset.lang}`);
-      if (target) {
-        target.classList.add('active');
-      }
-    });
-  });
 }
 
 function initBookingForm() {

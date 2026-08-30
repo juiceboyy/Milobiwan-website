@@ -97,67 +97,6 @@
   padding: var(--space-4) var(--space-6);
 }
 
-/* Linguistic Archive Bento (Section 1) */
-.lang-tabs-nav {
-  display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-6);
-  flex-wrap: wrap;
-}
-
-.lang-tab-btn {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-sm);
-  background-color: var(--bg-surface-elevated);
-  color: var(--text-secondary);
-  box-shadow: var(--border-subpixel);
-  transition: all var(--trans-fast);
-}
-
-.lang-tab-btn:hover {
-  color: var(--text-primary);
-  box-shadow: var(--border-subpixel-hover);
-}
-
-.lang-tab-btn.active {
-  color: var(--accent);
-  box-shadow: var(--border-subpixel-active);
-}
-
-.lang-tab-panel {
-  display: none;
-}
-
-.lang-tab-panel.active {
-  display: block;
-  animation: fadeIn 0.25s var(--ease-sharp) forwards;
-}
-
-.panel-verse-display {
-  font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
-  font-style: italic;
-  letter-spacing: var(--tracking-tight);
-  color: var(--text-primary);
-  line-height: 1.5;
-  background-color: var(--bg-surface-elevated);
-  box-shadow: var(--border-subpixel);
-  border-left: 2px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: var(--space-6);
-  margin-bottom: var(--space-6);
-}
-
-.panel-desc-text {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
 /* Asymmetric Bento Span Utilities */
 @media (max-width: 1024px) {
   .col-span-8,
