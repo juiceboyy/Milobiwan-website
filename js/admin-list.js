@@ -28,8 +28,8 @@ export function refreshPoemsList({ onEditPoem }) {
       <div class="cms-poem-info">
         <div style="display: flex; gap: var(--space-2); align-items: center; margin-bottom: var(--space-1);">
           <span class="badge ${poem.badgeClass}">${poem.flag} ${poem.languageLabel}</span>
-          ${poem.theme ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent);">📁 ${poem.theme}</span>` : ''}
-          ${poem.imageUrl ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted);">🖼️ Kaart</span>` : ''}
+          ${poem.theme ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent);">${poem.theme}</span>` : ''}
+          ${poem.imageUrl ? `<span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); opacity: 0.8;">[BEELD]</span>` : ''}
         </div>
         <h4 style="font-size: 1.15rem; margin-bottom: var(--space-1);">${poem.title}</h4>
         <p style="font-size: 0.8rem; color: var(--text-muted);">${(poem.fullText || '').split('\n').length} versregels</p>

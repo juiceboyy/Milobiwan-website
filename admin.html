@@ -114,13 +114,12 @@
 
             <!-- Image Upload & OCR Zone -->
             <div class="form-group">
-              <label class="form-label">Originele Afbeelding / Typografiekaart (optioneel met AI OCR)</label>
+              <label class="form-label">Origineel Beeld / Typografie (optioneel met AI OCR)</label>
               <input type="file" id="imageUploadInput" accept="image/*" style="display: none;">
               
               <div class="image-upload-zone" id="imageUploadZone">
                 <div class="image-upload-prompt">
-                  <span class="image-upload-icon">📷</span>
-                  <div class="image-upload-title">Klik of sleep afbeelding hierheen</div>
+                  <div class="image-upload-title">+ Upload Beeld / Foto van Gedicht</div>
                   <div class="image-upload-hint">Foto van kaart, poster of manuscript &bull; AI leest de tekst automatisch uit via OCR</div>
                 </div>
               </div>
@@ -128,7 +127,7 @@
               <div class="image-preview-box" id="imagePreviewBox">
                 <img id="imagePreviewThumbnail" src="" alt="Thumbnail" class="image-preview-thumb">
                 <div class="image-preview-meta">
-                  <div style="font-size: 0.85rem; font-weight: 500;">Originele Typografiekaart Gekoppeld</div>
+                  <div style="font-size: 0.85rem; font-weight: 500;">Origineel Beeld Gekoppeld</div>
                   <div style="font-size: 0.75rem; color: var(--text-muted);">Zichtbaar in het archief voor bezoekers</div>
                 </div>
                 <button type="button" id="removeImageBtn" class="btn btn-secondary btn-sm" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3); font-size: 0.75rem;">Verwijder</button>
@@ -167,8 +166,8 @@
           <div id="previewLines" style="min-height: 200px; margin-bottom: var(--space-4);"></div>
 
           <div id="previewArtworkContainer" class="preview-artwork-container" style="display: none;">
-            <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-bottom: var(--space-2);">[ ORIGINELE TYPOGRAFIE KAART ]</div>
-            <img id="previewArtworkImg" src="" alt="Gedichtkaart" class="preview-artwork-img">
+            <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-bottom: var(--space-2);">[ ORIGINEEL BEELD ]</div>
+            <img id="previewArtworkImg" src="" alt="Gedichtbeeld" class="preview-artwork-img">
           </div>
 
           <div id="previewGlossary" class="stage-glossary-box" style="display: none; margin-top: var(--space-4);">

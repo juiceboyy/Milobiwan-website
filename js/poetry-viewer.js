@@ -148,14 +148,14 @@ function renderReadingStage(stageEl, poemId) {
   stageEl.innerHTML = `
     <div class="stage-header">
       <div class="stage-title-wrap">
-        <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel}${poem.theme ? ` // 📁 ${poem.theme}` : ''}</span>
+        <span class="mono-tag" style="margin-bottom: 0.25rem;">${poem.flag} ${poem.languageLabel}${poem.theme ? ` // ${poem.theme}` : ''}</span>
         <h3>${poem.title}</h3>
       </div>
       <div style="display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap;">
         ${hasImage ? `
           <div class="view-mode-tabs" id="viewModeTabs">
-            <button class="view-tab-btn active" id="tabTextBtn">📄 Tekst</button>
-            <button class="view-tab-btn" id="tabImageBtn">🖼️ Kaart</button>
+            <button class="view-tab-btn active" id="tabTextBtn">Tekst</button>
+            <button class="view-tab-btn" id="tabImageBtn">Beeld</button>
           </div>
         ` : ''}
         <button class="link-editorial" id="openFullModalBtn">
@@ -254,7 +254,7 @@ export function openPoemModal(poemId) {
 
     const imageHtml = poem.imageUrl ? `
       <div style="text-align: center; margin-top: var(--space-6);">
-        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); margin-bottom: var(--space-2);">[ ORIGINELE KAART ]</div>
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); margin-bottom: var(--space-2);">[ ORIGINEEL BEELD ]</div>
         <img src="${poem.imageUrl}" alt="${poem.title}" style="max-width: 100%; max-height: 520px; border-radius: var(--radius-md); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
       </div>
     ` : '';
