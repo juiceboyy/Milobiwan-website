@@ -15,23 +15,24 @@ export async function sharePoem(poem, triggerBtn = null) {
 
   try {
     const file = await createPoemShareFile(poem);
-    const shareUrl = window.location.origin + window.location.pathname + `#archief`;
-    const shareText = `"${poem.title}" — Milobiwan (Mieke)\n${shareUrl}`;
-    const shareData = { title: `${poem.title} — Milobiwan`, text: shareText, url: shareUrl, files: [file] };
+    // When sharing a file, only include files (and title) to avoid double-attachments in WhatsApp/iMessage
+    const shareData = {
+      title: `${poem.title} — Milobiwan`,
+      files: [file]
+    };
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share(shareData);
-      showShareToast('Gedeeld', 'Het gedicht is succesvol gedeeld.');
+      showShareToast('Gedeeld', 'Het beeld is succesvol gedeeld.');
     } else if (navigator.share) {
       try {
-        await navigator.share({ title: shareData.title, text: shareData.text, url: shareData.url });
+        await navigator.share({ title: poem.title, url: window.location.href });
         triggerFileDownload(file);
-        showShareToast('Gedeeld & Gedownload', 'Tekst gedeeld en afbeelding opgeslagen.');
       } catch (err) {
-        if (err.name !== 'AbortError') fallbackShare(file, shareText);
+        if (err.name !== 'AbortError') fallbackShare(file);
       }
     } else {
-      fallbackShare(file, shareText);
+      fallbackShare(file);
     }
   } catch (error) {
     if (error.name !== 'AbortError') {
@@ -207,12 +208,16 @@ function wrapText(ctx, text, maxWidth) {
   return lines;
 }
 
-function fallbackShare(file, shareText) {
+async function fallbackShare(file) {
   triggerFileDownload(file);
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(shareText).catch(() => {});
+  if (navigator.clipboard?.write && window.ClipboardItem) {
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
+    } catch (e) {
+      // Ignore clipboard failure on unsupported contexts
+    }
   }
-  showShareToast('Afbeelding Opgeslagen', 'De afbeelding is gedownload en de link is gekopieerd naar het klembord.');
+  showShareToast('Afbeelding Opgeslagen', 'De afbeelding is gedownload en gekopieerd naar het klembord.');
 }
 
 function triggerFileDownload(file) {
