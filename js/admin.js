@@ -196,7 +196,7 @@ export function updateLivePreview() {
   const title = document.getElementById('inputTitle')?.value || 'Titel van Gedicht';
   const rawTags = document.getElementById('inputTheme')?.value || '';
   const tags = rawTags ? rawTags.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const text = document.getElementById('inputText')?.value || 'Hier verschijnt de live voordrachttekst met genummerde strofen...';
+  const text = document.getElementById('inputText')?.value || 'Hier verschijnt de live voordrachttekst...';
   const note = document.getElementById('inputNote')?.value || '';
   const lang = document.querySelector('input[name="poemLanguage"]:checked')?.value || 'sranan';
   const config = LANGUAGE_CONFIG[lang] || LANGUAGE_CONFIG.sranan;
